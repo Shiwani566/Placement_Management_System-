@@ -1,10 +1,12 @@
 # Placement Management System
 
-A web-based Placement Management System developed using Java and Spring Boot.
+A web-based Placement Management System developed using Java and Spring Boot to streamline the campus placement process. 
+The system helps manage student profiles, company information, job opportunities, applications, and placement-related activities through a centralized platform.
+
 
 ## Project Status
 
-🚧 Under Development
+ Under Development
 
 ## Planned Modules
 

@@ -1,7 +1,9 @@
 package com.shiwani.placementManagementSystem.controller;
 
+import com.shiwani.placementManagementSystem.dto.StudentSkillResponse;
 import com.shiwani.placementManagementSystem.entity.StudentSkill;
 import com.shiwani.placementManagementSystem.service.StudentSkillService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,46 +20,62 @@ public class StudentSkillController {
     }
 
     @PostMapping
-    public ResponseEntity<StudentSkill> createStudentSkill(
+    public ResponseEntity<StudentSkillResponse> createStudentSkill(
             @RequestBody StudentSkill studentSkill) {
 
-        return ResponseEntity.ok(
-                studentSkillService.saveStudentSkill(studentSkill)
-        );
+        StudentSkill savedStudentSkill =
+                studentSkillService.saveStudentSkill(studentSkill);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(convertToResponse(savedStudentSkill));
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentSkill>> getAllStudentSkills() {
-        return ResponseEntity.ok(
+    public ResponseEntity<List<StudentSkillResponse>> getAllStudentSkills() {
+
+        List<StudentSkillResponse> responseList =
                 studentSkillService.getAllStudentSkills()
-        );
+                        .stream()
+                        .map(this::convertToResponse)
+                        .toList();
+
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentSkill> getStudentSkillById(
+    public ResponseEntity<StudentSkillResponse> getStudentSkillById(
             @PathVariable Long id) {
 
         return studentSkillService.getStudentSkillById(id)
+                .map(this::convertToResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<List<StudentSkill>> getSkillsByStudentId(
+    public ResponseEntity<List<StudentSkillResponse>> getSkillsByStudentId(
             @PathVariable Long studentId) {
 
-        return ResponseEntity.ok(
+        List<StudentSkillResponse> responseList =
                 studentSkillService.getSkillsByStudentId(studentId)
-        );
+                        .stream()
+                        .map(this::convertToResponse)
+                        .toList();
+
+        return ResponseEntity.ok(responseList);
     }
 
     @GetMapping("/skill/{skillId}")
-    public ResponseEntity<List<StudentSkill>> getStudentsBySkillId(
+    public ResponseEntity<List<StudentSkillResponse>> getStudentsBySkillId(
             @PathVariable Long skillId) {
 
-        return ResponseEntity.ok(
+        List<StudentSkillResponse> responseList =
                 studentSkillService.getStudentsBySkillId(skillId)
-        );
+                        .stream()
+                        .map(this::convertToResponse)
+                        .toList();
+
+        return ResponseEntity.ok(responseList);
     }
 
     @DeleteMapping("/{id}")
@@ -67,4 +85,18 @@ public class StudentSkillController {
         studentSkillService.deleteStudentSkill(id);
         return ResponseEntity.noContent().build();
     }
+
+    private StudentSkillResponse convertToResponse(
+            StudentSkill studentSkill) {
+
+        StudentSkillResponse response = new StudentSkillResponse();
+
+        response.setId(studentSkill.getId());
+        response.setStudentId(studentSkill.getStudent().getId());
+        response.setSkillId(studentSkill.getSkill().getId());
+        response.setSkillName(studentSkill.getSkill().getName());
+
+        return response;
+    }
 }
+

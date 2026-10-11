@@ -1,5 +1,7 @@
 package com.shiwani.placementManagementSystem.controller;
 
+import com.shiwani.placementManagementSystem.dto.LoginRequest;
+import com.shiwani.placementManagementSystem.dto.LoginResponse;
 import com.shiwani.placementManagementSystem.dto.RegisterRequest;
 import com.shiwani.placementManagementSystem.entity.User;
 import com.shiwani.placementManagementSystem.service.UserService;
@@ -34,4 +36,14 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody LoginRequest request) {
+
+        LoginResponse response = userService.login(request);
+
+        return ResponseEntity.ok(response);
+    }
 }
+

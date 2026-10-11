@@ -1,5 +1,7 @@
 package com.shiwani.placementManagementSystem.service;
 
+import com.shiwani.placementManagementSystem.dto.LoginRequest;
+import com.shiwani.placementManagementSystem.dto.LoginResponse;
 import com.shiwani.placementManagementSystem.dto.RegisterRequest;
 import com.shiwani.placementManagementSystem.entity.Role;
 import com.shiwani.placementManagementSystem.entity.User;
@@ -76,4 +78,44 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public LoginResponse login(LoginRequest request) {
+
+        if (request.getEmail() == null
+                || request.getEmail().isBlank()
+                || request.getPassword() == null
+                || request.getPassword().isBlank()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email and password are required"
+            );
+        }
+
+        String email = request.getEmail().trim().toLowerCase();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid email or password"
+                ));
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword())) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Invalid email or password"
+            );
+        }
+
+        return new LoginResponse(
+                "Login successful",
+                user.getId(),
+                user.getEmail(),
+                user.getRole().getName()
+        );
+    }
 }
+

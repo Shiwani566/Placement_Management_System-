@@ -18,15 +18,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserService(
             UserRepository userRepository,
             RoleRepository roleRepository,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService) {
 
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public User registerStudent(RegisterRequest request) {
@@ -110,11 +113,14 @@ public class UserService {
             );
         }
 
+        String token = jwtService.generateToken(user.getEmail());
+
         return new LoginResponse(
                 "Login successful",
                 user.getId(),
                 user.getEmail(),
-                user.getRole().getName()
+                user.getRole().getName(),
+                token
         );
     }
 }

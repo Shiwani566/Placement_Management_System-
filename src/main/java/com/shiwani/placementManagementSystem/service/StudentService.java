@@ -22,6 +22,7 @@ public class StudentService {
     public StudentService(
             StudentRepository studentRepository,
             UserRepository userRepository) {
+
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
     }
@@ -58,6 +59,7 @@ public class StudentService {
 
         if (user.getRole() == null
                 || !"STUDENT".equals(user.getRole().getName())) {
+
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "User does not have the STUDENT role"
@@ -94,7 +96,16 @@ public class StudentService {
         return studentRepository.findByUserId(userId);
     }
 
+    public Optional<Student> getStudentByEmail(String email) {
+
+        return userRepository.findByEmail(email)
+                .flatMap(user ->
+                        studentRepository.findByUserId(user.getId())
+                );
+    }
+
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }
 }
+

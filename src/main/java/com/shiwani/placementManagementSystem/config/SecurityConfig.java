@@ -2,6 +2,7 @@ package com.shiwani.placementManagementSystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,11 +39,37 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public authentication endpoints
                         .requestMatchers(
                                 "/api/auth/register",
                                 "/api/auth/login"
                         ).permitAll()
 
+                        // Student profile read access
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/students"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/students/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        // Student profile creation
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/students"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        // Only ADMIN can delete student profiles
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/students/**"
+                        ).hasRole("ADMIN")
+
+                        // Other APIs require authentication
                         .anyRequest().authenticated()
                 )
 

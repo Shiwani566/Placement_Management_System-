@@ -3,8 +3,8 @@ package com.shiwani.placementManagementSystem.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,14 +26,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
                 )
@@ -46,7 +46,7 @@ public class SecurityConfig {
                                 "/api/auth/login"
                         ).permitAll()
 
-                        // Student profile read access
+                        // Student profile permissions
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/students"
@@ -57,19 +57,77 @@ public class SecurityConfig {
                                 "/api/students/**"
                         ).hasAnyRole("STUDENT", "ADMIN")
 
-                        // Student profile creation
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/students"
                         ).hasAnyRole("STUDENT", "ADMIN")
 
-                        // Only ADMIN can delete student profiles
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/students/**"
                         ).hasRole("ADMIN")
 
-                        // Other APIs require authentication
+                        // Education permissions
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/education"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/education/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/education"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/education/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        // Skill permissions
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/skills",
+                                "/api/skills/**"
+                        ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/skills"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/skills/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/skills/**"
+                        ).hasRole("ADMIN")
+
+                        // Student skill permissions
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/student-skills",
+                                "/api/student-skills/**"
+                        ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/student-skills"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/student-skills/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
 
@@ -81,3 +139,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+

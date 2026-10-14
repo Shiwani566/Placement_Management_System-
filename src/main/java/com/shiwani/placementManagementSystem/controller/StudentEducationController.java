@@ -1,11 +1,16 @@
- package com.shiwani.placementManagementSystem.controller;
+package com.shiwani.placementManagementSystem.controller;
 
 import com.shiwani.placementManagementSystem.dto.StudentEducationResponse;
 import com.shiwani.placementManagementSystem.entity.StudentEducation;
+import com.shiwani.placementManagementSystem.entity.User;
+import com.shiwani.placementManagementSystem.repository.UserRepository;
 import com.shiwani.placementManagementSystem.service.StudentEducationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -14,14 +19,35 @@ import java.util.List;
 public class StudentEducationController {
 
     private final StudentEducationService studentEducationService;
+    private final UserRepository userRepository;
 
-    public StudentEducationController(StudentEducationService studentEducationService) {
+    public StudentEducationController(
+            StudentEducationService studentEducationService,
+            UserRepository userRepository) {
         this.studentEducationService = studentEducationService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping
     public ResponseEntity<StudentEducationResponse> createEducation(
-            @RequestBody StudentEducation education) {
+            @RequestBody StudentEducation education,
+            Authentication authentication) {
+
+        boolean isAdmin = hasRole(authentication, "ROLE_ADMIN");
+
+        if (!isAdmin) {
+            Long loggedInUserId = getLoggedInUserId(authentication);
+
+            if (education.getStudent() == null
+                    || education.getStudent().getUser() == null
+                    || !loggedInUserId.equals(
+                    education.getStudent().getUser().getId())) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "You can add education only to your own profile"
+                );
+            }
+        }
 
         StudentEducation savedEducation =
                 studentEducationService.saveEducation(education);
@@ -44,17 +70,46 @@ public class StudentEducationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentEducationResponse> getEducationById(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        return studentEducationService.getEducationById(id)
-                .map(this::convertToResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        StudentEducation education =
+                studentEducationService.getEducationById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Education record not found"
+                        ));
+
+        checkOwnership(education, authentication);
+
+        return ResponseEntity.ok(convertToResponse(education));
     }
 
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<StudentEducationResponse>> getEducationByStudentId(
-            @PathVariable Long studentId) {
+            @PathVariable Long studentId,
+            Authentication authentication) {
+
+        boolean isAdmin = hasRole(authentication, "ROLE_ADMIN");
+
+        if (!isAdmin) {
+            Long loggedInUserId = getLoggedInUserId(authentication);
+
+            boolean ownsStudentProfile =
+                    studentEducationService.getEducationByStudentId(studentId)
+                            .stream()
+                            .anyMatch(education ->
+                                    education.getStudent().getUser().getId()
+                                            .equals(loggedInUserId));
+
+            // Empty education records do not prove ownership.
+            if (!ownsStudentProfile) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,
+                        "You cannot access another student's education"
+                );
+            }
+        }
 
         List<StudentEducationResponse> educationList =
                 studentEducationService.getEducationByStudentId(studentId)
@@ -66,13 +121,65 @@ public class StudentEducationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEducation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEducation(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        StudentEducation education =
+                studentEducationService.getEducationById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Education record not found"
+                        ));
+
+        checkOwnership(education, authentication);
 
         studentEducationService.deleteEducation(id);
+
         return ResponseEntity.noContent().build();
     }
 
-    private StudentEducationResponse convertToResponse(StudentEducation education) {
+    private void checkOwnership(
+            StudentEducation education,
+            Authentication authentication) {
+
+        if (hasRole(authentication, "ROLE_ADMIN")) {
+            return;
+        }
+
+        Long loggedInUserId = getLoggedInUserId(authentication);
+
+        if (education.getStudent() == null
+                || education.getStudent().getUser() == null
+                || !loggedInUserId.equals(
+                education.getStudent().getUser().getId())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "You cannot access another student's education"
+            );
+        }
+    }
+
+    private Long getLoggedInUserId(Authentication authentication) {
+
+        return userRepository.findByEmail(authentication.getName())
+                .map(User::getId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Authenticated user not found"
+                ));
+    }
+
+    private boolean hasRole(Authentication authentication, String role) {
+
+        return authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(role::equals);
+    }
+
+    private StudentEducationResponse convertToResponse(
+            StudentEducation education) {
 
         StudentEducationResponse response = new StudentEducationResponse();
 
@@ -87,3 +194,4 @@ public class StudentEducationController {
         return response;
     }
 }
+

@@ -127,6 +127,36 @@ public class SecurityConfig {
                                 "/api/student-skills/**"
                         ).hasAnyRole("STUDENT", "ADMIN")
 
+                        // Placement Drive permissions
+
+                        // All authenticated roles can view drives
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/placement-drives",
+                                "/api/placement-drives/**"
+                        ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
+
+                        // Only ADMIN can create a drive
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/placement-drives",
+                                "/api/placement-drives/**"
+                        ).hasRole("ADMIN")
+
+                        // Only ADMIN can update a drive
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/placement-drives",
+                                "/api/placement-drives/**"
+                        ).hasRole("ADMIN")
+
+                        // Only ADMIN can delete a drive
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/placement-drives",
+                                "/api/placement-drives/**"
+                        ).hasRole("ADMIN")
+
                         // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
@@ -139,4 +169,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-

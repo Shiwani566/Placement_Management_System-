@@ -42,6 +42,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader =
                 request.getHeader("Authorization");
 
+        // Diagnostic log: never print the actual token
+        System.out.println(
+                "Authorization header present: "
+                        + (authorizationHeader != null
+                        && authorizationHeader.startsWith("Bearer "))
+        );
+
         if (authorizationHeader == null
                 || !authorizationHeader.startsWith("Bearer ")) {
 
@@ -94,3 +101,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+

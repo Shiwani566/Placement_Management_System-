@@ -50,6 +50,11 @@ public class Student {
         return id;
     }
 
+    // Added for unit testing
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public User getUser() {
         return user;
     }

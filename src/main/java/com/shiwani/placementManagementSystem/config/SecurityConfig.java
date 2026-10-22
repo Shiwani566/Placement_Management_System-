@@ -10,8 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// IntelliJ mein apne existing JwtAuthenticationFilter ka sahi import add karna.
-
 @Configuration
 public class SecurityConfig {
 
@@ -45,33 +43,36 @@ public class SecurityConfig {
                                 "/api/auth/register"
                         ).permitAll()
 
-                        // Allow Spring Boot to return the original error response
+                        // Allow Spring Boot error responses
                         .requestMatchers("/error").permitAll()
 
-                        // Placement drives
+                        // Placement drives: all authenticated roles can view
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-drives",
                                 "/api/placement-drives/**"
                         ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
 
+                        // Only ADMIN can create placement drives
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/placement-drives",
                                 "/api/placement-drives/**"
                         ).hasRole("ADMIN")
 
+                        // Only ADMIN can update placement drives
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/api/placement-drives/**"
                         ).hasRole("ADMIN")
 
+                        // Only ADMIN can delete placement drives
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/placement-drives/**"
                         ).hasRole("ADMIN")
 
-                        // Placement applications: students can apply
+                        // Students can apply for placement drives
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/placement-applications/apply/**"
@@ -83,19 +84,44 @@ public class SecurityConfig {
                                 "/api/placement-applications/my-applications"
                         ).hasRole("STUDENT")
 
-                        // Admin can view applications for a drive
+                        // ADMIN can view applications for a drive
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-applications/drive/**"
                         ).hasRole("ADMIN")
 
-                        // Admin can update application status
+                        // ADMIN can update application status
                         .requestMatchers(
                                 HttpMethod.PATCH,
                                 "/api/placement-applications/**"
                         ).hasRole("ADMIN")
 
-                        // Keep all other existing endpoints protected
+                        // View all student profiles: ADMIN and RECRUITER
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/students"
+                        ).hasAnyRole("ADMIN", "RECRUITER")
+
+                        // View individual student profiles
+                        // Controller enforces student ownership
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/students/**"
+                        ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
+
+                        // Create student profiles: STUDENT and ADMIN
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/students"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        // Delete student profiles: ADMIN only
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/students/**"
+                        ).hasRole("ADMIN")
+
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
 

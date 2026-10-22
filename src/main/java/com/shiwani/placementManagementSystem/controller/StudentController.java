@@ -1,4 +1,4 @@
- package com.shiwani.placementManagementSystem.controller;
+package com.shiwani.placementManagementSystem.controller;
 
 import com.shiwani.placementManagementSystem.dto.StudentRequest;
 import com.shiwani.placementManagementSystem.dto.StudentResponse;
@@ -30,14 +30,26 @@ public class StudentController {
         this.userRepository = userRepository;
     }
 
+    // Create a student profile
+    // STUDENT: only their own profile
+    // ADMIN: can create a profile for any user
+    // RECRUITER: not allowed
     @PostMapping
     public ResponseEntity<StudentResponse> createStudent(
             @RequestBody StudentRequest request,
             Authentication authentication) {
 
         boolean isAdmin = hasRole(authentication, "ROLE_ADMIN");
+        boolean isStudent = hasRole(authentication, "ROLE_STUDENT");
 
-        if (!isAdmin) {
+        if (!isAdmin && !isStudent) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only students and admins can create student profiles"
+            );
+        }
+
+        if (isStudent) {
             Long loggedInUserId = getLoggedInUserId(authentication);
 
             if (!loggedInUserId.equals(request.getUserId())) {
@@ -54,8 +66,12 @@ public class StudentController {
                 .body(convertToResponse(student));
     }
 
+    // ADMIN and RECRUITER can view all student profiles
     @GetMapping
-    public ResponseEntity<List<StudentResponse>> getAllStudents() {
+    public ResponseEntity<List<StudentResponse>> getAllStudents(
+            Authentication authentication) {
+
+        requireAdminOrRecruiter(authentication);
 
         List<StudentResponse> students = studentService.getAllStudents()
                 .stream()
@@ -65,6 +81,8 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    // ADMIN and RECRUITER can view any profile
+    // STUDENT can view only their own profile
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponse> getStudentById(
             @PathVariable Long id,
@@ -76,7 +94,7 @@ public class StudentController {
                         "Student profile not found"
                 ));
 
-        if (!hasRole(authentication, "ROLE_ADMIN")) {
+        if (hasRole(authentication, "ROLE_STUDENT")) {
             Long loggedInUserId = getLoggedInUserId(authentication);
 
             if (!loggedInUserId.equals(student.getUser().getId())) {
@@ -85,17 +103,21 @@ public class StudentController {
                         "You cannot access another student's profile"
                 );
             }
+        } else {
+            requireAdminOrRecruiter(authentication);
         }
 
         return ResponseEntity.ok(convertToResponse(student));
     }
 
+    // ADMIN and RECRUITER can search by user ID
+    // STUDENT can access only their own user ID
     @GetMapping("/user/{userId}")
     public ResponseEntity<StudentResponse> getStudentByUserId(
             @PathVariable Long userId,
             Authentication authentication) {
 
-        if (!hasRole(authentication, "ROLE_ADMIN")) {
+        if (hasRole(authentication, "ROLE_STUDENT")) {
             Long loggedInUserId = getLoggedInUserId(authentication);
 
             if (!loggedInUserId.equals(userId)) {
@@ -104,16 +126,26 @@ public class StudentController {
                         "You cannot access another user's profile"
                 );
             }
+        } else {
+            requireAdminOrRecruiter(authentication);
         }
 
         return studentService.getStudentByUserId(userId)
                 .map(this::convertToResponse)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Student profile not found"
+                ));
     }
 
+    // Only ADMIN can delete student profiles
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStudent(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        requireAdmin(authentication);
 
         studentService.deleteStudent(id);
 
@@ -134,10 +166,34 @@ public class StudentController {
             Authentication authentication,
             String role) {
 
-        return authentication.getAuthorities()
+        return authentication != null
+                && authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(role::equals);
+    }
+
+    private void requireAdminOrRecruiter(
+            Authentication authentication) {
+
+        if (!hasRole(authentication, "ROLE_ADMIN")
+                && !hasRole(authentication, "ROLE_RECRUITER")) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only admins and recruiters can access this resource"
+            );
+        }
+    }
+
+    private void requireAdmin(Authentication authentication) {
+
+        if (!hasRole(authentication, "ROLE_ADMIN")) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only admins can perform this action"
+            );
+        }
     }
 
     private StudentResponse convertToResponse(Student student) {

@@ -1,6 +1,8 @@
 package com.shiwani.placementManagementSystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -17,7 +19,7 @@ public class PlacementDrive {
     @Column(nullable = false)
     private String jobTitle;
 
-    @Column(length = 2000)
+    @Column(columnDefinition = "TEXT")
     private String jobDescription;
 
     private Double packageLpa;
@@ -31,6 +33,11 @@ public class PlacementDrive {
     private Integer maximumBacklogs;
 
     private LocalDate applicationDeadline;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recruiter_id")
+    private User recruiter;
 
     public PlacementDrive() {
     }
@@ -114,4 +121,13 @@ public class PlacementDrive {
     public void setApplicationDeadline(LocalDate applicationDeadline) {
         this.applicationDeadline = applicationDeadline;
     }
+
+    public User getRecruiter() {
+        return recruiter;
+    }
+
+    public void setRecruiter(User recruiter) {
+        this.recruiter = recruiter;
+    }
 }
+

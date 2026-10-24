@@ -22,7 +22,7 @@ public class PlacementApplication {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
-    @JsonIgnoreProperties({"user"})
+    @JsonIgnoreProperties({"user", "hibernateLazyInitializer", "handler"})
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

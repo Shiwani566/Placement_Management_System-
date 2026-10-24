@@ -1,12 +1,14 @@
 package com.shiwani.placementManagementSystem.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "placement_drives")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PlacementDrive {
 
     @Id

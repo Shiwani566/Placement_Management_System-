@@ -1,5 +1,6 @@
 package com.shiwani.placementManagementSystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class PlacementApplication {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
+    @JsonIgnoreProperties({"user"})
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

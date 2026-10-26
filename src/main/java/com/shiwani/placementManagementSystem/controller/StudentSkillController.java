@@ -5,6 +5,7 @@ import com.shiwani.placementManagementSystem.entity.StudentSkill;
 import com.shiwani.placementManagementSystem.service.StudentSkillService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,26 +16,34 @@ public class StudentSkillController {
 
     private final StudentSkillService studentSkillService;
 
-    public StudentSkillController(StudentSkillService studentSkillService) {
+    public StudentSkillController(
+            StudentSkillService studentSkillService) {
+
         this.studentSkillService = studentSkillService;
     }
 
     @PostMapping
     public ResponseEntity<StudentSkillResponse> createStudentSkill(
-            @RequestBody StudentSkill studentSkill) {
+            @RequestBody StudentSkill studentSkill,
+            Authentication authentication) {
 
         StudentSkill savedStudentSkill =
-                studentSkillService.saveStudentSkill(studentSkill);
+                studentSkillService.saveStudentSkill(
+                        studentSkill,
+                        authentication
+                );
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(convertToResponse(savedStudentSkill));
     }
 
     @GetMapping
-    public ResponseEntity<List<StudentSkillResponse>> getAllStudentSkills() {
+    public ResponseEntity<List<StudentSkillResponse>> getAllStudentSkills(
+            Authentication authentication) {
 
         List<StudentSkillResponse> responseList =
-                studentSkillService.getAllStudentSkills()
+                studentSkillService
+                        .getAllStudentSkills(authentication)
                         .stream()
                         .map(this::convertToResponse)
                         .toList();
@@ -44,9 +53,11 @@ public class StudentSkillController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentSkillResponse> getStudentSkillById(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        return studentSkillService.getStudentSkillById(id)
+        return studentSkillService
+                .getStudentSkillById(id, authentication)
                 .map(this::convertToResponse)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -54,10 +65,15 @@ public class StudentSkillController {
 
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<StudentSkillResponse>> getSkillsByStudentId(
-            @PathVariable Long studentId) {
+            @PathVariable Long studentId,
+            Authentication authentication) {
 
         List<StudentSkillResponse> responseList =
-                studentSkillService.getSkillsByStudentId(studentId)
+                studentSkillService
+                        .getSkillsByStudentId(
+                                studentId,
+                                authentication
+                        )
                         .stream()
                         .map(this::convertToResponse)
                         .toList();
@@ -67,10 +83,15 @@ public class StudentSkillController {
 
     @GetMapping("/skill/{skillId}")
     public ResponseEntity<List<StudentSkillResponse>> getStudentsBySkillId(
-            @PathVariable Long skillId) {
+            @PathVariable Long skillId,
+            Authentication authentication) {
 
         List<StudentSkillResponse> responseList =
-                studentSkillService.getStudentsBySkillId(skillId)
+                studentSkillService
+                        .getStudentsBySkillId(
+                                skillId,
+                                authentication
+                        )
                         .stream()
                         .map(this::convertToResponse)
                         .toList();
@@ -80,9 +101,11 @@ public class StudentSkillController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudentSkill(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication) {
 
-        studentSkillService.deleteStudentSkill(id);
+        studentSkillService.deleteStudentSkill(id, authentication);
+
         return ResponseEntity.noContent().build();
     }
 

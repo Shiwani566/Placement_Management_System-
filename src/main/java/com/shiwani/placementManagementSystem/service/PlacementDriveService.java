@@ -44,8 +44,45 @@ public class PlacementDriveService {
         return placementDriveRepository.save(placementDrive);
     }
 
-    public PlacementDrive savePlacementDrive(PlacementDrive placementDrive) {
+    public PlacementDrive savePlacementDrive(
+            PlacementDrive placementDrive) {
+
         return placementDriveRepository.save(placementDrive);
+    }
+
+    @Transactional
+    public PlacementDrive updatePlacementDrive(
+            Long id,
+            PlacementDrive updatedDrive) {
+
+        PlacementDrive existingDrive =
+                placementDriveRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Placement drive not found"
+                        ));
+
+        existingDrive.setCompanyName(updatedDrive.getCompanyName());
+        existingDrive.setJobTitle(updatedDrive.getJobTitle());
+        existingDrive.setJobDescription(
+                updatedDrive.getJobDescription()
+        );
+        existingDrive.setPackageLpa(updatedDrive.getPackageLpa());
+        existingDrive.setMinimumCgpa(updatedDrive.getMinimumCgpa());
+        existingDrive.setEligibleBranch(
+                updatedDrive.getEligibleBranch()
+        );
+        existingDrive.setGraduationYear(
+                updatedDrive.getGraduationYear()
+        );
+        existingDrive.setMaximumBacklogs(
+                updatedDrive.getMaximumBacklogs()
+        );
+        existingDrive.setApplicationDeadline(
+                updatedDrive.getApplicationDeadline()
+        );
+
+        return placementDriveRepository.save(existingDrive);
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +91,9 @@ public class PlacementDriveService {
     }
 
     @Transactional(readOnly = true)
-    public List<PlacementDrive> getRecruiterPlacementDrives(Long recruiterId) {
+    public List<PlacementDrive> getRecruiterPlacementDrives(
+            Long recruiterId) {
+
         return placementDriveRepository.findByRecruiterId(recruiterId);
     }
 
@@ -81,6 +120,7 @@ public class PlacementDriveService {
 
     @Transactional
     public void deletePlacementDrive(Long id) {
+
         if (!placementDriveRepository.existsById(id)) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,

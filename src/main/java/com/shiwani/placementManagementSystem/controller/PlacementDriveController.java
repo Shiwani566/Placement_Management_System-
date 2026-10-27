@@ -61,11 +61,13 @@ public class PlacementDriveController {
             );
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedDrive);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(savedDrive);
     }
 
     @GetMapping
     public ResponseEntity<List<PlacementDrive>> getAllPlacementDrives() {
+
         return ResponseEntity.ok(
                 placementDriveService.getAllPlacementDrives()
         );
@@ -105,6 +107,20 @@ public class PlacementDriveController {
         return ResponseEntity.ok(placementDrive);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<PlacementDrive> updatePlacementDrive(
+            @PathVariable Long id,
+            @RequestBody PlacementDrive placementDrive) {
+
+        PlacementDrive updatedDrive =
+                placementDriveService.updatePlacementDrive(
+                        id,
+                        placementDrive
+                );
+
+        return ResponseEntity.ok(updatedDrive);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlacementDrive(
             @PathVariable Long id,
@@ -133,7 +149,9 @@ public class PlacementDriveController {
         );
     }
 
-    private User getAuthenticatedUser(Authentication authentication) {
+    private User getAuthenticatedUser(
+            Authentication authentication) {
+
         if (authentication == null) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
@@ -148,4 +166,3 @@ public class PlacementDriveController {
                 ));
     }
 }
-

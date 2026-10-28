@@ -4,6 +4,7 @@ import com.shiwani.placementManagementSystem.entity.PlacementApplication;
 import com.shiwani.placementManagementSystem.entity.User;
 import com.shiwani.placementManagementSystem.repository.UserRepository;
 import com.shiwani.placementManagementSystem.service.PlacementApplicationService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,17 +34,6 @@ public class PlacementApplicationController {
     public ResponseEntity<PlacementApplication> applyForDrive(
             @PathVariable Long driveId,
             Authentication authentication) {
-
-        // Temporary debugging logs
-        System.out.println("=== APPLY REQUEST DEBUG ===");
-        System.out.println("Authentication: " + authentication);
-
-        System.out.println(
-                "Authorities: " +
-                        (authentication == null
-                                ? "null"
-                                : authentication.getAuthorities())
-        );
 
         requireStudent(authentication);
 

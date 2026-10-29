@@ -47,7 +47,9 @@ public class UserService {
 
         String email = request.getEmail().trim().toLowerCase();
 
-        if (!email.contains("@")) {
+        if (!email.matches(
+                "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Please enter a valid email"
@@ -124,4 +126,3 @@ public class UserService {
         );
     }
 }
-

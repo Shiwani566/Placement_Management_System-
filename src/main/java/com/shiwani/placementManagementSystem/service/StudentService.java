@@ -30,6 +30,13 @@ public class StudentService {
     @Transactional
     public Student createStudentProfile(StudentRequest request) {
 
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Request body is required"
+            );
+        }
+
         if (request.getUserId() == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -41,6 +48,43 @@ public class StudentService {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Student name is required"
+            );
+        }
+
+        if (request.getBranch() == null || request.getBranch().isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Branch is required"
+            );
+        }
+
+        if (request.getGraduationYear() == null
+                || request.getGraduationYear() < 2000
+                || request.getGraduationYear() > 2100) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Graduation year must be between 2000 and 2100"
+            );
+        }
+
+        if (request.getCgpa() == null
+                || !Double.isFinite(request.getCgpa())
+                || request.getCgpa() < 0
+                || request.getCgpa() > 10) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "CGPA must be between 0 and 10"
+            );
+        }
+
+        if (request.getBacklogs() != null
+                && request.getBacklogs() < 0) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Backlogs cannot be negative"
             );
         }
 
@@ -69,13 +113,17 @@ public class StudentService {
         Student student = new Student();
         student.setUser(user);
         student.setName(request.getName().trim());
-        student.setBranch(request.getBranch());
+        student.setBranch(request.getBranch().trim());
         student.setGraduationYear(request.getGraduationYear());
         student.setCgpa(request.getCgpa());
         student.setBacklogs(
                 request.getBacklogs() == null ? 0 : request.getBacklogs()
         );
-        student.setPhone(request.getPhone());
+        student.setPhone(
+                request.getPhone() == null || request.getPhone().isBlank()
+                        ? null
+                        : request.getPhone().trim()
+        );
 
         return studentRepository.save(student);
     }
@@ -97,7 +145,6 @@ public class StudentService {
     }
 
     public Optional<Student> getStudentByEmail(String email) {
-
         return userRepository.findByEmail(email)
                 .flatMap(user ->
                         studentRepository.findByUserId(user.getId())

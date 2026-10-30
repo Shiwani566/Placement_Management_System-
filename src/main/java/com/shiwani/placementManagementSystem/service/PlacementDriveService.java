@@ -32,6 +32,8 @@ public class PlacementDriveService {
             PlacementDrive placementDrive,
             String recruiterEmail) {
 
+        validatePlacementDrive(placementDrive);
+
         User recruiter = userRepository.findByEmail(recruiterEmail)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
@@ -44,8 +46,11 @@ public class PlacementDriveService {
         return placementDriveRepository.save(placementDrive);
     }
 
+    @Transactional
     public PlacementDrive savePlacementDrive(
             PlacementDrive placementDrive) {
+
+        validatePlacementDrive(placementDrive);
 
         return placementDriveRepository.save(placementDrive);
     }
@@ -55,6 +60,8 @@ public class PlacementDriveService {
             Long id,
             PlacementDrive updatedDrive) {
 
+        validatePlacementDrive(updatedDrive);
+
         PlacementDrive existingDrive =
                 placementDriveRepository.findById(id)
                         .orElseThrow(() -> new ResponseStatusException(
@@ -62,22 +69,38 @@ public class PlacementDriveService {
                                 "Placement drive not found"
                         ));
 
-        existingDrive.setCompanyName(updatedDrive.getCompanyName());
-        existingDrive.setJobTitle(updatedDrive.getJobTitle());
+        existingDrive.setCompanyName(
+                updatedDrive.getCompanyName().trim()
+        );
+
+        existingDrive.setJobTitle(
+                updatedDrive.getJobTitle().trim()
+        );
+
         existingDrive.setJobDescription(
                 updatedDrive.getJobDescription()
         );
-        existingDrive.setPackageLpa(updatedDrive.getPackageLpa());
-        existingDrive.setMinimumCgpa(updatedDrive.getMinimumCgpa());
+
+        existingDrive.setPackageLpa(
+                updatedDrive.getPackageLpa()
+        );
+
+        existingDrive.setMinimumCgpa(
+                updatedDrive.getMinimumCgpa()
+        );
+
         existingDrive.setEligibleBranch(
                 updatedDrive.getEligibleBranch()
         );
+
         existingDrive.setGraduationYear(
                 updatedDrive.getGraduationYear()
         );
+
         existingDrive.setMaximumBacklogs(
                 updatedDrive.getMaximumBacklogs()
         );
+
         existingDrive.setApplicationDeadline(
                 updatedDrive.getApplicationDeadline()
         );
@@ -85,8 +108,46 @@ public class PlacementDriveService {
         return placementDriveRepository.save(existingDrive);
     }
 
+    private void validatePlacementDrive(
+            PlacementDrive placementDrive) {
+
+        if (placementDrive == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Placement drive details are required"
+            );
+        }
+
+        if (placementDrive.getCompanyName() == null
+                || placementDrive.getCompanyName().isBlank()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Company name is required"
+            );
+        }
+
+        if (placementDrive.getJobTitle() == null
+                || placementDrive.getJobTitle().isBlank()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Job title is required"
+            );
+        }
+
+        placementDrive.setCompanyName(
+                placementDrive.getCompanyName().trim()
+        );
+
+        placementDrive.setJobTitle(
+                placementDrive.getJobTitle().trim()
+        );
+    }
+
     @Transactional(readOnly = true)
     public List<PlacementDrive> getAllPlacementDrives() {
+
         return placementDriveRepository.findAll();
     }
 
@@ -99,6 +160,7 @@ public class PlacementDriveService {
 
     @Transactional(readOnly = true)
     public Optional<PlacementDrive> getPlacementDriveById(Long id) {
+
         return placementDriveRepository.findById(id);
     }
 

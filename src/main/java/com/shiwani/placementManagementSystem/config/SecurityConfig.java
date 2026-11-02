@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(
@@ -49,6 +50,18 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public frontend pages and static resources
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/register.html",
+                                "/favicon.ico",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/assets/**"
+                        ).permitAll()
 
                         // Authentication endpoints
                         .requestMatchers(
@@ -269,4 +282,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-

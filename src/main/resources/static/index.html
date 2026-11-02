@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    ```
     <title>PlaceMate | Login</title>
 
     <!-- Google Font -->
@@ -447,13 +445,11 @@
         }
 
     </style>
-    ```
 
 </head>
 
 <body>
 
-```
 <!-- ANIMATED BACKGROUND -->
 
 <div class="circle circle-one"></div>
@@ -622,13 +618,128 @@
     });
 
 
-    // LOGIN FORM - BACKEND INTEGRATION PENDING
+    // LOGIN FORM - BACKEND API INTEGRATION
 
-    document.getElementById("loginForm").addEventListener("submit", function (event) {
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
 
         event.preventDefault();
 
-        alert("Login will be connected to the backend in the next step.");
+        const email = document.getElementById("email").value.trim();
+        const passwordValue = password.value;
+        const rememberMe = document.getElementById("rememberMe").checked;
+
+        const loginButton = document.querySelector(".login-btn");
+
+        try {
+
+            loginButton.disabled = true;
+            loginButton.textContent = "Logging In...";
+
+            // API REQUEST
+
+            const response = await fetch("/api/auth/login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    email: email,
+                    password: passwordValue
+
+                })
+
+            });
+
+
+            // READ API RESPONSE
+
+            const responseText = await response.text();
+
+            let data = {};
+
+            try {
+                data = responseText ? JSON.parse(responseText) : {};
+            } catch (error) {
+                data = {};
+            }
+
+
+            // ERROR RESPONSE
+
+            if (!response.ok) {
+
+                alert(
+                    data.message ||
+                    data.detail ||
+                    data.error ||
+                    "Invalid email or password. Please try again."
+                );
+
+                return;
+
+            }
+
+
+            // CHECK JWT TOKEN
+
+            if (!data.token) {
+
+                alert("Login response received, but authentication token is missing.");
+
+                return;
+
+            }
+
+
+            // CLEAR OLD TOKEN
+
+            localStorage.removeItem("token");
+            sessionStorage.removeItem("token");
+
+
+            // SAVE JWT TOKEN
+
+            if (rememberMe) {
+
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userId", data.userId);
+                localStorage.setItem("userRole", data.role);
+                localStorage.setItem("userEmail", data.email);
+
+            } else {
+
+                sessionStorage.setItem("token", data.token);
+                sessionStorage.setItem("userId", data.userId);
+                sessionStorage.setItem("userRole", data.role);
+                sessionStorage.setItem("userEmail", data.email);
+
+            }
+
+
+            // LOGIN SUCCESS
+
+            alert(data.message || "Login successful!");
+
+            console.log("Logged-in User:", data.email);
+            console.log("User Role:", data.role);
+
+        } catch (error) {
+
+            alert("Unable to connect to server. Please check whether Spring Boot is running.");
+
+            console.error("Login Error:", error);
+
+        } finally {
+
+            loginButton.disabled = false;
+
+            loginButton.innerHTML = 'Login to Account <i class="bi bi-arrow-right"></i>';
+
+        }
 
     });
 
@@ -644,7 +755,6 @@
     });
 
 </script>
-```
 
 </body>
 

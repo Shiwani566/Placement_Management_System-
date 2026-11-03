@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>PlaceMate | Student Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --lime: #C6F36B;
+            --green: #183D32;
+            --dark: #102D25;
+            --white: #ffffff;
+            --background: #F4F7F3;
+            --text: #34483D;
+            --muted: #89958D;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            padding: 28px 18px;
+            background: linear-gradient(180deg, #102D25, #183D32);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 45px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            background: var(--lime);
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 21px;
+        }
+
+        .brand h2 {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .brand h2 span {
+            color: var(--lime);
+        }
+
+        .menu-title {
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            padding: 0 12px;
+            margin-bottom: 13px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            color: rgba(255,255,255,0.72);
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .sidebar-menu a i {
+            font-size: 17px;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(198,243,107,0.15);
+            color: var(--lime);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 13px;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .logout-btn i {
+            margin-right: 10px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* MAIN CONTENT */
+
+        .main-content {
+            margin-left: 250px;
+            padding: 32px;
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 24px;
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .topbar p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .profile-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-icon {
+            width: 43px;
+            height: 43px;
+            background: var(--green);
+            color: var(--lime);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 19px;
+        }
+
+        .profile-box h4 {
+            font-size: 12px;
+            color: var(--green);
+        }
+
+        .profile-box p {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* WELCOME BANNER */
+
+        .welcome-banner {
+            padding: 30px;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #183D32, #315D45);
+            color: white;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border-radius: 50%;
+            background: rgba(198,243,107,0.10);
+            right: 50px;
+            top: -75px;
+        }
+
+        .welcome-banner h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-banner h2 span {
+            color: var(--lime);
+        }
+
+        .welcome-banner p {
+            font-size: 11px;
+            color: rgba(255,255,255,0.75);
+        }
+
+        /* STATISTICS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 22px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+            border: 1px solid #E8EEE8;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .icon-green {
+            background: #E8F5DC;
+            color: #3C7446;
+        }
+
+        .icon-blue {
+            background: #E4EFF7;
+            color: #477B9B;
+        }
+
+        .icon-yellow {
+            background: #F5F3D9;
+            color: #A28A28;
+        }
+
+        .stat-card h3 {
+            font-size: 26px;
+            color: var(--green);
+        }
+
+        .stat-card p {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* COMMON SECTION */
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 24px;
+            margin-bottom: 25px;
+            border: 1px solid #E8EEE8;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .section-header h2 {
+            font-size: 16px;
+            color: var(--green);
+        }
+
+        /* PROFILE */
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: #F7F9F6;
+            border-radius: 10px;
+        }
+
+        .detail-item p {
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
+
+        .detail-item h4 {
+            font-size: 13px;
+            color: var(--green);
+            word-break: break-word;
+        }
+
+        /* CREATE PROFILE FORM */
+
+        .profile-form {
+            margin-top: 5px;
+        }
+
+        .profile-form h3 {
+            font-size: 16px;
+            color: var(--green);
+            margin-bottom: 7px;
+        }
+
+        .profile-form > p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--green);
+            margin-bottom: 7px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E1E9DF;
+            border-radius: 8px;
+            outline: none;
+            font-size: 12px;
+            background: #FAFCF9;
+        }
+
+        .form-group input:focus {
+            border-color: #8CB65B;
+            background: white;
+        }
+
+        .create-profile-btn {
+            margin-top: 22px;
+            padding: 12px 22px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .create-profile-btn:hover {
+            background: #315D45;
+        }
+
+        .create-profile-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* PLACEMENT DRIVES */
+
+        .drive-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .drive-card {
+            border: 1px solid #E8EEE8;
+            border-radius: 13px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .drive-card:hover {
+            border-color: #B8D88D;
+            transform: translateY(-3px);
+        }
+
+        .company-icon {
+            width: 43px;
+            height: 43px;
+            background: #EAF3E3;
+            color: var(--green);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-bottom: 13px;
+        }
+
+        .drive-card h3 {
+            font-size: 14px;
+            color: var(--green);
+        }
+
+        .company-name {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .drive-description {
+            font-size: 10px;
+            color: #718077;
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        .drive-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0;
+        }
+
+        .drive-info span {
+            background: #F2F6EF;
+            padding: 6px 9px;
+            border-radius: 6px;
+            font-size: 9px;
+            color: #52694D;
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 11px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .apply-btn:hover {
+            background: #315D45;
+        }
+
+        .apply-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* APPLICATION TABLE */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        th {
+            text-align: left;
+            font-size: 10px;
+            color: var(--muted);
+            padding: 13px;
+            background: #F7F9F6;
+        }
+
+        td {
+            padding: 15px 13px;
+            border-bottom: 1px solid #EEF1ED;
+            font-size: 11px;
+            color: #526157;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .status-applied {
+            background: #E4EFF7;
+            color: #477B9B;
+        }
+
+        .status-shortlisted {
+            background: #E8F5DC;
+            color: #3C7446;
+        }
+
+        .status-rejected {
+            background: #FCE8E8;
+            color: #B54C4C;
+        }
+
+        .status-default {
+            background: #F1F1F1;
+            color: #666;
+        }
+
+        /* MESSAGES */
+
+        .message {
+            text-align: center;
+            padding: 25px 10px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .error-message {
+            color: #B54C4C;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 1050px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .drive-list {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                width: 65px;
+                padding: 20px 8px;
+            }
+
+            .brand {
+                justify-content: center;
+                padding: 0;
+            }
+
+            .brand h2,
+            .menu-title,
+            .sidebar-menu a span,
+            .logout-btn span {
+                display: none;
+            }
+
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 13px 5px;
+            }
+
+            .logout-btn {
+                text-align: center;
+            }
+
+            .logout-btn i {
+                margin: 0;
+            }
+
+            .main-content {
+                margin-left: 65px;
+                padding: 20px 14px;
+            }
+
+            .topbar h1 {
+                font-size: 19px;
+            }
+
+            .profile-box h4,
+            .profile-box p {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .profile-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-banner {
+                padding: 23px 18px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 18px;
+            }
+
+            .section {
+                padding: 17px;
+            }
+
+        }
+
+        @media(max-width: 400px) {
+
+            .profile-details {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+    ```
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+
+        <h2>Place<span>Mate</span></h2>
+
+    </div>
+
+    <p class="menu-title">MAIN MENU</p>
+
+    <nav class="sidebar-menu">
+
+        <a href="#dashboard" class="active">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="#profile">
+            <i class="bi bi-person"></i>
+            <span>My Profile</span>
+        </a>
+
+        <a href="#drives">
+            <i class="bi bi-briefcase"></i>
+            <span>Placement Drives</span>
+        </a>
+
+        <a href="#applications">
+            <i class="bi bi-file-earmark-text"></i>
+            <span>My Applications</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <button class="logout-btn" id="logoutBtn">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Logout</span>
+        </button>
+
+    </div>
+
+
+</aside>
+
+<!-- MAIN CONTENT -->
+
+<main class="main-content" id="dashboard">
+
+
+    <!-- TOPBAR -->
+
+    <header class="topbar">
+
+        <div>
+            <h1>Student Dashboard</h1>
+            <p>Manage your placement journey from here.</p>
+        </div>
+
+        <div class="profile-box">
+
+            <div class="profile-icon">
+                <i class="bi bi-person-fill"></i>
+            </div>
+
+            <div>
+                <h4 id="topStudentName">Loading...</h4>
+                <p>Student</p>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- WELCOME -->
+
+    <section class="welcome-banner">
+
+        <h2>Welcome Back, <span id="welcomeName">Student!</span></h2>
+
+        <p>
+            Explore placement opportunities and track your applications.
+        </p>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-green">
+                <i class="bi bi-briefcase"></i>
+            </div>
+
+            <h3 id="totalDrives">0</h3>
+
+            <p>Available Placement Drives</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-blue">
+                <i class="bi bi-file-earmark-check"></i>
+            </div>
+
+            <h3 id="totalApplications">0</h3>
+
+            <p>Total Applications</p>
+
+        </div>
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-yellow">
+                <i class="bi bi-star"></i>
+            </div>
+
+            <h3 id="shortlistedApplications">0</h3>
+
+            <p>Shortlisted Applications</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- STUDENT PROFILE -->
+
+    <section class="section" id="profile">
+
+        <div class="section-header">
+            <h2>My Profile</h2>
+        </div>
+
+        <div class="profile-details" id="profileDetails">
+
+            <div class="message">
+                Loading student profile...
+            </div>
+
+        </div>
+
+        <div id="profileFormContainer"></div>
+
+    </section>
+
+
+    <!-- PLACEMENT DRIVES -->
+
+    <section class="section" id="drives">
+
+        <div class="section-header">
+            <h2>Available Placement Drives</h2>
+        </div>
+
+        <div class="drive-list" id="driveList">
+
+            <div class="message">
+                Loading placement drives...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- APPLICATIONS -->
+
+    <section class="section" id="applications">
+
+        <div class="section-header">
+            <h2>My Applications</h2>
+        </div>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+                    <th>Company</th>
+                    <th>Job Position</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
+                </tr>
+
+                </thead>
+
+                <tbody id="applicationList">
+
+                <tr>
+                    <td colspan="4" class="message">
+                        Loading applications...
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+    // AUTHENTICATION DETAILS
+
+    const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
+
+    const userId =
+        localStorage.getItem("userId") ||
+        sessionStorage.getItem("userId");
+
+    const userRole =
+        localStorage.getItem("userRole") ||
+        sessionStorage.getItem("userRole");
+
+
+    // PROFILE STATE
+
+    let studentProfileExists = false;
+
+
+    // CHECK LOGIN
+
+    if (!token || !userId) {
+
+        window.location.replace("index.html");
+
+    } else if (
+        userRole !== "STUDENT" &&
+        userRole !== "ROLE_STUDENT"
+    ) {
+
+        alert("This dashboard is only available for students.");
+
+        window.location.replace("index.html");
+
+    }
+
+
+    // API HELPER
+
+    async function apiRequest(url, options = {}) {
+
+        const response = await fetch(url, {
+
+            ...options,
+
+            headers: {
+
+                "Authorization": "Bearer " + token,
+
+                ...(options.body ? {
+                    "Content-Type": "application/json"
+                } : {}),
+
+                ...(options.headers || {})
+
+            }
+
+        });
+
+        const responseText = await response.text();
+
+        let data = {};
+
+        try {
+
+            data = responseText ? JSON.parse(responseText) : {};
+
+        } catch (error) {
+
+            data = {};
+
+        }
+
+        if (!response.ok) {
+
+            const errorMessage =
+                data.message ||
+                data.detail ||
+                data.error ||
+                "Request failed with status " + response.status;
+
+            throw new Error(errorMessage);
+
+        }
+
+        return data;
+
+    }
+
+
+    // HTML ESCAPE
+
+    function escapeHTML(value) {
+
+        return String(value ?? "N/A")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    // DATE FORMAT
+
+    function formatDate(value) {
+
+        if (!value) return "N/A";
+
+        const date = new Date(value);
+
+        if (isNaN(date.getTime())) return value;
+
+        return date.toLocaleDateString("en-IN");
+
+    }
+
+
+    // PROFILE API
+
+    async function loadStudentProfile() {
+
+        try {
+
+            const student = await apiRequest(
+                "/api/students/user/" + encodeURIComponent(userId)
+            );
+
+            studentProfileExists = true;
+
+            document.getElementById("welcomeName").textContent =
+                (student.name || "Student") + "!";
+
+            document.getElementById("topStudentName").textContent =
+                student.name || "Student";
+
+            const profileFields = [
+
+                ["Student ID", student.id],
+                ["User ID", student.userId],
+                ["Name", student.name],
+                ["Branch", student.branch],
+                ["Graduation Year", student.graduationYear],
+                ["CGPA", student.cgpa],
+                ["Backlogs", student.backlogs],
+                ["Phone", student.phone]
+
+            ];
+
+            document.getElementById("profileDetails").innerHTML =
+
+                profileFields.map(field => `
+
+                    <div class="detail-item">
+
+                        <p>${escapeHTML(field[0])}</p>
+
+                        <h4>${escapeHTML(field[1])}</h4>
+
+                    </div>
+
+                `).join("");
+
+            document.getElementById("profileFormContainer").innerHTML = "";
+
+            return true;
+
+        } catch (error) {
+
+            console.error("Student Profile Error:", error);
+
+            studentProfileExists = false;
+
+            document.getElementById("welcomeName").textContent =
+                "Student!";
+
+            document.getElementById("topStudentName").textContent =
+                "Student";
+
+            document.getElementById("profileDetails").innerHTML = "";
+
+            if (
+                error.message.toLowerCase().includes("student profile not found")
+            ) {
+
+                renderProfileForm();
+
+            } else {
+
+                document.getElementById("profileFormContainer").innerHTML = `
+
+                    <div class="message error-message">
+                        Unable to load student profile: ${escapeHTML(error.message)}
+                    </div>
+
+                `;
+
+            }
+
+            return false;
+
+        }
+
+    }
+
+
+    // CREATE PROFILE FORM
+
+    function renderProfileForm() {
+
+        const formContainer =
+            document.getElementById("profileFormContainer");
+
+        formContainer.innerHTML = `
+
+            <div class="profile-form">
+
+                <h3>Complete Your Student Profile</h3>
+
+                <p>
+                    Please enter your details to get started with PlaceMate.
+                </p>
+
+                <form id="createProfileForm">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="studentName">Full Name</label>
+
+                            <input
+                                type="text"
+                                id="studentName"
+                                placeholder="Enter your full name"
+                                maxlength="100"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="studentBranch">Branch</label>
+
+                            <input
+                                type="text"
+                                id="studentBranch"
+                                placeholder="Example: CSE"
+                                maxlength="100"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="graduationYear">Graduation Year</label>
+
+                            <input
+                                type="number"
+                                id="graduationYear"
+                                placeholder="Example: 2027"
+                                min="2000"
+                                max="2100"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="studentCgpa">CGPA</label>
+
+                            <input
+                                type="number"
+                                id="studentCgpa"
+                                placeholder="Example: 7.29"
+                                min="0"
+                                max="10"
+                                step="0.01"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="studentBacklogs">Backlogs</label>
+
+                            <input
+                                type="number"
+                                id="studentBacklogs"
+                                placeholder="Enter backlogs"
+                                min="0"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="studentPhone">Phone Number</label>
+
+                            <input
+                                type="tel"
+                                id="studentPhone"
+                                placeholder="Enter phone number"
+                                maxlength="15"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="create-profile-btn"
+                        id="createProfileBtn">
+
+                        Create Student Profile
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        `;
+
+
+        document.getElementById("createProfileForm").addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const button =
+                    document.getElementById("createProfileBtn");
+
+                const profileData = {
+
+                    userId: Number(userId),
+
+                    name: document.getElementById("studentName").value.trim(),
+
+                    branch: document.getElementById("studentBranch").value.trim(),
+
+                    graduationYear: Number(
+                        document.getElementById("graduationYear").value
+                    ),
+
+                    cgpa: Number(
+                        document.getElementById("studentCgpa").value
+                    ),
+
+                    backlogs: Number(
+                        document.getElementById("studentBacklogs").value
+                    ),
+
+                    phone: document.getElementById("studentPhone").value.trim()
+
+                };
+
+
+                // FRONTEND VALIDATION
+
+                if (
+                    !profileData.name ||
+                    !profileData.branch ||
+                    !profileData.phone ||
+                    !Number.isInteger(profileData.graduationYear) ||
+                    profileData.graduationYear < 2000 ||
+                    profileData.graduationYear > 2100 ||
+                    !Number.isFinite(profileData.cgpa) ||
+                    profileData.cgpa < 0 ||
+                    profileData.cgpa > 10 ||
+                    !Number.isInteger(profileData.backlogs) ||
+                    profileData.backlogs < 0
+                ) {
+
+                    alert("Please enter valid profile details.");
+
+                    return;
+
+                }
+
+
+                button.disabled = true;
+
+                button.textContent = "Creating Profile...";
+
+
+                try {
+
+                    await apiRequest(
+                        "/api/students",
+                        {
+                            method: "POST",
+                            body: JSON.stringify(profileData)
+                        }
+                    );
+
+
+                    alert("Student profile created successfully!");
+
+
+                    // RELOAD PROFILE
+
+                    const profileLoaded = await loadStudentProfile();
+
+
+                    if (profileLoaded) {
+
+                        await loadApplications();
+
+                        renderPlacementDrives();
+
+                    }
+
+                } catch (error) {
+
+                    alert("Profile Creation Failed: " + error.message);
+
+                    console.error("Create Profile Error:", error);
+
+                    button.disabled = false;
+
+                    button.textContent = "Create Student Profile";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // PLACEMENT DRIVES API
+
+    let placementDrives = [];
+
+    let appliedDriveIds = new Set();
+
+
+    async function loadPlacementDrives() {
+
+        try {
+
+            const drives = await apiRequest(
+                "/api/placement-drives"
+            );
+
+            placementDrives = Array.isArray(drives) ? drives : [];
+
+            document.getElementById("totalDrives").textContent =
+                placementDrives.length;
+
+            renderPlacementDrives();
+
+        } catch (error) {
+
+            document.getElementById("driveList").innerHTML = `
+
+                <div class="message error-message">
+                    ${escapeHTML(error.message)}
+                </div>
+
+            `;
+
+            console.error("Placement Drives Error:", error);
+
+        }
+
+    }
+
+
+    // RENDER DRIVES
+
+    function renderPlacementDrives() {
+
+        const driveList = document.getElementById("driveList");
+
+        if (placementDrives.length === 0) {
+
+            driveList.innerHTML = `
+
+                <div class="message">
+                    No placement drives available currently.
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+        driveList.innerHTML = placementDrives.map(drive => {
+
+            const alreadyApplied =
+                appliedDriveIds.has(String(drive.id));
+
+            const profileIncomplete = !studentProfileExists;
+
+            const buttonDisabled =
+                alreadyApplied || profileIncomplete;
+
+            let buttonText = "Apply Now";
+
+            if (alreadyApplied) {
+
+                buttonText = "Already Applied";
+
+            } else if (profileIncomplete) {
+
+                buttonText = "Complete Profile First";
+
+            }
+
+            return `
+
+                <div class="drive-card">
+
+                    <div class="company-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <h3>
+                        ${escapeHTML(drive.jobTitle)}
+                    </h3>
+
+                    <p class="company-name">
+                        ${escapeHTML(drive.companyName)}
+                    </p>
+
+                    <p class="drive-description">
+                        ${escapeHTML(drive.jobDescription || "No job description available.")}
+                    </p>
+
+                    <div class="drive-info">
+
+                        <span>
+                            <i class="bi bi-currency-rupee"></i>
+                            ${escapeHTML(drive.packageLpa ?? "N/A")} LPA
+                        </span>
+
+                        <span>
+                            Min CGPA: ${escapeHTML(drive.minimumCgpa ?? "N/A")}
+                        </span>
+
+                        <span>
+                            Branch: ${escapeHTML(drive.eligibleBranch ?? "N/A")}
+                        </span>
+
+                        <span>
+                            Year: ${escapeHTML(drive.graduationYear ?? "N/A")}
+                        </span>
+
+                        <span>
+                            Deadline: ${escapeHTML(formatDate(drive.applicationDeadline))}
+                        </span>
+
+                    </div>
+
+                    <button
+                        class="apply-btn"
+                        data-drive-id="${escapeHTML(drive.id)}"
+                        ${buttonDisabled ? "disabled" : ""}>
+
+                        ${buttonText}
+
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+    }
+
+
+    // APPLICATION API
+
+    let myApplications = [];
+
+
+    async function loadApplications() {
+
+        if (!studentProfileExists) {
+
+            document.getElementById("totalApplications").textContent = "0";
+
+            document.getElementById("shortlistedApplications").textContent = "0";
+
+            document.getElementById("applicationList").innerHTML = `
+
+                <tr>
+                    <td colspan="4" class="message">
+                        Complete your student profile to view applications.
+                    </td>
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        try {
+
+            const applications = await apiRequest(
+                "/api/placement-applications/my-applications"
+            );
+
+            myApplications = Array.isArray(applications)
+                ? applications
+                : [];
+
+            document.getElementById("totalApplications").textContent =
+                myApplications.length;
+
+            const shortlistedCount = myApplications.filter(
+
+                application =>
+                    String(application.status).toUpperCase() === "SHORTLISTED"
+
+            ).length;
+
+            document.getElementById("shortlistedApplications").textContent =
+                shortlistedCount;
+
+
+            // GET ALREADY APPLIED DRIVE IDS
+
+            appliedDriveIds = new Set(
+
+                myApplications
+                    .filter(application => application.placementDrive)
+                    .map(application =>
+                        String(application.placementDrive.id)
+                    )
+
+            );
+
+
+            renderApplications();
+
+            renderPlacementDrives();
+
+        } catch (error) {
+
+            document.getElementById("applicationList").innerHTML = `
+
+                <tr>
+                    <td colspan="4" class="message error-message">
+                        ${escapeHTML(error.message)}
+                    </td>
+                </tr>
+
+            `;
+
+            console.error("Applications Error:", error);
+
+        }
+
+    }
+
+
+    // RENDER APPLICATIONS
+
+    function renderApplications() {
+
+        const applicationList =
+            document.getElementById("applicationList");
+
+        if (myApplications.length === 0) {
+
+            applicationList.innerHTML = `
+
+                <tr>
+                    <td colspan="4" class="message">
+                        You have not applied for any placement drive yet.
+                    </td>
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+        applicationList.innerHTML = myApplications.map(application => {
+
+            const drive = application.placementDrive;
+
+            const companyName = drive
+                ? drive.companyName
+                : "N/A";
+
+            const jobTitle = drive
+                ? drive.jobTitle
+                : "N/A";
+
+            const status = String(
+                application.status || "UNKNOWN"
+            ).toUpperCase();
+
+            let statusClass = "status-default";
+
+            if (status === "APPLIED") {
+                statusClass = "status-applied";
+            }
+
+            if (status === "SHORTLISTED") {
+                statusClass = "status-shortlisted";
+            }
+
+            if (status === "REJECTED") {
+                statusClass = "status-rejected";
+            }
+
+            return `
+
+                <tr>
+
+                    <td>${escapeHTML(companyName)}</td>
+
+                    <td>${escapeHTML(jobTitle)}</td>
+
+                    <td>${escapeHTML(formatDate(application.appliedAt))}</td>
+
+                    <td>
+                        <span class="status ${statusClass}">
+                            ${escapeHTML(status)}
+                        </span>
+                    </td>
+
+                </tr>
+
+            `;
+
+        }).join("");
+
+    }
+
+
+    // APPLY FOR DRIVE
+
+    document.getElementById("driveList").addEventListener(
+        "click",
+        async function(event) {
+
+            const button = event.target.closest(".apply-btn");
+
+            if (!button || button.disabled) return;
+
+            if (!studentProfileExists) {
+
+                alert("Please complete your student profile first.");
+
+                document.getElementById("profile").scrollIntoView({
+                    behavior: "smooth"
+                });
+
+                return;
+
+            }
+
+            const driveId = button.dataset.driveId;
+
+            const confirmed = confirm(
+                "Are you sure you want to apply for this placement drive?"
+            );
+
+            if (!confirmed) return;
+
+            button.disabled = true;
+
+            button.textContent = "Applying...";
+
+            try {
+
+                await apiRequest(
+                    "/api/placement-applications/apply/" +
+                    encodeURIComponent(driveId),
+                    {
+                        method: "POST"
+                    }
+                );
+
+                alert("Application submitted successfully!");
+
+                await loadApplications();
+
+            } catch (error) {
+
+                alert(error.message);
+
+                console.error("Apply Error:", error);
+
+            } finally {
+
+                renderPlacementDrives();
+
+            }
+
+        }
+    );
+
+
+    // LOGOUT
+
+    document.getElementById("logoutBtn").addEventListener(
+        "click",
+        function() {
+
+            const confirmed = confirm(
+                "Are you sure you want to logout?"
+            );
+
+            if (!confirmed) return;
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userEmail");
+
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("userId");
+            sessionStorage.removeItem("userRole");
+            sessionStorage.removeItem("userEmail");
+
+            window.location.replace("index.html");
+
+        }
+    );
+
+
+    // ACTIVE SIDEBAR LINK
+
+    document.querySelectorAll(".sidebar-menu a").forEach(link => {
+
+        link.addEventListener("click", function() {
+
+            document.querySelectorAll(".sidebar-menu a").forEach(item => {
+
+                item.classList.remove("active");
+
+            });
+
+            this.classList.add("active");
+
+        });
+
+    });
+
+
+    // INITIALIZE DASHBOARD
+
+    async function initializeDashboard() {
+
+        if (
+            !token ||
+            !userId ||
+            (userRole !== "STUDENT" && userRole !== "ROLE_STUDENT")
+        ) {
+
+            return;
+
+        }
+
+
+        // PROFILE AND DRIVES LOAD FIRST
+
+        const results = await Promise.all([
+
+            loadStudentProfile(),
+
+            loadPlacementDrives()
+
+        ]);
+
+
+        const profileLoaded = results[0];
+
+
+        // APPLICATIONS LOAD ONLY IF PROFILE EXISTS
+
+        if (profileLoaded) {
+
+            await loadApplications();
+
+        } else {
+
+            await loadApplications();
+
+        }
+
+    }
+
+
+    initializeDashboard();
+
+</script>
+
+</body>
+
+</html>

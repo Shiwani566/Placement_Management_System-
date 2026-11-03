@@ -724,6 +724,9 @@
 
             alert(data.message || "Login successful!");
 
+if (data.role === "STUDENT" || data.role === "ROLE_STUDENT") {
+    window.location.href = "student-dashboard.html";
+}
             console.log("Logged-in User:", data.email);
             console.log("User Role:", data.role);
 

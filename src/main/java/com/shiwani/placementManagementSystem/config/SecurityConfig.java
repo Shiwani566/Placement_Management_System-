@@ -56,6 +56,7 @@ public class SecurityConfig {
                                 "/",
                                 "/index.html",
                                 "/register.html",
+                                "/student-dashboard.html",
                                 "/favicon.ico",
                                 "/css/**",
                                 "/js/**",

@@ -7,11 +7,11 @@
 
     <title>PlaceMate | Login</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
 
@@ -34,6 +34,7 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+
             background: linear-gradient(
                 135deg,
                 #102D25,
@@ -46,10 +47,7 @@
             animation: backgroundMove 12s ease infinite;
         }
 
-        /* BACKGROUND ANIMATION */
-
         @keyframes backgroundMove {
-
             0% {
                 background-position: 0% 50%;
             }
@@ -61,10 +59,7 @@
             100% {
                 background-position: 0% 50%;
             }
-
         }
-
-        /* FLOATING CIRCLES */
 
         .circle {
             position: absolute;
@@ -109,7 +104,6 @@
         }
 
         @keyframes float {
-
             0%, 100% {
                 transform: translateY(0) translateX(0);
             }
@@ -117,10 +111,7 @@
             50% {
                 transform: translateY(-25px) translateX(15px);
             }
-
         }
-
-        /* MAIN CONTAINER */
 
         .container {
             position: relative;
@@ -129,8 +120,6 @@
             max-width: 430px;
             padding: 20px;
         }
-
-        /* GLASS CARD */
 
         .login-card {
             width: 100%;
@@ -145,14 +134,12 @@
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
 
-            box-shadow:
-                0 15px 45px rgba(0, 0, 0, 0.20);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.20);
 
             animation: cardAppear 0.8s ease;
         }
 
         @keyframes cardAppear {
-
             from {
                 opacity: 0;
                 transform: translateY(25px);
@@ -162,10 +149,7 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-
         }
-
-        /* BRAND */
 
         .brand {
             text-align: center;
@@ -207,8 +191,6 @@
             margin-top: 5px;
         }
 
-        /* FORM HEADING */
-
         .form-heading {
             text-align: center;
             margin-bottom: 25px;
@@ -225,8 +207,6 @@
             font-size: 11px;
             margin-top: 5px;
         }
-
-        /* INPUT BOX */
 
         .inputbox {
             position: relative;
@@ -302,8 +282,6 @@
             cursor: pointer;
         }
 
-        /* REMEMBER ME */
-
         .remember {
             display: flex;
             justify-content: space-between;
@@ -336,8 +314,6 @@
             text-decoration: underline;
         }
 
-        /* LOGIN BUTTON */
-
         .login-btn {
             width: 100%;
             height: 49px;
@@ -363,12 +339,14 @@
         .login-btn:hover {
             background: white;
             transform: translateY(-3px);
-
-            box-shadow:
-                0 8px 22px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.15);
         }
 
-        /* REGISTER */
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .register {
             text-align: center;
@@ -389,8 +367,6 @@
             text-decoration: underline;
         }
 
-        /* FOOTER */
-
         .footer {
             text-align: center;
             margin-top: 25px;
@@ -399,8 +375,6 @@
             font-size: 9px;
             letter-spacing: 1px;
         }
-
-        /* MOBILE RESPONSIVE */
 
         @media(max-width: 480px) {
 
@@ -429,7 +403,6 @@
                 width: 110px;
                 height: 110px;
             }
-
         }
 
         @media(prefers-reduced-motion: reduce) {
@@ -441,7 +414,6 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
             }
-
         }
 
     </style>
@@ -450,21 +422,14 @@
 
 <body>
 
-<!-- ANIMATED BACKGROUND -->
-
 <div class="circle circle-one"></div>
 <div class="circle circle-two"></div>
 <div class="circle circle-three"></div>
 <div class="circle circle-four"></div>
 
-
-<!-- LOGIN CONTAINER -->
-
 <div class="container">
 
     <div class="login-card">
-
-        <!-- BRAND -->
 
         <div class="brand">
 
@@ -478,9 +443,6 @@
 
         </div>
 
-
-        <!-- HEADING -->
-
         <div class="form-heading">
 
             <h1>Welcome Back!</h1>
@@ -489,12 +451,7 @@
 
         </div>
 
-
-        <!-- LOGIN FORM -->
-
         <form id="loginForm">
-
-            <!-- EMAIL -->
 
             <div class="inputbox">
 
@@ -511,9 +468,6 @@
                 <i class="bi bi-envelope"></i>
 
             </div>
-
-
-            <!-- PASSWORD -->
 
             <div class="inputbox">
 
@@ -540,9 +494,6 @@
 
             </div>
 
-
-            <!-- REMEMBER ME -->
-
             <div class="remember">
 
                 <label>
@@ -554,10 +505,7 @@
 
             </div>
 
-
-            <!-- LOGIN BUTTON -->
-
-            <button type="submit" class="login-btn">
+            <button type="submit" class="login-btn" id="loginButton">
 
                 Login to Account
                 <i class="bi bi-arrow-right"></i>
@@ -566,21 +514,15 @@
 
         </form>
 
-
-        <!-- REGISTER -->
-
         <div class="register">
 
             Don't have an account?
 
-            <a href="register.html">Create Account</a>
+            <a href="/register.html">Create Account</a>
 
         </div>
 
     </div>
-
-
-    <!-- FOOTER -->
 
     <div class="footer">
 
@@ -589,9 +531,6 @@
     </div>
 
 </div>
-
-
-<!-- JAVASCRIPT -->
 
 <script>
 
@@ -628,14 +567,12 @@
         const passwordValue = password.value;
         const rememberMe = document.getElementById("rememberMe").checked;
 
-        const loginButton = document.querySelector(".login-btn");
+        const loginButton = document.getElementById("loginButton");
 
         try {
 
             loginButton.disabled = true;
-            loginButton.textContent = "Logging In...";
-
-            // API REQUEST
+            loginButton.innerHTML = "Logging In...";
 
             const response = await fetch("/api/auth/login", {
 
@@ -654,21 +591,19 @@
 
             });
 
-
-            // READ API RESPONSE
-
             const responseText = await response.text();
 
             let data = {};
 
             try {
+
                 data = responseText ? JSON.parse(responseText) : {};
+
             } catch (error) {
+
                 data = {};
+
             }
-
-
-            // ERROR RESPONSE
 
             if (!response.ok) {
 
@@ -683,9 +618,6 @@
 
             }
 
-
-            // CHECK JWT TOKEN
-
             if (!data.token) {
 
                 alert("Login response received, but authentication token is missing.");
@@ -694,53 +626,85 @@
 
             }
 
+            const role = (data.role || "").toUpperCase();
 
-            // CLEAR OLD TOKEN
+            // Validate role before storing authentication details.
 
-            localStorage.removeItem("token");
-            sessionStorage.removeItem("token");
+            const dashboardRoutes = {
 
+                STUDENT: "/student-dashboard.html",
+                ROLE_STUDENT: "/student-dashboard.html",
 
-            // SAVE JWT TOKEN
+                RECRUITER: "/recruiter-dashboard.html",
+                ROLE_RECRUITER: "/recruiter-dashboard.html"
 
-            if (rememberMe) {
+            };
 
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("userId", data.userId);
-                localStorage.setItem("userRole", data.role);
-                localStorage.setItem("userEmail", data.email);
+            const dashboardUrl = dashboardRoutes[role];
 
-            } else {
+            if (!dashboardUrl && role !== "ADMIN" && role !== "ROLE_ADMIN") {
 
-                sessionStorage.setItem("token", data.token);
-                sessionStorage.setItem("userId", data.userId);
-                sessionStorage.setItem("userRole", data.role);
-                sessionStorage.setItem("userEmail", data.email);
+                alert("Unknown user role: " + (data.role || "Not provided"));
+
+                return;
 
             }
 
+            // Clear old authentication data.
 
-            // LOGIN SUCCESS
+            const authKeys = [
+                "token",
+                "userId",
+                "userRole",
+                "userEmail"
+            ];
+
+            authKeys.forEach(key => {
+
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+
+            });
+
+            // Save new authentication data.
+
+            const storage = rememberMe ? localStorage : sessionStorage;
+
+            storage.setItem("token", data.token);
+            storage.setItem("userId", data.userId);
+            storage.setItem("userRole", role);
+            storage.setItem("userEmail", data.email || email);
+
+            console.log("Login successful");
+            console.log("Logged-in User:", data.email);
+            console.log("User Role:", role);
+
+            // Role-based dashboard redirection.
+
+            if (role === "ADMIN" || role === "ROLE_ADMIN") {
+
+                alert("Admin login successful. Admin dashboard is not available yet.");
+
+                return;
+
+            }
 
             alert(data.message || "Login successful!");
 
-if (data.role === "STUDENT" || data.role === "ROLE_STUDENT") {
-    window.location.href = "student-dashboard.html";
-}
-            console.log("Logged-in User:", data.email);
-            console.log("User Role:", data.role);
+            window.location.replace(dashboardUrl);
 
         } catch (error) {
 
-            alert("Unable to connect to server. Please check whether Spring Boot is running.");
-
             console.error("Login Error:", error);
+
+            alert("Unable to connect to server. Please check whether Spring Boot is running.");
 
         } finally {
 
             loginButton.disabled = false;
 
-            loginButton.innerHTML = 'Login to Account <i class="bi bi-arrow-right"></i>';
+            loginButton.innerHTML =
+                'Login to Account <i class="bi bi-arrow-right"></i>';
 
         }
 

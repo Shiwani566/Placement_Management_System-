@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlaceMate | Recruiter Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --green: #183d32;
+            --dark: #102d25;
+            --lime: #c6f36b;
+            --light: #f5f8f3;
+            --text: #233c32;
+            --muted: #829087;
+            --white: #ffffff;
+            --border: #e7eee8;
+            --shadow: 0 10px 35px rgba(24, 61, 50, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f8f3;
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 255px;
+            background: linear-gradient(180deg, #183d32, #102d25);
+            color: white;
+            padding: 28px 18px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 5px 12px 35px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--lime);
+            color: var(--green);
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .brand h2 {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand span {
+            color: var(--lime);
+        }
+
+        .menu-label {
+            font-size: 10px;
+            color: #a7b9af;
+            letter-spacing: 2px;
+            padding: 0 13px;
+            margin-bottom: 14px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: #d0ddd5;
+            text-decoration: none;
+            padding: 13px 14px;
+            border-radius: 12px;
+            margin-bottom: 7px;
+            font-size: 13px;
+            transition: .25s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-link i {
+            font-size: 18px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(198, 243, 107, .15);
+            color: var(--lime);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .recruiter-mini {
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--lime);
+            color: var(--green);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .recruiter-mini h4 {
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recruiter-mini p {
+            font-size: 10px;
+            color: #a9bcb1;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 30px 38px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            gap: 15px;
+        }
+
+        .topbar h1 {
+            font-size: 25px;
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-badge {
+            width: 43px;
+            height: 43px;
+            background: #e6f2d4;
+            color: var(--green);
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+        }
+
+        .logout-btn {
+            border: 1px solid #e5eae5;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: #b34c4c;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: #fff1f1;
+        }
+
+        /* WELCOME */
+
+        .welcome {
+            background: linear-gradient(110deg, #183d32, #285b45);
+            color: white;
+            padding: 29px 32px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 12px 30px rgba(24,61,50,.13);
+        }
+
+        .welcome::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border: 35px solid rgba(198,243,107,.10);
+            border-radius: 50%;
+            right: 50px;
+            top: -115px;
+        }
+
+        .welcome h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            font-size: 12px;
+            color: #d2e1d6;
+            max-width: 530px;
+            line-height: 1.8;
+        }
+
+        .welcome-tag {
+            display: inline-block;
+            margin-top: 16px;
+            background: rgba(198,243,107,.17);
+            color: var(--lime);
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 10px;
+            letter-spacing: .5px;
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 22px;
+            border-radius: 17px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stat-card p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card h2 {
+            font-size: 27px;
+            color: var(--green);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 21px;
+        }
+
+        .icon-green {
+            background: #e9f4dc;
+            color: #557c36;
+        }
+
+        .icon-blue {
+            background: #e8f1fc;
+            color: #4979b6;
+        }
+
+        .icon-orange {
+            background: #fff1df;
+            color: #c38435;
+        }
+
+        /* SECTION */
+
+        .section {
+            background: white;
+            border-radius: 18px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            scroll-margin-top: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .section-header h2 {
+            font-size: 17px;
+            color: var(--green);
+        }
+
+        .section-header p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .primary-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 11px 17px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .primary-btn:hover {
+            background: #285b45;
+            transform: translateY(-1px);
+        }
+
+        .primary-btn i {
+            margin-right: 5px;
+        }
+
+        /* TABLE */
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            text-align: left;
+            color: #829087;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 13px 12px;
+            background: #f8faf7;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eef2ed;
+            font-size: 11px;
+            color: #42554a;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fbfdf9;
+        }
+
+        .company-name {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            width: 31px;
+            height: 31px;
+            border: none;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+        }
+
+        .edit-btn {
+            background: #edf4e5;
+            color: #547b38;
+        }
+
+        .delete-btn {
+            background: #fff0f0;
+            color: #c15c5c;
+        }
+
+        .view-btn {
+            background: #edf3fc;
+            color: #4b78b2;
+        }
+
+        .action-btn:hover {
+            filter: brightness(.95);
+        }
+
+        .status {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #e9f5df;
+            color: #527b35;
+        }
+
+        .status-expired {
+            background: #fff0ed;
+            color: #c05d4d;
+        }
+
+        /* FORM */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #52675b;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid #e1e9e1;
+            background: #fbfcfa;
+            padding: 12px 13px;
+            border-radius: 9px;
+            outline: none;
+            color: var(--text);
+            font-size: 11px;
+            transition: .2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #8bb65c;
+            box-shadow: 0 0 0 3px rgba(139,182,92,.10);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .secondary-btn {
+            background: #edf1ed;
+            color: #52675b;
+            border: none;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* EMPTY / LOADING */
+
+        .empty-state {
+            text-align: center;
+            padding: 38px 15px;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 35px;
+            color: #a5bd91;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .empty-state h3 {
+            font-size: 14px;
+            color: var(--green);
+            margin-bottom: 5px;
+        }
+
+        .empty-state p {
+            font-size: 11px;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            top: 22px;
+            right: 22px;
+            background: #183d32;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+            z-index: 1000;
+            display: none;
+            max-width: 350px;
+        }
+
+        .toast.error {
+            background: #a84242;
+        }
+
+        /* MOBILE */
+
+        .menu-toggle {
+            display: none;
+            border: none;
+            background: white;
+            color: var(--green);
+            font-size: 22px;
+        }
+
+        @media(max-width: 1000px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 25px;
+            }
+        }
+
+        @media(max-width: 750px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 15px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 17px;
+            }
+
+            .welcome {
+                padding: 23px;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media(max-width: 450px) {
+            .topbar h1 {
+                font-size: 19px;
+            }
+
+            .logout-btn {
+                padding: 9px;
+                font-size: 10px;
+            }
+
+            .welcome h2 {
+                font-size: 18px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h2>Place<span>Mate</span></h2>
+        </div>
+
+        <p class="menu-label">RECRUITER MENU</p>
+
+        <a href="#overview" class="nav-link active">
+            <i class="bi bi-grid-1x2-fill"></i>
+            Dashboard
+        </a>
+
+        <a href="#drives" class="nav-link">
+            <i class="bi bi-briefcase-fill"></i>
+            My Placement Drives
+        </a>
+
+        <a href="#create-drive" class="nav-link">
+            <i class="bi bi-plus-circle-fill"></i>
+            Create Placement Drive
+        </a>
+
+        <a href="#applicants" class="nav-link">
+            <i class="bi bi-people-fill"></i>
+            Applicants
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <div class="recruiter-mini">
+                <div class="avatar" id="sidebarAvatar">R</div>
+                <div>
+                    <h4 id="sidebarName">Recruiter</h4>
+                    <p>Recruiter Account</p>
+                </div>
+            </div>
+
+            <button class="nav-link" onclick="logout()">
+                <i class="bi bi-box-arrow-left"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+                    <h1>Recruiter Dashboard</h1>
+                    <p>Manage your placement drives and student applications.</p>
+                </div>
+            </div>
+
+            <div class="top-actions">
+                <div class="profile-badge">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+
+                <button class="logout-btn" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+                </button>
+            </div>
+
+        </header>
+
+        <!-- OVERVIEW -->
+
+        <section id="overview">
+
+            <div class="welcome">
+                <h2>Welcome, <span id="welcomeName">Recruiter</span>!</h2>
+
+                <p>
+                    Manage your placement opportunities, review student
+                    applications and find the right talent for your company.
+                </p>
+
+                <span class="welcome-tag">
+                    <i class="bi bi-shield-check"></i>
+                    RECRUITER PORTAL
+                </span>
+            </div>
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div>
+                        <p>Total Placement Drives</p>
+                        <h2 id="totalDrives">0</h2>
+                    </div>
+
+                    <div class="stat-icon icon-green">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p>Active Drives</p>
+                        <h2 id="activeDrives">0</h2>
+                    </div>
+
+                    <div class="stat-icon icon-blue">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div>
+                        <p>Total Applications</p>
+                        <h2 id="totalApplicants">0</h2>
+                    </div>
+
+                    <div class="stat-icon icon-orange">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- MY DRIVES -->
+
+        <section class="section" id="drives">
+
+            <div class="section-header">
+                <div>
+                    <h2>My Placement Drives</h2>
+                    <p>Manage placement opportunities created by you.</p>
+                </div>
+
+                <button class="primary-btn"
+                        onclick="showCreateForm()">
+                    <i class="bi bi-plus-lg"></i>
+                    Create New Drive
+                </button>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>COMPANY</th>
+                        <th>JOB TITLE</th>
+                        <th>PACKAGE</th>
+                        <th>MIN CGPA</th>
+                        <th>DEADLINE</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="drivesTable">
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <h3>Loading placement drives...</h3>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- CREATE / EDIT DRIVE -->
+
+        <section class="section" id="create-drive">
+
+            <div class="section-header">
+                <div>
+                    <h2 id="formTitle">Create Placement Drive</h2>
+                    <p id="formSubtitle">
+                        Add a new job opportunity for eligible students.
+                    </p>
+                </div>
+            </div>
+
+            <form id="driveForm">
+
+                <input type="hidden" id="driveId">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text"
+                               id="companyName"
+                               placeholder="e.g. Infosys"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title *</label>
+                        <input type="text"
+                               id="jobTitle"
+                               placeholder="e.g. Java Developer"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packageLpa">Package (LPA) *</label>
+                        <input type="number"
+                               id="packageLpa"
+                               min="0.01"
+                               step="0.01"
+                               placeholder="e.g. 6.5"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="minimumCgpa">Minimum CGPA *</label>
+                        <input type="number"
+                               id="minimumCgpa"
+                               min="0"
+                               max="10"
+                               step="0.01"
+                               placeholder="e.g. 7.0"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eligibleBranch">Eligible Branch *</label>
+                        <input type="text"
+                               id="eligibleBranch"
+                               placeholder="e.g. CSE"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="graduationYear">Graduation Year *</label>
+                        <input type="number"
+                               id="graduationYear"
+                               min="2020"
+                               max="2100"
+                               placeholder="e.g. 2027"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maximumBacklogs">Maximum Backlogs *</label>
+                        <input type="number"
+                               id="maximumBacklogs"
+                               min="0"
+                               step="1"
+                               value="0"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="applicationDeadline">Application Deadline *</label>
+                        <input type="date"
+                               id="applicationDeadline"
+                               required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="jobDescription">Job Description</label>
+                        <textarea id="jobDescription"
+                                  placeholder="Enter job responsibilities, required skills and other details..."></textarea>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="primary-btn"
+                            id="submitDriveBtn">
+                        <i class="bi bi-check-circle"></i>
+                        Create Drive
+                    </button>
+
+                    <button type="button"
+                            class="secondary-btn"
+                            id="cancelEditBtn"
+                            onclick="resetDriveForm()"
+                            style="display:none;">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- APPLICANTS -->
+
+        <section class="section" id="applicants">
+
+            <div class="section-header">
+                <div>
+                    <h2>Drive Applicants</h2>
+                    <p>Review students who applied to your placement drives.</p>
+                </div>
+
+                <select id="applicantDriveSelect"
+                        onchange="loadApplicants(this.value)"
+                        style="padding:10px;border:1px solid #e1e9e1;border-radius:9px;font-size:11px;max-width:220px;">
+                    <option value="">Select a placement drive</option>
+                </select>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>STUDENT</th>
+                        <th>EMAIL</th>
+                        <th>APPLICATION ID</th>
+                        <th>APPLIED DATE</th>
+                        <th>STATUS</th>
+                        <th>UPDATE STATUS</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="applicantsTable">
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-people"></i>
+                                <h3>Select a placement drive</h3>
+                                <p>Applicants will appear here.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    // ==========================================
+    // AUTHENTICATION
+    // ==========================================
+
+    const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
+
+    const userId =
+        localStorage.getItem("userId") ||
+        sessionStorage.getItem("userId");
+
+    const userRole =
+        localStorage.getItem("userRole") ||
+        sessionStorage.getItem("userRole");
+
+    const userEmail =
+        localStorage.getItem("userEmail") ||
+        sessionStorage.getItem("userEmail") ||
+        "Recruiter";
+
+    const normalizedRole = (userRole || "").toUpperCase();
+
+    if (!token) {
+        window.location.replace("/index.html");
+    }
+
+    if (
+        token &&
+        normalizedRole !== "RECRUITER" &&
+        normalizedRole !== "ROLE_RECRUITER"
+    ) {
+        alert("Access denied. Recruiter account required.");
+        window.location.replace("/index.html");
+    }
+
+    // ==========================================
+    // GLOBAL VARIABLES
+    // ==========================================
+
+    const API = "/api";
+
+    let drives = [];
+    let currentApplicants = [];
+    let selectedDriveId = null;
+
+    const today = new Date();
+
+    const localToday = new Date(
+        today.getTime() - today.getTimezoneOffset() * 60000
+    ).toISOString().split("T")[0];
+
+    document.getElementById("applicationDeadline").min = localToday;
+
+    // ==========================================
+    // INITIALIZE
+    // ==========================================
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const displayName = userEmail.split("@")[0] || "Recruiter";
+
+        document.getElementById("welcomeName").textContent = displayName;
+        document.getElementById("sidebarName").textContent = userEmail;
+
+        document.getElementById("sidebarAvatar").textContent =
+            displayName.charAt(0).toUpperCase();
+
+        document.getElementById("driveForm").addEventListener(
+            "submit",
+            saveDrive
+        );
+
+        loadDashboard();
+    });
+
+    // ==========================================
+    // COMMON API REQUEST
+    // ==========================================
+
+    async function apiRequest(url, options = {}) {
+
+        const response = await fetch(url, {
+            ...options,
+
+            headers: {
+                ...(options.headers || {}),
+                "Authorization": "Bearer " + token,
+                ...(options.body ? {
+                    "Content-Type": "application/json"
+                } : {})
+            }
+        });
+
+        const responseText = await response.text();
+
+        let data = null;
+
+        if (responseText) {
+            try {
+                data = JSON.parse(responseText);
+            } catch {
+                data = responseText;
+            }
+        }
+
+        if (!response.ok) {
+
+            let message = "Request failed (" + response.status + ")";
+
+            if (typeof data === "string") {
+                message = data || message;
+            } else if (data) {
+                message =
+                    data.message ||
+                    data.error ||
+                    data.detail ||
+                    message;
+            }
+
+            if (response.status === 401) {
+                logout("Session expired. Please login again.");
+            }
+
+            throw new Error(message);
+        }
+
+        return data;
+    }
+
+    // ==========================================
+    // TOAST
+    // ==========================================
+
+    function showToast(message, isError = false) {
+
+        const toast = document.getElementById("toast");
+
+        toast.textContent = message;
+        toast.className = isError ? "toast error" : "toast";
+        toast.style.display = "block";
+
+        clearTimeout(window.toastTimer);
+
+        window.toastTimer = setTimeout(() => {
+            toast.style.display = "none";
+        }, 3500);
+    }
+
+    // ==========================================
+    // LOAD DASHBOARD
+    // ==========================================
+
+    async function loadDashboard() {
+        await loadDrives();
+    }
+
+    // ==========================================
+    // LOAD MY DRIVES
+    // ==========================================
+
+    async function loadDrives() {
+
+        const table = document.getElementById("drivesTable");
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    <div class="empty-state">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <h3>Loading placement drives...</h3>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        try {
+
+            const data = await apiRequest(
+                API + "/placement-drives/my-drives"
+            );
+
+            drives = Array.isArray(data) ? data : [];
+
+            renderDrives();
+            updateDriveSelect();
+
+            await updateStats();
+
+        } catch (error) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <h3>Unable to load drives</h3>
+                            <p>${escapeHtml(error.message)}</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            showToast(error.message, true);
+        }
+    }
+
+    // ==========================================
+    // RENDER DRIVES
+    // ==========================================
+
+    function renderDrives() {
+
+        const table = document.getElementById("drivesTable");
+
+        if (!drives.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="bi bi-briefcase"></i>
+                            <h3>No placement drives yet</h3>
+                            <p>Create your first placement drive.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        table.innerHTML = drives.map(drive => {
+
+            const expired =
+                drive.applicationDeadline &&
+                drive.applicationDeadline < localToday;
+
+            const status = expired ? "Expired" : "Active";
+
+            return `
+                <tr>
+
+                    <td class="company-name">
+                        ${escapeHtml(drive.companyName)}
+                    </td>
+
+                    <td>${escapeHtml(drive.jobTitle)}</td>
+
+                    <td>${escapeHtml(drive.packageLpa ?? "N/A")} LPA</td>
+
+                    <td>${escapeHtml(drive.minimumCgpa ?? "N/A")}</td>
+
+                    <td>${formatDate(drive.applicationDeadline)}</td>
+
+                    <td>
+                        <span class="status ${
+                            expired ? "status-expired" : "status-active"
+                        }">
+                            ${status}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div class="action-group">
+
+                            <button class="action-btn view-btn"
+                                title="View Applicants"
+                                onclick="selectDriveForApplicants(${Number(drive.id)})">
+                                <i class="bi bi-people"></i>
+                            </button>
+
+                            <button class="action-btn edit-btn"
+                                title="Edit Drive"
+                                onclick="editDrive(${Number(drive.id)})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <button class="action-btn delete-btn"
+                                title="Delete Drive"
+                                onclick="deleteDrive(${Number(drive.id)})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `;
+        }).join("");
+    }
+
+    // ==========================================
+    // DASHBOARD STATISTICS
+    // ==========================================
+
+    async function updateStats() {
+
+        const activeCount = drives.filter(drive => {
+
+            return !drive.applicationDeadline ||
+                drive.applicationDeadline >= localToday;
+
+        }).length;
+
+        document.getElementById("totalDrives").textContent =
+            drives.length;
+
+        document.getElementById("activeDrives").textContent =
+            activeCount;
+
+        document.getElementById("totalApplicants").textContent = "...";
+
+        try {
+
+            const results = await Promise.all(
+                drives.map(async drive => {
+
+                    const applications = await apiRequest(
+                        API + "/placement-applications/drive/" + drive.id
+                    );
+
+                    return Array.isArray(applications)
+                        ? applications.length
+                        : 0;
+                })
+            );
+
+            const total = results.reduce(
+                (sum, count) => sum + count,
+                0
+            );
+
+            document.getElementById("totalApplicants").textContent =
+                total;
+
+        } catch (error) {
+
+            console.error("Application statistics error:", error);
+
+            document.getElementById("totalApplicants").textContent =
+                "N/A";
+        }
+    }
+
+    // ==========================================
+    // DRIVE DROPDOWN
+    // ==========================================
+
+    function updateDriveSelect() {
+
+        const select = document.getElementById("applicantDriveSelect");
+
+        const previousValue = select.value;
+
+        select.innerHTML = `
+            <option value="">Select a placement drive</option>
+        `;
+
+        drives.forEach(drive => {
+
+            const option = document.createElement("option");
+
+            option.value = drive.id;
+
+            option.textContent =
+                drive.companyName + " - " + drive.jobTitle;
+
+            select.appendChild(option);
+        });
+
+        if (drives.some(drive => String(drive.id) === previousValue)) {
+
+            select.value = previousValue;
+
+        } else {
+
+            select.value = "";
+            selectedDriveId = null;
+            showApplicantPlaceholder();
+        }
+    }
+
+    // ==========================================
+    // CREATE / UPDATE DRIVE
+    // ==========================================
+
+    async function saveDrive(event) {
+
+        event.preventDefault();
+
+        const driveId = document.getElementById("driveId").value;
+
+        const payload = {
+
+            companyName:
+                document.getElementById("companyName").value.trim(),
+
+            jobTitle:
+                document.getElementById("jobTitle").value.trim(),
+
+            jobDescription:
+                document.getElementById("jobDescription").value.trim(),
+
+            packageLpa:
+                Number(document.getElementById("packageLpa").value),
+
+            minimumCgpa:
+                Number(document.getElementById("minimumCgpa").value),
+
+            eligibleBranch:
+                document.getElementById("eligibleBranch").value.trim(),
+
+            graduationYear:
+                Number(document.getElementById("graduationYear").value),
+
+            maximumBacklogs:
+                Number(document.getElementById("maximumBacklogs").value),
+
+            applicationDeadline:
+                document.getElementById("applicationDeadline").value
+        };
+
+        if (
+            !payload.companyName ||
+            !payload.jobTitle ||
+            !payload.eligibleBranch ||
+            !payload.applicationDeadline
+        ) {
+            showToast("Please fill all required fields.", true);
+            return;
+        }
+
+        if (
+            !Number.isFinite(payload.packageLpa) ||
+            payload.packageLpa <= 0 ||
+            !Number.isFinite(payload.minimumCgpa) ||
+            payload.minimumCgpa < 0 ||
+            payload.minimumCgpa > 10 ||
+            !Number.isInteger(payload.maximumBacklogs) ||
+            payload.maximumBacklogs < 0 ||
+            !Number.isInteger(payload.graduationYear)
+        ) {
+            showToast("Please enter valid placement details.", true);
+            return;
+        }
+
+        if (
+            payload.applicationDeadline < localToday &&
+            !driveId
+        ) {
+            showToast("Application deadline cannot be in the past.", true);
+            return;
+        }
+
+        const button = document.getElementById("submitDriveBtn");
+
+        button.disabled = true;
+        button.textContent = "Please wait...";
+
+        try {
+
+            if (driveId) {
+
+                await apiRequest(
+                    API + "/placement-drives/" + driveId,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                showToast("Placement drive updated successfully!");
+
+            } else {
+
+                await apiRequest(
+                    API + "/placement-drives",
+                    {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                showToast("Placement drive created successfully!");
+            }
+
+            resetDriveForm();
+
+            await loadDrives();
+
+            document.getElementById("drives").scrollIntoView({
+                behavior: "smooth"
+            });
+
+        } catch (error) {
+
+            showToast(error.message, true);
+
+        } finally {
+
+            button.disabled = false;
+
+            button.innerHTML =
+                document.getElementById("driveId").value
+                    ? '<i class="bi bi-check-circle"></i> Update Drive'
+                    : '<i class="bi bi-check-circle"></i> Create Drive';
+        }
+    }
+
+    // ==========================================
+    // EDIT DRIVE
+    // ==========================================
+
+    function editDrive(id) {
+
+        const drive = drives.find(
+            item => Number(item.id) === Number(id)
+        );
+
+        if (!drive) {
+            showToast("Placement drive not found.", true);
+            return;
+        }
+
+        document.getElementById("driveId").value = drive.id;
+        document.getElementById("companyName").value = drive.companyName || "";
+        document.getElementById("jobTitle").value = drive.jobTitle || "";
+        document.getElementById("jobDescription").value = drive.jobDescription || "";
+        document.getElementById("packageLpa").value = drive.packageLpa ?? "";
+        document.getElementById("minimumCgpa").value = drive.minimumCgpa ?? "";
+        document.getElementById("eligibleBranch").value = drive.eligibleBranch || "";
+        document.getElementById("graduationYear").value = drive.graduationYear ?? "";
+        document.getElementById("maximumBacklogs").value = drive.maximumBacklogs ?? 0;
+        document.getElementById("applicationDeadline").value =
+            drive.applicationDeadline || "";
+
+        document.getElementById("formTitle").textContent =
+            "Edit Placement Drive";
+
+        document.getElementById("formSubtitle").textContent =
+            "Update your placement opportunity.";
+
+        document.getElementById("submitDriveBtn").innerHTML =
+            '<i class="bi bi-check-circle"></i> Update Drive';
+
+        document.getElementById("cancelEditBtn").style.display =
+            "inline-block";
+
+        document.getElementById("create-drive").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    // ==========================================
+    // RESET FORM
+    // ==========================================
+
+    function resetDriveForm() {
+
+        document.getElementById("driveForm").reset();
+
+        document.getElementById("driveId").value = "";
+
+        document.getElementById("formTitle").textContent =
+            "Create Placement Drive";
+
+        document.getElementById("formSubtitle").textContent =
+            "Add a new job opportunity for eligible students.";
+
+        document.getElementById("submitDriveBtn").innerHTML =
+            '<i class="bi bi-check-circle"></i> Create Drive';
+
+        document.getElementById("cancelEditBtn").style.display =
+            "none";
+
+        document.getElementById("applicationDeadline").min =
+            localToday;
+    }
+
+    function showCreateForm() {
+
+        resetDriveForm();
+
+        document.getElementById("create-drive").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    // ==========================================
+    // DELETE DRIVE
+    // ==========================================
+
+    async function deleteDrive(id) {
+
+        const drive = drives.find(
+            item => Number(item.id) === Number(id)
+        );
+
+        if (!drive) {
+            showToast("Placement drive not found.", true);
+            return;
+        }
+
+        const confirmed = confirm(
+            "Delete " + drive.companyName +
+            " - " + drive.jobTitle + "?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+
+            await apiRequest(
+                API + "/placement-drives/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            showToast("Placement drive deleted successfully!");
+
+            await loadDrives();
+
+        } catch (error) {
+
+            showToast(error.message, true);
+        }
+    }
+
+    // ==========================================
+    // APPLICANTS PLACEHOLDER
+    // ==========================================
+
+    function showApplicantPlaceholder() {
+
+        document.getElementById("applicantsTable").innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <i class="bi bi-people"></i>
+                        <h3>Select a placement drive</h3>
+                        <p>Applicants will appear here.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    // ==========================================
+    // SELECT DRIVE
+    // ==========================================
+
+    function selectDriveForApplicants(id) {
+
+        const select = document.getElementById("applicantDriveSelect");
+
+        select.value = String(id);
+
+        loadApplicants(id);
+
+        document.getElementById("applicants").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    // ==========================================
+    // LOAD APPLICANTS
+    // ==========================================
+
+    async function loadApplicants(driveId) {
+
+        const table = document.getElementById("applicantsTable");
+
+        if (!driveId) {
+
+            selectedDriveId = null;
+            currentApplicants = [];
+
+            showApplicantPlaceholder();
+            return;
+        }
+
+        if (!drives.some(drive => String(drive.id) === String(driveId))) {
+
+            showToast("Invalid placement drive selection.", true);
+            showApplicantPlaceholder();
+            return;
+        }
+
+        selectedDriveId = driveId;
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <h3>Loading applicants...</h3>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        try {
+
+            const data = await apiRequest(
+                API + "/placement-applications/drive/" + driveId
+            );
+
+            if (String(selectedDriveId) !== String(driveId)) return;
+
+            currentApplicants = Array.isArray(data) ? data : [];
+
+            renderApplicants();
+
+        } catch (error) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <h3>Unable to load applicants</h3>
+                            <p>${escapeHtml(error.message)}</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            showToast(error.message, true);
+        }
+    }
+
+    // ==========================================
+    // RENDER APPLICANTS
+    // ==========================================
+
+    function renderApplicants() {
+
+        const table = document.getElementById("applicantsTable");
+
+        if (!currentApplicants.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-person-x"></i>
+                            <h3>No applications yet</h3>
+                            <p>No students have applied for this drive.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        table.innerHTML = currentApplicants.map(application => {
+
+            const student = application.student || {};
+
+            const studentName = student.name || "Student";
+
+            // Student.user is intentionally hidden by backend JSON configuration.
+            const email = "Not available";
+
+            const status = (application.status || "APPLIED").toUpperCase();
+
+            const options = [
+                "APPLIED",
+                "SHORTLISTED",
+                "REJECTED",
+                "SELECTED"
+            ];
+
+            const statusOptions = options.map(option => `
+                <option value="${option}"
+                    ${status === option ? "selected" : ""}>
+                    ${option}
+                </option>
+            `).join("");
+
+            return `
+                <tr>
+
+                    <td>
+                        <strong class="company-name">
+                            ${escapeHtml(studentName)}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            ${escapeHtml(student.branch || "N/A")}
+                            · CGPA ${escapeHtml(student.cgpa ?? "N/A")}
+                        </small>
+
+                        <br>
+
+                        <small>
+                            Graduation: ${escapeHtml(student.graduationYear ?? "N/A")}
+                            · Backlogs: ${escapeHtml(student.backlogs ?? "N/A")}
+                        </small>
+
+                        <br>
+
+                        <small>
+                            Phone: ${escapeHtml(student.phone || "N/A")}
+                        </small>
+                    </td>
+
+                    <td>${email}</td>
+
+                    <td>#${escapeHtml(application.id)}</td>
+
+                    <td>${formatDateTime(application.appliedAt)}</td>
+
+                    <td>
+                        <span class="status status-active">
+                            ${escapeHtml(status)}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div style="display:flex;gap:6px;align-items:center;">
+
+                            <select
+                                id="status-${Number(application.id)}"
+                                style="padding:7px;border:1px solid #e1e9e1;border-radius:7px;font-size:9px;">
+
+                                ${statusOptions}
+
+                            </select>
+
+                            <button class="action-btn edit-btn"
+                                title="Save Status"
+                                onclick="updateStatus(${Number(application.id)})">
+
+                                <i class="bi bi-check-lg"></i>
+
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+    }
+
+    // ==========================================
+    // UPDATE APPLICATION STATUS
+    // ==========================================
+
+    async function updateStatus(applicationId) {
+
+        const select = document.getElementById(
+            "status-" + applicationId
+        );
+
+        if (!select) return;
+
+        const newStatus = select.value;
+
+        const allowedStatuses = [
+            "APPLIED",
+            "SHORTLISTED",
+            "REJECTED",
+            "SELECTED"
+        ];
+
+        if (!allowedStatuses.includes(newStatus)) {
+            showToast("Invalid application status.", true);
+            return;
+        }
+
+        try {
+
+            await apiRequest(
+                API + "/placement-applications/" +
+                applicationId + "/status",
+                {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                        status: newStatus
+                    })
+                }
+            );
+
+            showToast("Application status updated successfully!");
+
+            if (selectedDriveId) {
+                await loadApplicants(selectedDriveId);
+            }
+
+            await updateStats();
+
+        } catch (error) {
+
+            showToast(error.message, true);
+        }
+    }
+
+    // ==========================================
+    // DATE FORMAT
+    // ==========================================
+
+    function formatDate(dateValue) {
+
+        if (!dateValue) return "N/A";
+
+        const date = new Date(dateValue + "T00:00:00");
+
+        if (isNaN(date.getTime())) return "N/A";
+
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function formatDateTime(dateValue) {
+
+        if (!dateValue) return "N/A";
+
+        const date = new Date(dateValue);
+
+        if (isNaN(date.getTime())) return "N/A";
+
+        return date.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    // ==========================================
+    // HTML ESCAPE
+    // ==========================================
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value).replace(/[&<>"']/g, character => {
+
+            const entities = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            };
+
+            return entities[character];
+        });
+    }
+
+    // ==========================================
+    // SIDEBAR
+    // ==========================================
+
+    function toggleSidebar() {
+
+        document.getElementById("sidebar").classList.toggle("open");
+    }
+
+    document.querySelectorAll(".nav-link[href^='#']").forEach(link => {
+
+        link.addEventListener("click", function () {
+
+            document.querySelectorAll(".nav-link[href^='#']")
+                .forEach(item => item.classList.remove("active"));
+
+            this.classList.add("active");
+
+            document.getElementById("sidebar").classList.remove("open");
+        });
+    });
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    function logout(message) {
+
+        [
+            "token",
+            "userId",
+            "userRole",
+            "userEmail"
+        ].forEach(key => {
+
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
+
+        if (message) {
+            alert(message);
+        }
+
+        window.location.replace("/index.html");
+    }
+
+</script>
+
+</body>
+</html>
+

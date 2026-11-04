@@ -55,19 +55,35 @@ public class PlacementDriveService {
         return placementDriveRepository.save(placementDrive);
     }
 
+    // Update drive with ownership verification
     @Transactional
     public PlacementDrive updatePlacementDrive(
             Long id,
-            PlacementDrive updatedDrive) {
+            PlacementDrive updatedDrive,
+            Long recruiterId,
+            boolean isAdmin) {
 
         validatePlacementDrive(updatedDrive);
 
-        PlacementDrive existingDrive =
-                placementDriveRepository.findById(id)
-                        .orElseThrow(() -> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "Placement drive not found"
-                        ));
+        PlacementDrive existingDrive;
+
+        if (isAdmin) {
+
+            existingDrive = placementDriveRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND,
+                            "Placement drive not found"
+                    ));
+
+        } else {
+
+            existingDrive = placementDriveRepository
+                    .findByIdAndRecruiterId(id, recruiterId)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.FORBIDDEN,
+                            "You can update only your own placement drives"
+                    ));
+        }
 
         existingDrive.setCompanyName(
                 updatedDrive.getCompanyName().trim()

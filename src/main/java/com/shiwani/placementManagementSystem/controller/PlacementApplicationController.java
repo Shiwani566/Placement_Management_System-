@@ -63,32 +63,48 @@ public class PlacementApplicationController {
         );
     }
 
+    // Recruiter: own drive applications.
+    // Admin: any drive applications.
     @GetMapping("/drive/{driveId}")
     public ResponseEntity<List<PlacementApplication>> getApplicationsForDrive(
             @PathVariable Long driveId,
             Authentication authentication) {
 
-        requireAdmin(authentication);
+        User user = requireRecruiterOrAdmin(authentication);
+
+        boolean isAdmin =
+                "ADMIN".equals(user.getRole().getName());
 
         return ResponseEntity.ok(
-                applicationService.getApplicationsForDrive(driveId)
+                applicationService.getApplicationsForDrive(
+                        driveId,
+                        user.getId(),
+                        isAdmin
+                )
         );
     }
 
+    // Recruiter: own drive applications only.
+    // Admin: any application.
     @PatchMapping("/{applicationId}/status")
     public ResponseEntity<PlacementApplication> updateApplicationStatus(
             @PathVariable Long applicationId,
             @RequestBody Map<String, String> request,
             Authentication authentication) {
 
-        requireAdmin(authentication);
+        User user = requireRecruiterOrAdmin(authentication);
 
         String status = request.get("status");
+
+        boolean isAdmin =
+                "ADMIN".equals(user.getRole().getName());
 
         PlacementApplication updatedApplication =
                 applicationService.updateApplicationStatus(
                         applicationId,
-                        status
+                        status,
+                        user.getId(),
+                        isAdmin
                 );
 
         return ResponseEntity.ok(updatedApplication);
@@ -118,7 +134,8 @@ public class PlacementApplicationController {
         }
     }
 
-    private void requireAdmin(Authentication authentication) {
+    private User requireRecruiterOrAdmin(
+            Authentication authentication) {
 
         if (authentication == null
                 || !authentication.isAuthenticated()) {
@@ -129,20 +146,24 @@ public class PlacementApplicationController {
             );
         }
 
-        boolean isAdmin = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .anyMatch("ROLE_ADMIN"::equals);
+        User user = getAuthenticatedUser(authentication);
 
-        if (!isAdmin) {
+        String roleName = user.getRole().getName();
+
+        if (!"RECRUITER".equals(roleName)
+                && !"ADMIN".equals(roleName)) {
+
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
-                    "Only admins can perform this action"
+                    "Only recruiters and admins can perform this action"
             );
         }
+
+        return user;
     }
 
-    private User getAuthenticatedUser(Authentication authentication) {
+    private User getAuthenticatedUser(
+            Authentication authentication) {
 
         return userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new ResponseStatusException(

@@ -48,11 +48,14 @@ public class PlacementDriveController {
         PlacementDrive savedDrive;
 
         if ("RECRUITER".equals(roleName)) {
+
             savedDrive = placementDriveService.createPlacementDrive(
                     placementDrive,
                     user.getEmail()
             );
+
         } else {
+
             placementDrive.setId(null);
             placementDrive.setRecruiter(null);
 
@@ -107,15 +110,31 @@ public class PlacementDriveController {
         return ResponseEntity.ok(placementDrive);
     }
 
+    // Recruiter can update own drive; Admin can update any drive
     @PutMapping("/{id}")
     public ResponseEntity<PlacementDrive> updatePlacementDrive(
             @PathVariable Long id,
-            @RequestBody PlacementDrive placementDrive) {
+            @RequestBody PlacementDrive placementDrive,
+            Authentication authentication) {
+
+        User user = getAuthenticatedUser(authentication);
+        String roleName = user.getRole().getName();
+
+        if (!"RECRUITER".equals(roleName)
+                && !"ADMIN".equals(roleName)) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only recruiters and admins can update placement drives"
+            );
+        }
 
         PlacementDrive updatedDrive =
                 placementDriveService.updatePlacementDrive(
                         id,
-                        placementDrive
+                        placementDrive,
+                        user.getId(),
+                        "ADMIN".equals(roleName)
                 );
 
         return ResponseEntity.ok(updatedDrive);
@@ -130,11 +149,14 @@ public class PlacementDriveController {
         String roleName = user.getRole().getName();
 
         if ("ADMIN".equals(roleName)) {
+
             placementDriveService.deletePlacementDrive(id);
+
             return ResponseEntity.noContent().build();
         }
 
         if ("RECRUITER".equals(roleName)) {
+
             placementDriveService.deleteRecruiterPlacementDrive(
                     id,
                     user.getId()

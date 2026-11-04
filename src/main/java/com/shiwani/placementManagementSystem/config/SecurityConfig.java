@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(
@@ -57,6 +56,7 @@ public class SecurityConfig {
                                 "/index.html",
                                 "/register.html",
                                 "/student-dashboard.html",
+                                "/recruiter-dashboard.html",
                                 "/favicon.ico",
                                 "/css/**",
                                 "/js/**",
@@ -64,15 +64,21 @@ public class SecurityConfig {
                                 "/assets/**"
                         ).permitAll()
 
-                        // Authentication endpoints
+                        // Public authentication endpoints
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register"
                         ).permitAll()
 
+                        // Only ADMIN can create Recruiter accounts
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/admin/recruiters"
+                        ).hasRole("ADMIN")
+
                         .requestMatchers("/error").permitAll()
 
-                        // Placement drives: view drives
+                        // Placement drives: view
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-drives",
@@ -98,7 +104,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/api/placement-drives/**"
-                        ).hasRole("ADMIN")
+                        ).hasAnyRole(
+                                "RECRUITER",
+                                "ADMIN"
+                        )
 
                         // Placement drives: delete
                         .requestMatchers(
@@ -109,31 +118,37 @@ public class SecurityConfig {
                                 "ADMIN"
                         )
 
-                        // Placement applications: apply for a drive
+                        // Placement applications: apply
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/placement-applications/apply/**"
                         ).hasRole("STUDENT")
 
-                        // Placement applications: student's applications
+                        // Student's own applications
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-applications/my-applications"
                         ).hasRole("STUDENT")
 
-                        // Placement applications: view drive applications
+                        // Applications for a drive
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-applications/drive/**"
-                        ).hasRole("ADMIN")
+                        ).hasAnyRole(
+                                "RECRUITER",
+                                "ADMIN"
+                        )
 
-                        // Placement applications: update status
+                        // Update application status
                         .requestMatchers(
                                 HttpMethod.PATCH,
                                 "/api/placement-applications/**"
-                        ).hasRole("ADMIN")
+                        ).hasAnyRole(
+                                "RECRUITER",
+                                "ADMIN"
+                        )
 
-                        // Student APIs: list all student profiles
+                        // Student APIs: list all profiles
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/students"
@@ -167,13 +182,13 @@ public class SecurityConfig {
                                 "/api/students/**"
                         ).hasRole("ADMIN")
 
-                        // Education APIs: view all records (ADMIN only)
+                        // Education: view all
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/education"
                         ).hasRole("ADMIN")
 
-                        // Education APIs: individual/student records
+                        // Education: individual/student records
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/education/**"
@@ -182,7 +197,7 @@ public class SecurityConfig {
                                 "ADMIN"
                         )
 
-                        // Education APIs: add education
+                        // Education: add
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/education"
@@ -191,7 +206,7 @@ public class SecurityConfig {
                                 "ADMIN"
                         )
 
-                        // Education APIs: delete education
+                        // Education: delete
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/education/**"
@@ -200,7 +215,7 @@ public class SecurityConfig {
                                 "ADMIN"
                         )
 
-                        // Skills: all roles can view available skills
+                        // Skills: view
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/skills",
@@ -211,20 +226,20 @@ public class SecurityConfig {
                                 "ADMIN"
                         )
 
-                        // Skills: only ADMIN can create
+                        // Skills: create
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/skills",
                                 "/api/skills/**"
                         ).hasRole("ADMIN")
 
-                        // Skills: only ADMIN can delete
+                        // Skills: delete
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/skills/**"
                         ).hasRole("ADMIN")
 
-                        // StudentSkill: all mappings (ADMIN/RECRUITER)
+                        // StudentSkill: all mappings
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/student-skills"

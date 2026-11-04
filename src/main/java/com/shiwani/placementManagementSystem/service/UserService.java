@@ -32,7 +32,46 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+    // Student Registration
     public User registerStudent(RegisterRequest request) {
+
+        String email = validateRegistration(request);
+
+        Role studentRole = roleRepository.findByName("STUDENT")
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "STUDENT role was not found in the database"
+                ));
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(studentRole);
+
+        return userRepository.save(user);
+    }
+
+    // Admin-controlled Recruiter Registration
+    public User registerRecruiter(RegisterRequest request) {
+
+        String email = validateRegistration(request);
+
+        Role recruiterRole = roleRepository.findByName("RECRUITER")
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "RECRUITER role was not found in the database"
+                ));
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(recruiterRole);
+
+        return userRepository.save(user);
+    }
+
+    // Common Registration Validation
+    private String validateRegistration(RegisterRequest request) {
 
         if (request.getEmail() == null
                 || request.getEmail().isBlank()
@@ -70,20 +109,10 @@ public class UserService {
             );
         }
 
-        Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR,
-                        "STUDENT role was not found in the database"
-                ));
-
-        User user = new User();
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(studentRole);
-
-        return userRepository.save(user);
+        return email;
     }
 
+    // Login
     public LoginResponse login(LoginRequest request) {
 
         if (request.getEmail() == null

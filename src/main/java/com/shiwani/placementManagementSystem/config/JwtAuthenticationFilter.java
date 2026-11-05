@@ -42,13 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader =
                 request.getHeader("Authorization");
 
-        // Diagnostic log: never print the actual token
-        System.out.println(
-                "Authorization header present: "
-                        + (authorizationHeader != null
-                        && authorizationHeader.startsWith("Bearer "))
-        );
-
         if (authorizationHeader == null
                 || !authorizationHeader.startsWith("Bearer ")) {
 
@@ -59,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring(7);
 
         try {
+
             String email = jwtService.extractUsername(token);
 
             if (email != null
@@ -68,7 +62,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 User user = userRepository.findByEmail(email)
                         .orElse(null);
 
+                // Authenticate only enabled users
                 if (user != null
+                        && user.isEnabled()
                         && jwtService.isTokenValid(token, email)) {
 
                     String roleName = user.getRole().getName();
@@ -95,10 +91,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } catch (JwtException | IllegalArgumentException exception) {
+
             SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
     }
 }
-

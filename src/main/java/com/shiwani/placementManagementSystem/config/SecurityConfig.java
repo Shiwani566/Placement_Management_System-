@@ -1,16 +1,22 @@
 package com.shiwani.placementManagementSystem.config;
 
+import com.shiwani.placementManagementSystem.config.JwtAuthenticationFilter;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 public class SecurityConfig {
@@ -19,70 +25,151 @@ public class SecurityConfig {
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter) {
+
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // Password encryption
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Main security configuration
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
 
         http
+
+                // Disable CSRF for REST APIs
                 .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(
+                // Stateless JWT authentication
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
                         )
                 )
 
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(
+                // Return 401 when authentication is missing
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(
                                 new HttpStatusEntryPoint(
                                         HttpStatus.UNAUTHORIZED
                                 )
                         )
                 )
 
+                // Authorization rules
                 .authorizeHttpRequests(auth -> auth
 
-                        // Public frontend pages and static resources
+                        // ---------------------------------
+                        // PUBLIC FRONTEND PAGES
+                        // ---------------------------------
+
                         .requestMatchers(
                                 "/",
                                 "/index.html",
                                 "/register.html",
+                                "/favicon.ico",
                                 "/student-dashboard.html",
                                 "/recruiter-dashboard.html",
-                                "/favicon.ico",
+                                "/admin-dashboard.html",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
                                 "/assets/**"
                         ).permitAll()
 
-                        // Public authentication endpoints
+                        // ---------------------------------
+                        // PUBLIC AUTH APIs
+                        // ---------------------------------
+
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register"
                         ).permitAll()
 
-                        // Only ADMIN can create Recruiter accounts
+                        // ---------------------------------
+                        // ADMIN APIs
+                        // ---------------------------------
+
+                        .requestMatchers("/api/admin/**")
+                        .hasRole("ADMIN")
+
+                        // ---------------------------------
+                        // STUDENT APIs
+                        // ---------------------------------
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/students"
+                        ).hasAnyRole("ADMIN", "RECRUITER")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/students/**"
+                        ).hasAnyRole(
+                                "STUDENT",
+                                "RECRUITER",
+                                "ADMIN"
+                        )
+
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/api/admin/recruiters"
+                                "/api/students"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/students/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/students/**"
                         ).hasRole("ADMIN")
 
-                        .requestMatchers("/error").permitAll()
+                        // ---------------------------------
+                        // EDUCATION APIs
+                        // ---------------------------------
 
-                        // Placement drives: view
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/education/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/education/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/education/**"
+                        ).hasAnyRole("STUDENT", "ADMIN")
+
+                        // ---------------------------------
+                        // SKILLS APIs
+                        // ---------------------------------
+
+                        .requestMatchers(
+                                "/api/skills/**",
+                                "/api/student-skills/**"
+                        ).hasAnyRole(
+                                "STUDENT",
+                                "RECRUITER",
+                                "ADMIN"
+                        )
+
+                        // ---------------------------------
+                        // PLACEMENT DRIVE APIs
+                        // ---------------------------------
+
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-drives",
-                                "/api/placement-drives/my-drives",
                                 "/api/placement-drives/**"
                         ).hasAnyRole(
                                 "STUDENT",
@@ -90,211 +177,59 @@ public class SecurityConfig {
                                 "ADMIN"
                         )
 
-                        // Placement drives: create
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/api/placement-drives",
                                 "/api/placement-drives/**"
-                        ).hasAnyRole(
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("RECRUITER", "ADMIN")
 
-                        // Placement drives: update
                         .requestMatchers(
                                 HttpMethod.PUT,
                                 "/api/placement-drives/**"
-                        ).hasAnyRole(
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("RECRUITER", "ADMIN")
 
-                        // Placement drives: delete
                         .requestMatchers(
                                 HttpMethod.DELETE,
                                 "/api/placement-drives/**"
-                        ).hasAnyRole(
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("RECRUITER", "ADMIN")
 
-                        // Placement applications: apply
+                        // ---------------------------------
+                        // PLACEMENT APPLICATION APIs
+                        // ---------------------------------
+
                         .requestMatchers(
                                 HttpMethod.POST,
                                 "/api/placement-applications/apply/**"
                         ).hasRole("STUDENT")
 
-                        // Student's own applications
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-applications/my-applications"
                         ).hasRole("STUDENT")
 
-                        // Applications for a drive
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/api/placement-applications/drive/**"
-                        ).hasAnyRole(
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("RECRUITER", "ADMIN")
 
-                        // Update application status
                         .requestMatchers(
                                 HttpMethod.PATCH,
                                 "/api/placement-applications/**"
-                        ).hasAnyRole(
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("RECRUITER", "ADMIN")
 
-                        // Student APIs: list all profiles
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/students"
-                        ).hasAnyRole(
-                                "ADMIN",
-                                "RECRUITER"
-                        )
+                        // ---------------------------------
+                        // ALL OTHER REQUESTS
+                        // ---------------------------------
 
-                        // Student APIs: individual profiles
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/students/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "RECRUITER",
-                                "ADMIN"
-                        )
-
-                        // Student APIs: create profile
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/students"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
-
-                        // Student APIs: delete profile
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/students/**"
-                        ).hasRole("ADMIN")
-
-                        // Education: view all
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/education"
-                        ).hasRole("ADMIN")
-
-                        // Education: individual/student records
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/education/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
-
-                        // Education: add
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/education"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
-
-                        // Education: delete
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/education/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
-
-                        // Skills: view
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/skills",
-                                "/api/skills/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "RECRUITER",
-                                "ADMIN"
-                        )
-
-                        // Skills: create
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/skills",
-                                "/api/skills/**"
-                        ).hasRole("ADMIN")
-
-                        // Skills: delete
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/skills/**"
-                        ).hasRole("ADMIN")
-
-                        // StudentSkill: all mappings
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/student-skills"
-                        ).hasAnyRole(
-                                "ADMIN",
-                                "RECRUITER"
-                        )
-
-                        // Specific mapping or student skills
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/student-skills/student/**",
-                                "/api/student-skills/*"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "RECRUITER",
-                                "ADMIN"
-                        )
-
-                        // Find students by skill
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/student-skills/skill/**"
-                        ).hasAnyRole(
-                                "ADMIN",
-                                "RECRUITER"
-                        )
-
-                        // Add student skills
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/student-skills"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
-
-                        // Delete student skill mapping
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/student-skills/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "ADMIN"
-                        )
-
-                        // All other requests require authentication
                         .anyRequest().authenticated()
-                )
-
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
                 );
+
+        // JWT filter before username/password authentication
+        http.addFilterBefore(
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
+        );
 
         return http.build();
     }
 }
+

@@ -36,6 +36,10 @@ public class PlacementDrive {
 
     private LocalDate applicationDeadline;
 
+    // Soft delete / Archive status
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recruiter_id")
@@ -124,6 +128,14 @@ public class PlacementDrive {
         this.applicationDeadline = applicationDeadline;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public User getRecruiter() {
         return recruiter;
     }
@@ -132,4 +144,3 @@ public class PlacementDrive {
         this.recruiter = recruiter;
     }
 }
-

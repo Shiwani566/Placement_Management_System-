@@ -27,6 +27,7 @@ public class PlacementDriveService {
         this.userRepository = userRepository;
     }
 
+    // Create placement drive by recruiter
     @Transactional
     public PlacementDrive createPlacementDrive(
             PlacementDrive placementDrive,
@@ -42,15 +43,19 @@ public class PlacementDriveService {
 
         placementDrive.setId(null);
         placementDrive.setRecruiter(recruiter);
+        placementDrive.setActive(true);
 
         return placementDriveRepository.save(placementDrive);
     }
 
+    // Save placement drive by admin
     @Transactional
     public PlacementDrive savePlacementDrive(
             PlacementDrive placementDrive) {
 
         validatePlacementDrive(placementDrive);
+
+        placementDrive.setActive(true);
 
         return placementDriveRepository.save(placementDrive);
     }
@@ -69,19 +74,20 @@ public class PlacementDriveService {
 
         if (isAdmin) {
 
-            existingDrive = placementDriveRepository.findById(id)
+            existingDrive = placementDriveRepository
+                    .findByIdAndActiveTrue(id)
                     .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.NOT_FOUND,
-                            "Placement drive not found"
+                            "Active placement drive not found"
                     ));
 
         } else {
 
             existingDrive = placementDriveRepository
-                    .findByIdAndRecruiterId(id, recruiterId)
+                    .findByIdAndRecruiterIdAndActiveTrue(id, recruiterId)
                     .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.FORBIDDEN,
-                            "You can update only your own placement drives"
+                            "You can update only your own active placement drives"
                     ));
         }
 
@@ -124,6 +130,7 @@ public class PlacementDriveService {
         return placementDriveRepository.save(existingDrive);
     }
 
+    // Validate placement drive details
     private void validatePlacementDrive(
             PlacementDrive placementDrive) {
 
@@ -161,25 +168,37 @@ public class PlacementDriveService {
         );
     }
 
+    // Get only active placement drives
     @Transactional(readOnly = true)
     public List<PlacementDrive> getAllPlacementDrives() {
 
-        return placementDriveRepository.findAll();
+        return placementDriveRepository.findAllByActiveTrue();
     }
 
+    // Admin can view active as well as archived drives
+    @Transactional(readOnly = true)
+    public List<PlacementDrive> getAllPlacementDrivesForAdmin() {
+
+        return placementDriveRepository.findAllByOrderByIdDesc();
+    }
+
+    // Get only active drives created by a recruiter
     @Transactional(readOnly = true)
     public List<PlacementDrive> getRecruiterPlacementDrives(
             Long recruiterId) {
 
-        return placementDriveRepository.findByRecruiterId(recruiterId);
+        return placementDriveRepository
+                .findByRecruiterIdAndActiveTrue(recruiterId);
     }
 
+    // Get only active placement drive by ID
     @Transactional(readOnly = true)
     public Optional<PlacementDrive> getPlacementDriveById(Long id) {
 
-        return placementDriveRepository.findById(id);
+        return placementDriveRepository.findByIdAndActiveTrue(id);
     }
 
+    // Recruiter can archive only their own active drive
     @Transactional
     public void deleteRecruiterPlacementDrive(
             Long driveId,
@@ -187,25 +206,36 @@ public class PlacementDriveService {
 
         PlacementDrive placementDrive =
                 placementDriveRepository
-                        .findByIdAndRecruiterId(driveId, recruiterId)
+                        .findByIdAndRecruiterIdAndActiveTrue(
+                                driveId,
+                                recruiterId
+                        )
                         .orElseThrow(() -> new ResponseStatusException(
                                 HttpStatus.FORBIDDEN,
-                                "You can delete only your own placement drives"
+                                "You can archive only your own active placement drives"
                         ));
 
-        placementDriveRepository.delete(placementDrive);
+        placementDrive.setActive(false);
     }
 
+    // Admin can archive any active drive
     @Transactional
     public void deletePlacementDrive(Long id) {
 
-        if (!placementDriveRepository.existsById(id)) {
+        PlacementDrive placementDrive =
+                placementDriveRepository.findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Placement drive not found"
+                        ));
+
+        if (!placementDrive.isActive()) {
             throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Placement drive not found"
+                    HttpStatus.CONFLICT,
+                    "Placement drive is already archived"
             );
         }
 
-        placementDriveRepository.deleteById(id);
+        placementDrive.setActive(false);
     }
 }

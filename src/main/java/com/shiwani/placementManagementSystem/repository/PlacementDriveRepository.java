@@ -10,11 +10,22 @@ import java.util.Optional;
 @Repository
 public interface PlacementDriveRepository extends JpaRepository<PlacementDrive, Long> {
 
+    // Existing methods - required by existing services
     List<PlacementDrive> findByRecruiterId(Long recruiterId);
 
-    Optional<PlacementDrive> findByIdAndRecruiterId(
-            Long id,
-            Long recruiterId
+    Optional<PlacementDrive> findByIdAndRecruiterId(Long id, Long recruiterId);
+
+
+    // Soft-delete methods
+    List<PlacementDrive> findAllByActiveTrue();
+
+    List<PlacementDrive> findAllByOrderByIdDesc();
+
+    List<PlacementDrive> findByRecruiterIdAndActiveTrue(Long recruiterId);
+
+    Optional<PlacementDrive> findByIdAndActiveTrue(Long id);
+
+    Optional<PlacementDrive> findByIdAndRecruiterIdAndActiveTrue(
+            Long id, Long recruiterId
     );
 }
-

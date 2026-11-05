@@ -144,6 +144,14 @@ public class UserService {
             );
         }
 
+        // Prevent disabled users from logging in
+        if (!user.isEnabled()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Your account has been disabled"
+            );
+        }
+
         String token = jwtService.generateToken(user.getEmail());
 
         return new LoginResponse(

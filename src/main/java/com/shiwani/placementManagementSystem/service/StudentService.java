@@ -5,6 +5,7 @@ import com.shiwani.placementManagementSystem.entity.Student;
 import com.shiwani.placementManagementSystem.entity.User;
 import com.shiwani.placementManagementSystem.repository.StudentRepository;
 import com.shiwani.placementManagementSystem.repository.UserRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +28,14 @@ public class StudentService {
         this.userRepository = userRepository;
     }
 
+    // Create Student Profile
     @Transactional
     public Student createStudentProfile(StudentRequest request) {
 
         if (request == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Request body is required"
+                    "Student details are required"
             );
         }
 
@@ -44,14 +46,16 @@ public class StudentService {
             );
         }
 
-        if (request.getName() == null || request.getName().isBlank()) {
+        if (request.getName() == null
+                || request.getName().isBlank()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Student name is required"
             );
         }
 
-        if (request.getBranch() == null || request.getBranch().isBlank()) {
+        if (request.getBranch() == null
+                || request.getBranch().isBlank()) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Branch is required"
@@ -61,10 +65,9 @@ public class StudentService {
         if (request.getGraduationYear() == null
                 || request.getGraduationYear() < 2000
                 || request.getGraduationYear() > 2100) {
-
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Graduation year must be between 2000 and 2100"
+                    "Please enter a valid graduation year"
             );
         }
 
@@ -72,7 +75,6 @@ public class StudentService {
                 || !Double.isFinite(request.getCgpa())
                 || request.getCgpa() < 0
                 || request.getCgpa() > 10) {
-
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "CGPA must be between 0 and 10"
@@ -81,7 +83,6 @@ public class StudentService {
 
         if (request.getBacklogs() != null
                 && request.getBacklogs() < 0) {
-
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Backlogs cannot be negative"
@@ -94,65 +95,111 @@ public class StudentService {
                         "User not found"
                 ));
 
-        if (studentRepository.findByUserId(request.getUserId()).isPresent()) {
+        if (!user.isEnabled()) {
             throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Student profile already exists for this user"
+                    HttpStatus.FORBIDDEN,
+                    "This user account is disabled"
             );
         }
 
         if (user.getRole() == null
                 || !"STUDENT".equals(user.getRole().getName())) {
-
             throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "User does not have the STUDENT role"
+                    HttpStatus.FORBIDDEN,
+                    "Only student accounts can create student profiles"
+            );
+        }
+
+        Optional<Student> existingStudent =
+                studentRepository.findByUserId(user.getId());
+
+        if (existingStudent.isPresent()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Student profile already exists"
             );
         }
 
         Student student = new Student();
+
         student.setUser(user);
         student.setName(request.getName().trim());
-        student.setBranch(request.getBranch().trim());
-        student.setGraduationYear(request.getGraduationYear());
-        student.setCgpa(request.getCgpa());
-        student.setBacklogs(
-                request.getBacklogs() == null ? 0 : request.getBacklogs()
-        );
+
         student.setPhone(
-                request.getPhone() == null || request.getPhone().isBlank()
+                request.getPhone() == null
                         ? null
                         : request.getPhone().trim()
         );
 
+        student.setBranch(request.getBranch().trim());
+        student.setGraduationYear(request.getGraduationYear());
+        student.setCgpa(request.getCgpa());
+
+        student.setBacklogs(
+                request.getBacklogs() == null
+                        ? 0
+                        : request.getBacklogs()
+        );
+
         return studentRepository.save(student);
     }
 
+    // Save Student
     public Student saveStudent(Student student) {
         return studentRepository.save(student);
     }
 
+    // Get All Students
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
+    // Get Student By ID
     public Optional<Student> getStudentById(Long id) {
         return studentRepository.findById(id);
     }
 
+    // Get Student By User ID
     public Optional<Student> getStudentByUserId(Long userId) {
         return studentRepository.findByUserId(userId);
     }
 
-    public Optional<Student> getStudentByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .flatMap(user ->
-                        studentRepository.findByUserId(user.getId())
-                );
+    // Get Student By Email
+    public Student getStudentByEmail(String email) {
+
+        List<Student> students =
+                studentRepository.findAllByUserEmail(email);
+
+        if (students.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Student profile not found"
+            );
+        }
+
+        return students.get(0);
     }
 
+    // Soft Delete Student
+    @Transactional
     public void deleteStudent(Long id) {
-        studentRepository.deleteById(id);
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Student not found"
+                ));
+
+        User user = student.getUser();
+
+        if (!user.isEnabled()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Student account is already disabled"
+            );
+        }
+
+        // Disable account instead of deleting student record
+        user.setEnabled(false);
     }
 }
-

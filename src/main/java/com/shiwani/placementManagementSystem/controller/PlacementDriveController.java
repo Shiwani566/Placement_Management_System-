@@ -68,11 +68,31 @@ public class PlacementDriveController {
                 .body(savedDrive);
     }
 
+    // Students, recruiters and admins can view active drives
     @GetMapping
     public ResponseEntity<List<PlacementDrive>> getAllPlacementDrives() {
 
         return ResponseEntity.ok(
                 placementDriveService.getAllPlacementDrives()
+        );
+    }
+
+    // Only admin can view all drives, including archived drives
+    @GetMapping("/admin/all")
+    public ResponseEntity<List<PlacementDrive>> getAllDrivesForAdmin(
+            Authentication authentication) {
+
+        User user = getAuthenticatedUser(authentication);
+
+        if (!"ADMIN".equals(user.getRole().getName())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Only admins can view all placement drives"
+            );
+        }
+
+        return ResponseEntity.ok(
+                placementDriveService.getAllPlacementDrivesForAdmin()
         );
     }
 
@@ -110,7 +130,7 @@ public class PlacementDriveController {
         return ResponseEntity.ok(placementDrive);
     }
 
-    // Recruiter can update own drive; Admin can update any drive
+    // Recruiter can update own drive; Admin can update any active drive
     @PutMapping("/{id}")
     public ResponseEntity<PlacementDrive> updatePlacementDrive(
             @PathVariable Long id,
@@ -140,6 +160,7 @@ public class PlacementDriveController {
         return ResponseEntity.ok(updatedDrive);
     }
 
+    // Soft delete / archive placement drive
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlacementDrive(
             @PathVariable Long id,

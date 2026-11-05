@@ -628,46 +628,32 @@
 
             const role = (data.role || "").toUpperCase();
 
-            // Validate role before storing authentication details.
-
+            // Role-based dashboard routes
             const dashboardRoutes = {
-
                 STUDENT: "/student-dashboard.html",
                 ROLE_STUDENT: "/student-dashboard.html",
-
                 RECRUITER: "/recruiter-dashboard.html",
-                ROLE_RECRUITER: "/recruiter-dashboard.html"
-
+                ROLE_RECRUITER: "/recruiter-dashboard.html",
+                ADMIN: "/admin-dashboard.html",
+                ROLE_ADMIN: "/admin-dashboard.html"
             };
 
             const dashboardUrl = dashboardRoutes[role];
 
-            if (!dashboardUrl && role !== "ADMIN" && role !== "ROLE_ADMIN") {
-
+            if (!dashboardUrl) {
                 alert("Unknown user role: " + (data.role || "Not provided"));
-
                 return;
-
             }
 
-            // Clear old authentication data.
-
-            const authKeys = [
-                "token",
-                "userId",
-                "userRole",
-                "userEmail"
-            ];
+            // Clear old authentication data
+            const authKeys = ["token", "userId", "userRole", "userEmail"];
 
             authKeys.forEach(key => {
-
                 localStorage.removeItem(key);
                 sessionStorage.removeItem(key);
-
             });
 
-            // Save new authentication data.
-
+            // Save authentication details in selected storage
             const storage = rememberMe ? localStorage : sessionStorage;
 
             storage.setItem("token", data.token);
@@ -676,21 +662,10 @@
             storage.setItem("userEmail", data.email || email);
 
             console.log("Login successful");
-            console.log("Logged-in User:", data.email);
+            console.log("Logged-in User:", data.email || email);
             console.log("User Role:", role);
 
-            // Role-based dashboard redirection.
-
-            if (role === "ADMIN" || role === "ROLE_ADMIN") {
-
-                alert("Admin login successful. Admin dashboard is not available yet.");
-
-                return;
-
-            }
-
             alert(data.message || "Login successful!");
-
             window.location.replace(dashboardUrl);
 
         } catch (error) {

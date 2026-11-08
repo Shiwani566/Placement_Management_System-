@@ -526,11 +526,12 @@
                             <th>Branch</th>
                             <th>CGPA</th>
                             <th>Graduation</th>
+                            <th>Account Status</th>
                             <th>Action</th>
                         </tr>
                         </thead>
                         <tbody id="studentsTable">
-                        <tr><td colspan="7" class="empty">Loading...</td></tr>
+                        <tr><td colspan="8" class="empty">Loading...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -793,41 +794,58 @@
             const students = await apiRequest("/api/admin/students");
 
             if (!students.length) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty">No students found.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty">No students found.</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = students.map(student => `
-                <tr>
-                    <td>${student.id ?? "-"}</td>
-                    <td>${escapeHTML(student.name || "Not Provided")}</td>
-                    <td>${escapeHTML(student.email || "-")}</td>
-                    <td>${escapeHTML(student.branch || "-")}</td>
-                    <td>${student.cgpa ?? "-"}</td>
-                    <td>${student.graduationYear ?? "-"}</td>
-                    <td>
-                        <button class="danger-btn"
-                            onclick="deleteStudent(${student.id})">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join("");
+            tbody.innerHTML = students.map(student => {
+                const isEnabled = student.enabled === true || student.status === "ACTIVE";
+
+                return `
+                    <tr>
+                        <td>${student.id ?? "-"}</td>
+                        <td>${escapeHTML(student.name || "Not Provided")}</td>
+                        <td>${escapeHTML(student.email || "-")}</td>
+                        <td>${escapeHTML(student.branch || "-")}</td>
+                        <td>${student.cgpa ?? "-"}</td>
+                        <td>${student.graduationYear ?? "-"}</td>
+                        <td>
+                            <span class="badge ${isEnabled ? "active-badge" : "archived-badge"}">
+                                ${isEnabled ? "ACTIVE" : "DISABLED"}
+                            </span>
+                        </td>
+                        <td>
+                            ${isEnabled ? `
+                                <button class="danger-btn"
+                                    onclick="deleteStudent(${student.id})">
+                                    <i class="bi bi-person-slash"></i> Disable
+                                </button>
+                            ` : `
+                                <span style="font-size:11px;color:#89968c;">
+                                    <i class="bi bi-check-circle"></i> Disabled
+                                </span>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+
+            filterTable("studentSearch", "studentsTable");
 
         } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="7" class="empty">${escapeHTML(error.message)}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="empty">${escapeHTML(error.message)}</td></tr>`;
         }
     }
 
     async function deleteStudent(id) {
-        if (!confirm("Are you sure you want to disable this student account?")) return;
+        if (!confirm("Disable this student account? The student will no longer be able to log in, but their profile and application history will be preserved.")) return;
 
         try {
             await apiRequest(`/api/students/${id}`, {
                 method: "DELETE"
             });
 
-            showMessage("globalMessage", "Student account disabled successfully.", "success");
+            showMessage("globalMessage", "Student account disabled successfully. Student history has been preserved.", "success");
             await loadStudents();
             await loadStats();
 

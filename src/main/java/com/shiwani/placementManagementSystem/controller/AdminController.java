@@ -8,7 +8,6 @@ import com.shiwani.placementManagementSystem.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -85,7 +84,7 @@ public class AdminController {
         return ResponseEntity.ok(stats);
     }
 
-    // Get all students
+    // Get all students (Active + Disabled)
     @GetMapping("/students")
     public ResponseEntity<List<Map<String, Object>>> getAllStudents() {
 
@@ -104,6 +103,12 @@ public class AdminController {
                     data.put("graduationYear", student.getGraduationYear());
                     data.put("cgpa", student.getCgpa());
                     data.put("backlogs", student.getBacklogs());
+
+                    // Student account status
+                    boolean enabled = student.getUser().isEnabled();
+
+                    data.put("enabled", enabled);
+                    data.put("status", enabled ? "ACTIVE" : "DISABLED");
 
                     return data;
                 })

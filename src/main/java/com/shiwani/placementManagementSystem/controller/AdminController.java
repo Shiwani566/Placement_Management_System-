@@ -4,6 +4,7 @@ import com.shiwani.placementManagementSystem.dto.RegisterRequest;
 import com.shiwani.placementManagementSystem.entity.*;
 import com.shiwani.placementManagementSystem.repository.*;
 import com.shiwani.placementManagementSystem.service.UserService;
+import com.shiwani.placementManagementSystem.service.StudentService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import java.util.*;
 public class AdminController {
 
     private final UserService userService;
+    private final StudentService studentService;
+
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final PlacementDriveRepository driveRepository;
@@ -23,12 +26,15 @@ public class AdminController {
 
     public AdminController(
             UserService userService,
+            StudentService studentService,
             UserRepository userRepository,
             StudentRepository studentRepository,
             PlacementDriveRepository driveRepository,
             PlacementApplicationRepository applicationRepository) {
 
         this.userService = userService;
+        this.studentService = studentService;
+
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.driveRepository = driveRepository;
@@ -43,6 +49,7 @@ public class AdminController {
         User user = userService.registerRecruiter(request);
 
         Map<String, Object> response = new HashMap<>();
+
         response.put("message", "Recruiter registered successfully");
         response.put("userId", user.getId());
         response.put("email", user.getEmail());
@@ -104,7 +111,6 @@ public class AdminController {
                     data.put("cgpa", student.getCgpa());
                     data.put("backlogs", student.getBacklogs());
 
-                    // Student account status
                     boolean enabled = student.getUser().isEnabled();
 
                     data.put("enabled", enabled);
@@ -115,6 +121,22 @@ public class AdminController {
                 .toList();
 
         return ResponseEntity.ok(result);
+    }
+
+    // Restore disabled student
+    @PutMapping("/students/{id}/enable")
+    public ResponseEntity<Map<String, Object>> enableStudent(
+            @PathVariable Long id) {
+
+        studentService.restoreStudent(id);
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("message", "Student account enabled successfully");
+        response.put("studentId", id);
+        response.put("status", "ACTIVE");
+
+        return ResponseEntity.ok(response);
     }
 
     // Get all recruiters
@@ -156,11 +178,13 @@ public class AdminController {
                             data.put("appliedAt", application.getAppliedAt());
 
                             Student student = application.getStudent();
+
                             PlacementDrive drive =
                                     application.getPlacementDrive();
 
                             data.put("studentId", student.getId());
                             data.put("studentName", student.getName());
+
                             data.put("studentEmail",
                                     student.getUser().getEmail());
 

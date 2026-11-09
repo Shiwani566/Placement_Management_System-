@@ -782,11 +782,13 @@
             document.getElementById("totalDrives").textContent = data.totalDrives ?? 0;
             document.getElementById("totalApplications").textContent = data.totalApplications ?? 0;
             document.getElementById("totalAdmins").textContent = data.totalAdmins ?? 0;
+
         } catch (error) {
             showMessage("globalMessage", error.message, "error");
         }
     }
 
+    // Load all students
     async function loadStudents() {
         const tbody = document.getElementById("studentsTable");
 
@@ -809,11 +811,13 @@
                         <td>${escapeHTML(student.branch || "-")}</td>
                         <td>${student.cgpa ?? "-"}</td>
                         <td>${student.graduationYear ?? "-"}</td>
+
                         <td>
                             <span class="badge ${isEnabled ? "active-badge" : "archived-badge"}">
                                 ${isEnabled ? "ACTIVE" : "DISABLED"}
                             </span>
                         </td>
+
                         <td>
                             ${isEnabled ? `
                                 <button class="danger-btn"
@@ -821,9 +825,10 @@
                                     <i class="bi bi-person-slash"></i> Disable
                                 </button>
                             ` : `
-                                <span style="font-size:11px;color:#89968c;">
-                                    <i class="bi bi-check-circle"></i> Disabled
-                                </span>
+                                <button class="primary-btn"
+                                    onclick="enableStudent(${student.id})">
+                                    <i class="bi bi-person-check"></i> Enable
+                                </button>
                             `}
                         </td>
                     </tr>
@@ -837,15 +842,23 @@
         }
     }
 
+    // Disable student account (Soft Delete)
     async function deleteStudent(id) {
-        if (!confirm("Disable this student account? The student will no longer be able to log in, but their profile and application history will be preserved.")) return;
+        if (!confirm("Disable this student account? The student will no longer be able to log in, but their profile and application history will be preserved.")) {
+            return;
+        }
 
         try {
             await apiRequest(`/api/students/${id}`, {
                 method: "DELETE"
             });
 
-            showMessage("globalMessage", "Student account disabled successfully. Student history has been preserved.", "success");
+            showMessage(
+                "globalMessage",
+                "Student account disabled successfully. Student history has been preserved.",
+                "success"
+            );
+
             await loadStudents();
             await loadStats();
 
@@ -854,6 +867,32 @@
         }
     }
 
+    // Restore disabled student account
+    async function enableStudent(id) {
+        if (!confirm("Are you sure you want to enable this student account?")) {
+            return;
+        }
+
+        try {
+            await apiRequest(`/api/admin/students/${id}/enable`, {
+                method: "PUT"
+            });
+
+            showMessage(
+                "globalMessage",
+                "Student account enabled successfully.",
+                "success"
+            );
+
+            await loadStudents();
+            await loadStats();
+
+        } catch (error) {
+            showMessage("globalMessage", error.message, "error");
+        }
+    }
+
+    // Load all recruiters
     async function loadRecruiters() {
         const tbody = document.getElementById("recruitersTable");
 
@@ -892,6 +931,7 @@
         document.getElementById("recruiterModal").style.display = "none";
     }
 
+    // Create recruiter account
     document.getElementById("recruiterForm").addEventListener("submit", async function(event) {
         event.preventDefault();
 
@@ -906,7 +946,11 @@
                 body: JSON.stringify(recruiter)
             });
 
-            showMessage("globalMessage", "Recruiter account created successfully.", "success");
+            showMessage(
+                "globalMessage",
+                "Recruiter account created successfully.",
+                "success"
+            );
 
             closeRecruiterModal();
             await loadRecruiters();
@@ -982,7 +1026,11 @@
                 method: "DELETE"
             });
 
-            showMessage("globalMessage", "Placement drive archived successfully.", "success");
+            showMessage(
+                "globalMessage",
+                "Placement drive archived successfully.",
+                "success"
+            );
 
             await loadDrives();
             await loadStats();
@@ -992,6 +1040,7 @@
         }
     }
 
+    // Load all applications
     async function loadApplications() {
         const tbody = document.getElementById("applicationsTable");
 
@@ -1020,6 +1069,7 @@
         }
     }
 
+    // Search/filter table
     function filterTable(inputId, tableId) {
         const query = document.getElementById(inputId).value.toLowerCase();
 
@@ -1028,6 +1078,7 @@
         });
     }
 
+    // Prevent HTML injection
     function escapeHTML(value) {
         return String(value).replace(/[&<>"']/g, character => ({
             "&": "&amp;",
@@ -1038,8 +1089,11 @@
         })[character]);
     }
 
+    // Logout
     function logout() {
-        if (!confirm("Are you sure you want to logout?")) return;
+        if (!confirm("Are you sure you want to logout?")) {
+            return;
+        }
 
         localStorage.clear();
         sessionStorage.clear();

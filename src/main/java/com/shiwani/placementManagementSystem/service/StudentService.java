@@ -202,4 +202,29 @@ public class StudentService {
         // Disable account instead of deleting student record
         user.setEnabled(false);
     }
+
+    // Restore Disabled Student Account
+    @Transactional
+    public void restoreStudent(Long id) {
+
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Student not found"
+                ));
+
+        User user = student.getUser();
+
+        if (user.isEnabled()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Student account is already active"
+            );
+        }
+
+        // Enable student account
+        user.setEnabled(true);
+
+        userRepository.save(user);
+    }
 }

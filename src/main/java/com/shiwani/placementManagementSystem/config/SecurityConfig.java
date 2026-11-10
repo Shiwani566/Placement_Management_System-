@@ -2,6 +2,8 @@ package com.shiwani.placementManagementSystem.config;
 
 import com.shiwani.placementManagementSystem.config.JwtAuthenticationFilter;
 
+import jakarta.servlet.DispatcherType;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -63,6 +65,11 @@ public class SecurityConfig {
 
                 // Authorization rules
                 .authorizeHttpRequests(auth -> auth
+
+                        // Allow ERROR dispatch
+                        .dispatcherTypeMatchers(
+                                DispatcherType.ERROR
+                        ).permitAll()
 
                         // ---------------------------------
                         // PUBLIC FRONTEND PAGES
@@ -232,4 +239,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-

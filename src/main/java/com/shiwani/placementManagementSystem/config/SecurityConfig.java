@@ -1,7 +1,5 @@
 package com.shiwani.placementManagementSystem.config;
 
-import com.shiwani.placementManagementSystem.config.JwtAuthenticationFilter;
-
 import jakarta.servlet.DispatcherType;
 
 import org.springframework.context.annotation.Bean;
@@ -25,9 +23,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter) {
-
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -39,8 +35,7 @@ public class SecurityConfig {
 
     // Main security configuration
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
 
@@ -49,17 +44,13 @@ public class SecurityConfig {
 
                 // Stateless JWT authentication
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS
-                        )
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
                 // Return 401 when authentication is missing
                 .exceptionHandling(exception ->
                         exception.authenticationEntryPoint(
-                                new HttpStatusEntryPoint(
-                                        HttpStatus.UNAUTHORIZED
-                                )
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
                         )
                 )
 
@@ -67,8 +58,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         // Allow ERROR dispatch
-                        .dispatcherTypeMatchers(
-                                DispatcherType.ERROR
+                        .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+
+                        // ---------------------------------
+                        // SWAGGER APIs
+                        // ---------------------------------
+
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"
                         ).permitAll()
 
                         // ---------------------------------
@@ -109,53 +109,33 @@ public class SecurityConfig {
                         // STUDENT APIs
                         // ---------------------------------
 
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/students"
-                        ).hasAnyRole("ADMIN", "RECRUITER")
+                        .requestMatchers(HttpMethod.GET, "/api/students")
+                        .hasAnyRole("ADMIN", "RECRUITER")
 
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/students/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        .requestMatchers(HttpMethod.GET, "/api/students/**")
+                        .hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/students"
-                        ).hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/students")
+                        .hasAnyRole("STUDENT", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.PUT,
-                                "/api/students/**"
-                        ).hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/students/**")
+                        .hasAnyRole("STUDENT", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/students/**"
-                        ).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/students/**")
+                        .hasRole("ADMIN")
 
                         // ---------------------------------
                         // EDUCATION APIs
                         // ---------------------------------
 
-                        .requestMatchers(
-                                HttpMethod.GET,
-                                "/api/education/**"
-                        ).hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/education/**")
+                        .hasAnyRole("STUDENT", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/education/**"
-                        ).hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/education/**")
+                        .hasAnyRole("STUDENT", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/education/**"
-                        ).hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/education/**")
+                        .hasAnyRole("STUDENT", "ADMIN")
 
                         // ---------------------------------
                         // SKILLS APIs
@@ -164,11 +144,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/skills/**",
                                 "/api/student-skills/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
 
                         // ---------------------------------
                         // PLACEMENT DRIVE APIs
@@ -178,26 +154,16 @@ public class SecurityConfig {
                                 HttpMethod.GET,
                                 "/api/placement-drives",
                                 "/api/placement-drives/**"
-                        ).hasAnyRole(
-                                "STUDENT",
-                                "RECRUITER",
-                                "ADMIN"
-                        )
+                        ).hasAnyRole("STUDENT", "RECRUITER", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.POST,
-                                "/api/placement-drives/**"
-                        ).hasAnyRole("RECRUITER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/placement-drives/**")
+                        .hasAnyRole("RECRUITER", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.PUT,
-                                "/api/placement-drives/**"
-                        ).hasAnyRole("RECRUITER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/placement-drives/**")
+                        .hasAnyRole("RECRUITER", "ADMIN")
 
-                        .requestMatchers(
-                                HttpMethod.DELETE,
-                                "/api/placement-drives/**"
-                        ).hasAnyRole("RECRUITER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/placement-drives/**")
+                        .hasAnyRole("RECRUITER", "ADMIN")
 
                         // ---------------------------------
                         // PLACEMENT APPLICATION APIs

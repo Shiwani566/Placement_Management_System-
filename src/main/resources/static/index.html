@@ -48,17 +48,9 @@
         }
 
         @keyframes backgroundMove {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .circle {
@@ -126,9 +118,7 @@
             padding: 38px 38px 30px;
 
             background: rgba(255, 255, 255, 0.10);
-
             border: 1px solid rgba(255, 255, 255, 0.28);
-
             border-radius: 22px;
 
             backdrop-filter: blur(22px);
@@ -159,7 +149,6 @@
         .brand-icon {
             width: 52px;
             height: 52px;
-
             margin: 0 auto 12px;
 
             display: flex;
@@ -168,9 +157,7 @@
 
             background: var(--lime);
             color: var(--green);
-
             border-radius: 15px;
-
             font-size: 25px;
         }
 
@@ -224,19 +211,16 @@
         .inputbox input {
             width: 100%;
             height: 49px;
-
             padding: 0 42px 0 15px;
 
             color: var(--white);
             font-size: 12px;
 
             background: rgba(255, 255, 255, 0.10);
-
             border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 10px;
 
             outline: none;
-
             transition: 0.3s;
         }
 
@@ -254,7 +238,6 @@
             position: absolute;
             right: 15px;
             bottom: 15px;
-
             color: var(--lime);
             font-size: 16px;
         }
@@ -278,7 +261,6 @@
             color: var(--lime);
             font-size: 9px;
             font-weight: 600;
-
             cursor: pointer;
         }
 
@@ -286,7 +268,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-
             margin: 4px 0 24px;
 
             color: rgba(255, 255, 255, 0.85);
@@ -326,7 +307,6 @@
 
             font-size: 12px;
             font-weight: 700;
-
             cursor: pointer;
 
             transition: 0.3s;
@@ -376,6 +356,136 @@
             letter-spacing: 1px;
         }
 
+        /* CUSTOM TOAST NOTIFICATIONS */
+
+        .toast-container {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 9999;
+
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+
+            width: min(360px, calc(100% - 30px));
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            padding: 15px 17px;
+
+            background: rgba(20, 49, 40, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-left: 4px solid var(--lime);
+            border-radius: 12px;
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+
+            color: white;
+
+            animation: toastEnter 0.35s ease forwards;
+        }
+
+        .toast.success {
+            border-left-color: #C6F36B;
+        }
+
+        .toast.error {
+            border-left-color: #FF7070;
+        }
+
+        .toast.info {
+            border-left-color: #8ED8FF;
+        }
+
+        .toast-icon {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+            background: rgba(198, 243, 107, 0.15);
+
+            color: var(--lime);
+            font-size: 17px;
+        }
+
+        .toast.error .toast-icon {
+            color: #FF8585;
+            background: rgba(255, 112, 112, 0.13);
+        }
+
+        .toast.info .toast-icon {
+            color: #8ED8FF;
+            background: rgba(142, 216, 255, 0.13);
+        }
+
+        .toast-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .toast-content strong {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .toast-content p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 10px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .toast-close {
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 17px;
+            cursor: pointer;
+            align-self: flex-start;
+        }
+
+        .toast-close:hover {
+            color: white;
+        }
+
+        .toast.hide {
+            animation: toastExit 0.3s ease forwards;
+        }
+
+        @keyframes toastEnter {
+            from {
+                opacity: 0;
+                transform: translateX(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastExit {
+            to {
+                opacity: 0;
+                transform: translateX(25px);
+            }
+        }
+
         @media(max-width: 480px) {
 
             .container {
@@ -403,6 +513,11 @@
                 width: 110px;
                 height: 110px;
             }
+
+            .toast-container {
+                top: 15px;
+                right: 15px;
+            }
         }
 
         @media(prefers-reduced-motion: reduce) {
@@ -426,6 +541,14 @@
 <div class="circle circle-two"></div>
 <div class="circle circle-three"></div>
 <div class="circle circle-four"></div>
+
+<!-- TOAST CONTAINER -->
+
+<div class="toast-container"
+     id="toastContainer"
+     aria-live="polite"
+     aria-atomic="false">
+</div>
 
 <div class="container">
 
@@ -534,10 +657,82 @@
 
 <script>
 
+    // CUSTOM TOAST FUNCTION
+
+    function showToast(message, type = "success", duration = 3500) {
+
+        const toastContainer = document.getElementById("toastContainer");
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        let icon = "bi-check-circle-fill";
+        let heading = "Success";
+
+        if (type === "error") {
+            icon = "bi-exclamation-circle-fill";
+            heading = "Error";
+        } else if (type === "info") {
+            icon = "bi-info-circle-fill";
+            heading = "Information";
+        }
+
+        const iconElement = document.createElement("div");
+        iconElement.className = "toast-icon";
+        iconElement.innerHTML = `<i class="bi ${icon}"></i>`;
+
+        const content = document.createElement("div");
+        content.className = "toast-content";
+
+        const title = document.createElement("strong");
+        title.textContent = heading;
+
+        const description = document.createElement("p");
+        description.textContent = message;
+
+        content.appendChild(title);
+        content.appendChild(description);
+
+        const closeButton = document.createElement("button");
+        closeButton.className = "toast-close";
+        closeButton.type = "button";
+        closeButton.innerHTML = "&times;";
+        closeButton.setAttribute("aria-label", "Close notification");
+
+        toast.appendChild(iconElement);
+        toast.appendChild(content);
+        toast.appendChild(closeButton);
+
+        toastContainer.appendChild(toast);
+
+        let removeTimer;
+
+        function removeToast() {
+
+            clearTimeout(removeTimer);
+
+            if (!toast.isConnected) return;
+
+            toast.classList.add("hide");
+
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }
+
+        closeButton.addEventListener("click", removeToast);
+
+        if (duration > 0) {
+            removeTimer = setTimeout(removeToast, duration);
+        }
+
+        return removeToast;
+    }
+
+
     // SHOW / HIDE PASSWORD
 
     const password = document.getElementById("password");
-
     const togglePassword = document.getElementById("togglePassword");
 
     togglePassword.addEventListener("click", function () {
@@ -569,10 +764,12 @@
 
         const loginButton = document.getElementById("loginButton");
 
+        let redirecting = false;
+
         try {
 
             loginButton.disabled = true;
-            loginButton.innerHTML = "Logging In...";
+            loginButton.innerHTML = '<i class="bi bi-arrow-repeat"></i> Logging In...';
 
             const response = await fetch("/api/auth/login", {
 
@@ -583,10 +780,8 @@
                 },
 
                 body: JSON.stringify({
-
                     email: email,
                     password: passwordValue
-
                 })
 
             });
@@ -596,22 +791,19 @@
             let data = {};
 
             try {
-
                 data = responseText ? JSON.parse(responseText) : {};
-
             } catch (error) {
-
                 data = {};
-
             }
 
             if (!response.ok) {
 
-                alert(
+                showToast(
                     data.message ||
                     data.detail ||
                     data.error ||
-                    "Invalid email or password. Please try again."
+                    "Invalid email or password. Please try again.",
+                    "error"
                 );
 
                 return;
@@ -620,7 +812,10 @@
 
             if (!data.token) {
 
-                alert("Login response received, but authentication token is missing.");
+                showToast(
+                    "Authentication token is missing from the server response.",
+                    "error"
+                );
 
                 return;
 
@@ -628,32 +823,54 @@
 
             const role = (data.role || "").toUpperCase();
 
-            // Role-based dashboard routes
+            // ROLE-BASED DASHBOARD ROUTES
+
             const dashboardRoutes = {
+
                 STUDENT: "/student-dashboard.html",
                 ROLE_STUDENT: "/student-dashboard.html",
+
                 RECRUITER: "/recruiter-dashboard.html",
                 ROLE_RECRUITER: "/recruiter-dashboard.html",
+
                 ADMIN: "/admin-dashboard.html",
                 ROLE_ADMIN: "/admin-dashboard.html"
+
             };
 
             const dashboardUrl = dashboardRoutes[role];
 
             if (!dashboardUrl) {
-                alert("Unknown user role: " + (data.role || "Not provided"));
+
+                showToast(
+                    "Unknown user role: " + (data.role || "Not provided"),
+                    "error"
+                );
+
                 return;
+
             }
 
-            // Clear old authentication data
-            const authKeys = ["token", "userId", "userRole", "userEmail"];
+
+            // CLEAR OLD AUTHENTICATION DATA
+
+            const authKeys = [
+                "token",
+                "userId",
+                "userRole",
+                "userEmail"
+            ];
 
             authKeys.forEach(key => {
+
                 localStorage.removeItem(key);
                 sessionStorage.removeItem(key);
+
             });
 
-            // Save authentication details in selected storage
+
+            // SAVE AUTHENTICATION DETAILS
+
             const storage = rememberMe ? localStorage : sessionStorage;
 
             storage.setItem("token", data.token);
@@ -661,25 +878,51 @@
             storage.setItem("userRole", role);
             storage.setItem("userEmail", data.email || email);
 
+
             console.log("Login successful");
             console.log("Logged-in User:", data.email || email);
             console.log("User Role:", role);
 
-            alert(data.message || "Login successful!");
-            window.location.replace(dashboardUrl);
+
+            // SHOW SUCCESS TOAST
+
+            showToast(
+                data.message || "Login successful! Welcome to PlaceMate.",
+                "success",
+                1200
+            );
+
+
+            // REDIRECT TO DASHBOARD
+            // href keeps login page in browser history.
+
+            redirecting = true;
+
+            setTimeout(() => {
+                window.location.href = dashboardUrl;
+            }, 900);
+
 
         } catch (error) {
 
             console.error("Login Error:", error);
 
-            alert("Unable to connect to server. Please check whether Spring Boot is running.");
+            showToast(
+                "Unable to connect to server. Please check whether Spring Boot is running.",
+                "error",
+                4500
+            );
 
         } finally {
 
-            loginButton.disabled = false;
+            if (!redirecting) {
 
-            loginButton.innerHTML =
-                'Login to Account <i class="bi bi-arrow-right"></i>';
+                loginButton.disabled = false;
+
+                loginButton.innerHTML =
+                    'Login to Account <i class="bi bi-arrow-right"></i>';
+
+            }
 
         }
 
@@ -692,7 +935,10 @@
 
         event.preventDefault();
 
-        alert("Forgot password functionality is not available yet.");
+        showToast(
+            "Forgot password functionality is not available yet.",
+            "info"
+        );
 
     });
 

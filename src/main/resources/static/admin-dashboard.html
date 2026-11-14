@@ -23,6 +23,121 @@
             color: #183b2b;
         }
 
+        /* TOAST NOTIFICATIONS */
+
+        .toast-container {
+            position: fixed;
+            top: 22px;
+            right: 22px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: min(370px, calc(100% - 40px));
+        }
+
+        .toast {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 16px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 8px 28px rgba(18, 61, 43, 0.16);
+            border-left: 5px solid #6cab42;
+            animation: toastSlideIn .3s ease forwards;
+            backdrop-filter: blur(12px);
+        }
+
+        .toast.success {
+            border-left-color: #65a943;
+        }
+
+        .toast.error {
+            border-left-color: #d94c43;
+        }
+
+        .toast.warning {
+            border-left-color: #e59a32;
+        }
+
+        .toast.info {
+            border-left-color: #4285b5;
+        }
+
+        .toast-icon {
+            font-size: 21px;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            color: #4d9635;
+        }
+
+        .toast.error .toast-icon {
+            color: #d94c43;
+        }
+
+        .toast.warning .toast-icon {
+            color: #e59a32;
+        }
+
+        .toast.info .toast-icon {
+            color: #4285b5;
+        }
+
+        .toast-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .toast-content strong {
+            display: block;
+            font-size: 12px;
+            color: #183b2b;
+            margin-bottom: 3px;
+        }
+
+        .toast-content p {
+            font-size: 11px;
+            color: #718276;
+            overflow-wrap: anywhere;
+        }
+
+        .toast-close {
+            background: transparent;
+            color: #829087;
+            font-size: 17px;
+            padding: 3px;
+            cursor: pointer;
+        }
+
+        .toast-close:hover {
+            color: #183b2b;
+        }
+
+        .toast.hide {
+            animation: toastSlideOut .3s ease forwards;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastSlideOut {
+            to {
+                opacity: 0;
+                transform: translateX(25px);
+            }
+        }
+
         .layout {
             display: flex;
             min-height: 100vh;
@@ -400,6 +515,9 @@
 
 <body>
 
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
 <div class="layout">
 
     <aside class="sidebar">
@@ -699,16 +817,90 @@
         sessionStorage.getItem("userEmail") ||
         "Administrator";
 
-    if (!token) {
-        window.location.href = "/index.html";
-    }
 
-    if (role && !["ADMIN", "ROLE_ADMIN"].includes(role.toUpperCase())) {
-        alert("Access denied. Admin account required.");
-        window.location.href = "/index.html";
+    // INITIAL AUTHENTICATION AND ROLE CHECK
+
+    if (!token || !["ADMIN", "ROLE_ADMIN"].includes((role || "").toUpperCase())) {
+        window.location.replace("/index.html");
     }
 
     document.getElementById("adminEmail").textContent = email;
+
+
+    // CUSTOM TOAST NOTIFICATIONS
+
+    function showToast(message, type = "success", duration = 3500) {
+        const container = document.getElementById("toastContainer");
+
+        const icons = {
+            success: "bi-check-circle-fill",
+            error: "bi-x-circle-fill",
+            warning: "bi-exclamation-triangle-fill",
+            info: "bi-info-circle-fill"
+        };
+
+        const titles = {
+            success: "Success",
+            error: "Error",
+            warning: "Warning",
+            info: "Information"
+        };
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+
+        const icon = document.createElement("i");
+        icon.className = `bi ${icons[type] || icons.info} toast-icon`;
+
+        const content = document.createElement("div");
+        content.className = "toast-content";
+
+        const title = document.createElement("strong");
+        title.textContent = titles[type] || "Notification";
+
+        const text = document.createElement("p");
+        text.textContent = message;
+
+        content.appendChild(title);
+        content.appendChild(text);
+
+        const closeButton = document.createElement("button");
+        closeButton.className = "toast-close";
+        closeButton.innerHTML = "&times;";
+        closeButton.setAttribute("aria-label", "Close notification");
+
+        closeButton.addEventListener("click", () => {
+            removeToast(toast);
+        });
+
+        toast.appendChild(icon);
+        toast.appendChild(content);
+        toast.appendChild(closeButton);
+
+        container.appendChild(toast);
+
+        const timeout = setTimeout(() => {
+            removeToast(toast);
+        }, duration);
+
+        toast.dataset.timeout = timeout;
+    }
+
+    function removeToast(toast) {
+        if (!toast || toast.classList.contains("hide")) {
+            return;
+        }
+
+        clearTimeout(Number(toast.dataset.timeout));
+        toast.classList.add("hide");
+
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }
+
+
+    // API REQUEST
 
     async function apiRequest(url, options = {}) {
         const response = await fetch(API + url, {
@@ -730,18 +922,35 @@
         }
 
         if (!response.ok) {
-            throw new Error(data.message || data.error || `Request failed: ${response.status}`);
+            throw new Error(
+                data.message || data.error || `Request failed: ${response.status}`
+            );
         }
 
         return data;
     }
 
+
+    // SHOW MESSAGE
+
     function showMessage(elementId, message, type) {
+
+        // Global success/error messages appear as toast notifications.
+        if (elementId === "globalMessage") {
+            showToast(message, type);
+            return;
+        }
+
+        // Recruiter modal validation errors remain inside the modal.
         const element = document.getElementById(elementId);
+
         element.textContent = message;
         element.className = "message " + type;
         element.style.display = "block";
     }
+
+
+    // NAVIGATION
 
     function showSection(sectionId, clickedItem) {
         document.querySelectorAll(".section").forEach(section => {
@@ -773,6 +982,9 @@
         if (sectionId === "applications") loadApplications();
     }
 
+
+    // DASHBOARD STATISTICS
+
     async function loadStats() {
         try {
             const data = await apiRequest("/api/admin/dashboard/stats");
@@ -788,7 +1000,9 @@
         }
     }
 
-    // Load all students
+
+    // LOAD ALL STUDENTS
+
     async function loadStudents() {
         const tbody = document.getElementById("studentsTable");
 
@@ -842,7 +1056,9 @@
         }
     }
 
-    // Disable student account (Soft Delete)
+
+    // DISABLE STUDENT ACCOUNT
+
     async function deleteStudent(id) {
         if (!confirm("Disable this student account? The student will no longer be able to log in, but their profile and application history will be preserved.")) {
             return;
@@ -867,7 +1083,9 @@
         }
     }
 
-    // Restore disabled student account
+
+    // ENABLE STUDENT ACCOUNT
+
     async function enableStudent(id) {
         if (!confirm("Are you sure you want to enable this student account?")) {
             return;
@@ -892,7 +1110,9 @@
         }
     }
 
-    // Load all recruiters
+
+    // LOAD ALL RECRUITERS
+
     async function loadRecruiters() {
         const tbody = document.getElementById("recruitersTable");
 
@@ -921,6 +1141,9 @@
         }
     }
 
+
+    // RECRUITER MODAL
+
     function openRecruiterModal() {
         document.getElementById("recruiterForm").reset();
         document.getElementById("recruiterMessage").style.display = "none";
@@ -931,7 +1154,9 @@
         document.getElementById("recruiterModal").style.display = "none";
     }
 
-    // Create recruiter account
+
+    // CREATE RECRUITER ACCOUNT
+
     document.getElementById("recruiterForm").addEventListener("submit", async function(event) {
         event.preventDefault();
 
@@ -961,7 +1186,9 @@
         }
     });
 
-    // Load all drives for admin, including archived drives
+
+    // LOAD ALL PLACEMENT DRIVES
+
     async function loadDrives() {
         const tbody = document.getElementById("drivesTable");
 
@@ -1015,7 +1242,9 @@
         }
     }
 
-    // Archive placement drive instead of permanently deleting it
+
+    // ARCHIVE PLACEMENT DRIVE
+
     async function archiveDrive(id) {
         if (!confirm("Are you sure you want to archive this placement drive? It will no longer be visible to students.")) {
             return;
@@ -1040,7 +1269,9 @@
         }
     }
 
-    // Load all applications
+
+    // LOAD ALL APPLICATIONS
+
     async function loadApplications() {
         const tbody = document.getElementById("applicationsTable");
 
@@ -1069,7 +1300,9 @@
         }
     }
 
-    // Search/filter table
+
+    // SEARCH / FILTER TABLE
+
     function filterTable(inputId, tableId) {
         const query = document.getElementById(inputId).value.toLowerCase();
 
@@ -1078,7 +1311,9 @@
         });
     }
 
-    // Prevent HTML injection
+
+    // PREVENT HTML INJECTION
+
     function escapeHTML(value) {
         return String(value).replace(/[&<>"']/g, character => ({
             "&": "&amp;",
@@ -1089,19 +1324,52 @@
         })[character]);
     }
 
-    // Logout
+
+    // LOGOUT
+
     function logout() {
         if (!confirm("Are you sure you want to logout?")) {
             return;
         }
 
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = "/index.html";
+        const authKeys = ["token", "userId", "userRole", "userEmail"];
+
+        authKeys.forEach(key => {
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
+
+        window.location.replace("/index.html");
     }
 
-    // Initial dashboard load
-    loadStats();
+
+    // RECHECK AUTHENTICATION WHEN PAGE IS RESTORED
+
+    window.addEventListener("pageshow", function() {
+
+        const currentToken =
+            localStorage.getItem("token") ||
+            sessionStorage.getItem("token");
+
+        const currentRole =
+            localStorage.getItem("userRole") ||
+            sessionStorage.getItem("userRole");
+
+        if (
+            !currentToken ||
+            !["ADMIN", "ROLE_ADMIN"].includes((currentRole || "").toUpperCase())
+        ) {
+            window.location.replace("/index.html");
+        }
+    });
+
+
+    // INITIAL DASHBOARD LOAD
+
+    if (token && ["ADMIN", "ROLE_ADMIN"].includes((role || "").toUpperCase())) {
+        loadStats();
+    }
+
 </script>
 
 </body>

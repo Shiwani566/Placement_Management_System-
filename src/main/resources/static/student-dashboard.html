@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>PlaceMate | Student Dashboard</title>
+    <title>PlaceMate | Recruiter Dashboard</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
           rel="stylesheet">
@@ -14,41 +12,55 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
+        :root {
+            --green: #183d32;
+            --dark: #102d25;
+            --lime: #c6f36b;
+            --light: #f5f8f3;
+            --text: #233c32;
+            --muted: #829087;
+            --white: #ffffff;
+            --border: #e7eee8;
+            --shadow: 0 10px 35px rgba(24, 61, 50, 0.07);
+        }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        :root {
-            --lime: #C6F36B;
-            --green: #183D32;
-            --dark: #102D25;
-            --white: #ffffff;
-            --background: #F4F7F3;
-            --text: #34483D;
-            --muted: #89958D;
         }
 
         body {
-            min-height: 100vh;
-            background: var(--background);
+            font-family: 'Poppins', sans-serif;
+            background: #f5f8f3;
             color: var(--text);
+            min-height: 100vh;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
         }
 
         /* SIDEBAR */
 
         .sidebar {
+            width: 255px;
+            background: linear-gradient(180deg, #183d32, #102d25);
+            color: white;
+            padding: 28px 18px;
             position: fixed;
             top: 0;
+            bottom: 0;
             left: 0;
-            width: 250px;
-            height: 100vh;
-            padding: 28px 18px;
-            background: linear-gradient(180deg, #102D25, #183D32);
-            color: white;
             display: flex;
             flex-direction: column;
             z-index: 100;
@@ -57,65 +69,63 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 0 10px;
-            margin-bottom: 45px;
+            gap: 11px;
+            padding: 5px 12px 35px;
         }
 
         .brand-icon {
-            width: 43px;
-            height: 43px;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
             background: var(--lime);
             color: var(--green);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            font-size: 21px;
-        }
-
-        .brand h2 {
-            font-size: 21px;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
             font-weight: 800;
         }
 
-        .brand h2 span {
+        .brand h2 {
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .brand span {
             color: var(--lime);
         }
 
-        .menu-title {
+        .menu-label {
             font-size: 10px;
-            color: rgba(255,255,255,0.5);
-            padding: 0 12px;
-            margin-bottom: 13px;
-            letter-spacing: 1px;
+            color: #a7b9af;
+            letter-spacing: 2px;
+            padding: 0 13px;
+            margin-bottom: 14px;
         }
 
-        .sidebar-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .sidebar-menu a {
+        .nav-link {
             display: flex;
             align-items: center;
             gap: 13px;
-            padding: 13px 14px;
-            color: rgba(255,255,255,0.72);
+            color: #d0ddd5;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 12px;
-            transition: 0.3s;
+            padding: 13px 14px;
+            border-radius: 12px;
+            margin-bottom: 7px;
+            font-size: 13px;
+            transition: .25s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
         }
 
-        .sidebar-menu a i {
-            font-size: 17px;
+        .nav-link i {
+            font-size: 18px;
         }
 
-        .sidebar-menu a:hover,
-        .sidebar-menu a.active {
-            background: rgba(198,243,107,0.15);
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(198, 243, 107, .15);
             color: var(--lime);
         }
 
@@ -123,239 +133,376 @@
             margin-top: auto;
         }
 
-        .logout-btn {
-            width: 100%;
-            padding: 13px;
-            background: rgba(255,255,255,0.08);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            text-align: left;
-            cursor: pointer;
-            font-size: 12px;
+        .recruiter-mini {
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
         }
 
-        .logout-btn i {
-            margin-right: 10px;
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--lime);
+            color: var(--green);
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+            flex-shrink: 0;
         }
 
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.15);
+        .recruiter-mini h4 {
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* MAIN CONTENT */
-
-        .main-content {
-            margin-left: 250px;
-            padding: 32px;
+        .recruiter-mini p {
+            font-size: 10px;
+            color: #a9bcb1;
         }
 
-        /* TOPBAR */
+        /* MAIN */
+
+        .main {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 30px 38px;
+        }
 
         .topbar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            gap: 15px;
         }
 
         .topbar h1 {
-            font-size: 24px;
+            font-size: 25px;
             color: var(--green);
             font-weight: 700;
         }
 
         .topbar p {
-            font-size: 11px;
             color: var(--muted);
+            font-size: 12px;
             margin-top: 4px;
         }
 
-        .profile-box {
+        .top-actions {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .profile-icon {
+        .profile-badge {
             width: 43px;
             height: 43px;
-            background: var(--green);
-            color: var(--lime);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 19px;
-        }
-
-        .profile-box h4 {
-            font-size: 12px;
+            background: #e6f2d4;
             color: var(--green);
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
         }
 
-        .profile-box p {
-            font-size: 10px;
-            color: var(--muted);
+        .logout-btn {
+            border: 1px solid #e5eae5;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            color: #b34c4c;
+            font-size: 12px;
+            font-weight: 600;
         }
 
-        /* WELCOME BANNER */
+        .logout-btn:hover {
+            background: #fff1f1;
+        }
 
-        .welcome-banner {
-            padding: 30px;
-            border-radius: 18px;
-            background: linear-gradient(120deg, #183D32, #315D45);
+        /* BACK BUTTON */
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border: 1px solid #e5eae5;
+            background: white;
+            color: var(--green);
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+        .back-btn:hover {
+            background: #eaf3e2;
+            border-color: #c6d8bd;
+            transform: translateX(-2px);
+        }
+
+        /* WELCOME */
+
+        .welcome {
+            background: linear-gradient(110deg, #183d32, #285b45);
             color: white;
-            margin-bottom: 28px;
+            padding: 29px 32px;
+            border-radius: 20px;
             position: relative;
             overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 12px 30px rgba(24,61,50,.13);
         }
 
-        .welcome-banner::after {
+        .welcome::after {
             content: "";
             position: absolute;
-            width: 190px;
-            height: 190px;
+            width: 230px;
+            height: 230px;
+            border: 35px solid rgba(198,243,107,.10);
             border-radius: 50%;
-            background: rgba(198,243,107,0.10);
             right: 50px;
-            top: -75px;
+            top: -115px;
         }
 
-        .welcome-banner h2 {
+        .welcome h2 {
             font-size: 22px;
             margin-bottom: 8px;
         }
 
-        .welcome-banner h2 span {
+        .welcome p {
+            font-size: 12px;
+            color: #d2e1d6;
+            max-width: 530px;
+            line-height: 1.8;
+        }
+
+        .welcome-tag {
+            display: inline-block;
+            margin-top: 16px;
+            background: rgba(198,243,107,.17);
             color: var(--lime);
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 10px;
+            letter-spacing: .5px;
         }
 
-        .welcome-banner p {
-            font-size: 11px;
-            color: rgba(255,255,255,0.75);
-        }
+        /* STAT CARDS */
 
-        /* STATISTICS */
-
-        .stats-grid {
+        .stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 18px;
             margin-bottom: 30px;
         }
 
         .stat-card {
-            padding: 22px;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.04);
-            border: 1px solid #E8EEE8;
-        }
-
-        .stat-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 22px;
+            border-radius: 17px;
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 19px;
-            margin-bottom: 15px;
-        }
-
-        .icon-green {
-            background: #E8F5DC;
-            color: #3C7446;
-        }
-
-        .icon-blue {
-            background: #E4EFF7;
-            color: #477B9B;
-        }
-
-        .icon-yellow {
-            background: #F5F3D9;
-            color: #A28A28;
-        }
-
-        .stat-card h3 {
-            font-size: 26px;
-            color: var(--green);
+            justify-content: space-between;
         }
 
         .stat-card p {
-            font-size: 11px;
             color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 8px;
         }
 
-        /* COMMON SECTION */
+        .stat-card h2 {
+            font-size: 27px;
+            color: var(--green);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 21px;
+        }
+
+        .icon-green {
+            background: #e9f4dc;
+            color: #557c36;
+        }
+
+        .icon-blue {
+            background: #e8f1fc;
+            color: #4979b6;
+        }
+
+        .icon-orange {
+            background: #fff1df;
+            color: #c38435;
+        }
+
+        /* SECTION */
 
         .section {
             background: white;
-            border-radius: 15px;
-            padding: 24px;
+            border-radius: 18px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
             margin-bottom: 25px;
-            border: 1px solid #E8EEE8;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+            scroll-margin-top: 25px;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 15px;
             margin-bottom: 22px;
-            gap: 12px;
         }
 
         .section-header h2 {
-            font-size: 16px;
+            font-size: 17px;
             color: var(--green);
         }
 
-        /* PROFILE */
-
-        .profile-details {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .detail-item {
-            padding: 15px;
-            background: #F7F9F6;
-            border-radius: 10px;
-        }
-
-        .detail-item p {
-            font-size: 10px;
-            color: var(--muted);
-            margin-bottom: 5px;
-        }
-
-        .detail-item h4 {
-            font-size: 13px;
-            color: var(--green);
-            word-break: break-word;
-        }
-
-        /* FORMS */
-
-        .profile-form {
-            margin-top: 5px;
-        }
-
-        .profile-form h3 {
-            font-size: 16px;
-            color: var(--green);
-            margin-bottom: 7px;
-        }
-
-        .profile-form > p {
+        .section-header p {
             font-size: 11px;
             color: var(--muted);
-            margin-bottom: 22px;
+            margin-top: 4px;
         }
+
+        .primary-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 11px 17px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .primary-btn:hover {
+            background: #285b45;
+            transform: translateY(-1px);
+        }
+
+        .primary-btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .primary-btn i {
+            margin-right: 5px;
+        }
+
+        /* TABLE */
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th {
+            text-align: left;
+            color: #829087;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 13px 12px;
+            background: #f8faf7;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #eef2ed;
+            font-size: 11px;
+            color: #42554a;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #fbfdf9;
+        }
+
+        .company-name {
+            color: var(--green);
+            font-weight: 600;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-btn {
+            width: 31px;
+            height: 31px;
+            border: none;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+        }
+
+        .edit-btn {
+            background: #edf4e5;
+            color: #547b38;
+        }
+
+        .delete-btn {
+            background: #fff0f0;
+            color: #c15c5c;
+        }
+
+        .view-btn {
+            background: #edf3fc;
+            color: #4b78b2;
+        }
+
+        .action-btn:hover {
+            filter: brightness(.95);
+        }
+
+        .status {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 5px 10px;
+            font-size: 9px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #e9f5df;
+            color: #527b35;
+        }
+
+        .status-expired {
+            background: #fff0ed;
+            color: #c05d4d;
+        }
+
+        /* FORM */
 
         .form-grid {
             display: grid;
@@ -363,691 +510,661 @@
             gap: 17px;
         }
 
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
         .form-group label {
-            display: block;
             font-size: 11px;
-            color: var(--green);
-            margin-bottom: 7px;
             font-weight: 600;
+            color: #52675b;
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #E1E9DF;
-            border-radius: 8px;
+            border: 1px solid #e1e9e1;
+            background: #fbfcfa;
+            padding: 12px 13px;
+            border-radius: 9px;
             outline: none;
-            font-size: 12px;
-            background: #FAFCF9;
             color: var(--text);
+            font-size: 11px;
+            transition: .2s;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
-            border-color: #8CB65B;
-            background: white;
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #8bb65c;
+            box-shadow: 0 0 0 3px rgba(139,182,92,.10);
         }
 
-        .create-profile-btn,
-        .education-submit-btn {
-            margin-top: 22px;
-            padding: 12px 22px;
-            background: var(--green);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 600;
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
         }
 
-        .create-profile-btn:hover,
-        .education-submit-btn:hover {
-            background: #315D45;
-        }
-
-        .create-profile-btn:disabled,
-        .education-submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* EDUCATION */
-
-        .add-education-btn {
-            padding: 10px 16px;
-            background: var(--green);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .add-education-btn:hover {
-            background: #315D45;
-        }
-
-        .education-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .education-card {
-            padding: 19px;
-            border: 1px solid #E8EEE8;
-            border-radius: 12px;
-            background: #FCFDFC;
-        }
-
-        .education-card-top {
+        .form-actions {
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
             gap: 10px;
+            margin-top: 20px;
         }
 
-        .education-icon {
-            width: 40px;
-            height: 40px;
-            background: #E8F5DC;
-            color: var(--green);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 19px;
-            margin-bottom: 13px;
+        .secondary-btn {
+            background: #edf1ed;
+            color: #52675b;
+            border: none;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 600;
         }
 
-        .education-card h3 {
-            font-size: 13px;
+        /* EMPTY / LOADING */
+
+        .empty-state {
+            text-align: center;
+            padding: 38px 15px;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            font-size: 35px;
+            color: #a5bd91;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .empty-state h3 {
+            font-size: 14px;
             color: var(--green);
             margin-bottom: 5px;
         }
 
-        .education-institution {
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-
-        .education-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .education-info span {
-            padding: 6px 9px;
-            background: #F2F6EF;
-            color: #52694D;
-            border-radius: 6px;
-            font-size: 9px;
-        }
-
-        .delete-education-btn {
-            padding: 7px 10px;
-            border: none;
-            background: #FCE8E8;
-            color: #B54C4C;
-            border-radius: 7px;
-            cursor: pointer;
+        .empty-state p {
             font-size: 11px;
         }
 
-        .delete-education-btn:hover {
-            background: #F7D6D6;
-        }
+        /* CUSTOM TOAST */
 
-        .education-form-container {
-            margin-top: 22px;
-            padding: 20px;
-            border: 1px solid #E8EEE8;
-            background: #FAFCF9;
-            border-radius: 12px;
-        }
-
-        .education-form-container h3 {
-            color: var(--green);
-            font-size: 15px;
-            margin-bottom: 7px;
-        }
-
-        .education-form-container > p {
-            color: var(--muted);
-            font-size: 11px;
-            margin-bottom: 20px;
-        }
-
-        .cancel-education-btn {
-            margin-top: 22px;
-            margin-left: 8px;
-            padding: 12px 18px;
-            background: #E8EEE8;
-            color: var(--green);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 11px;
-        }
-
-        /* PLACEMENT DRIVES */
-
-        .drive-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
-        }
-
-        .drive-card {
-            border: 1px solid #E8EEE8;
+        .toast {
+            position: fixed;
+            top: 22px;
+            right: 22px;
+            min-width: 280px;
+            max-width: 380px;
+            padding: 15px 17px;
             border-radius: 13px;
-            padding: 20px;
-            transition: 0.3s;
-        }
-
-        .drive-card:hover {
-            border-color: #B8D88D;
-            transform: translateY(-3px);
-        }
-
-        .company-icon {
-            width: 43px;
-            height: 43px;
-            background: #EAF3E3;
-            color: var(--green);
-            border-radius: 10px;
+            color: white;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 19px;
-            margin-bottom: 13px;
-        }
-
-        .drive-card h3 {
-            font-size: 14px;
-            color: var(--green);
-        }
-
-        .company-name {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-
-        .drive-description {
-            font-size: 10px;
-            color: #718077;
-            margin-top: 12px;
-            line-height: 1.6;
-        }
-
-        .drive-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 14px 0;
-        }
-
-        .drive-info span {
-            background: #F2F6EF;
-            padding: 6px 9px;
-            border-radius: 6px;
-            font-size: 9px;
-            color: #52694D;
-        }
-
-        .apply-btn {
-            width: 100%;
-            padding: 11px;
-            background: var(--green);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .apply-btn:hover {
-            background: #315D45;
-        }
-
-        .apply-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* APPLICATION TABLE */
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 500px;
-        }
-
-        th {
-            text-align: left;
-            font-size: 10px;
-            color: var(--muted);
-            padding: 13px;
-            background: #F7F9F6;
-        }
-
-        td {
-            padding: 15px 13px;
-            border-bottom: 1px solid #EEF1ED;
-            font-size: 11px;
-            color: #526157;
-        }
-
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 9px;
-            font-weight: 600;
-        }
-
-        .status-applied {
-            background: #E4EFF7;
-            color: #477B9B;
-        }
-
-        .status-shortlisted {
-            background: #E8F5DC;
-            color: #3C7446;
-        }
-
-        .status-rejected {
-            background: #FCE8E8;
-            color: #B54C4C;
-        }
-
-        .status-default {
-            background: #F1F1F1;
-            color: #666;
-        }
-
-        /* MESSAGES */
-
-        .message {
-            text-align: center;
-            padding: 25px 10px;
+            gap: 12px;
+            box-shadow: 0 12px 35px rgba(0,0,0,.18);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(120%);
+            transition: all .35s ease;
             font-size: 12px;
-            color: var(--muted);
         }
 
-        .error-message {
-            color: #B54C4C;
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
         }
 
-        /* RESPONSIVE */
-
-        @media(max-width: 1050px) {
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .drive-list,
-            .education-list {
-                grid-template-columns: 1fr;
-            }
+        .toast.success {
+            background: #183d32;
+            border-left: 5px solid #c6f36b;
         }
 
-        @media(max-width: 700px) {
+        .toast.error {
+            background: #a84242;
+            border-left: 5px solid #ffb6b6;
+        }
 
+        .toast.warning {
+            background: #98651c;
+            border-left: 5px solid #ffe08a;
+        }
+
+        .toast.info {
+            background: #315d83;
+            border-left: 5px solid #a8d5ff;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            flex: 1;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .toast-close {
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 17px;
+            opacity: .8;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
+
+        /* MOBILE */
+
+        .menu-toggle {
+            display: none;
+            border: none;
+            background: white;
+            color: var(--green);
+            font-size: 22px;
+        }
+
+        @media(max-width: 1000px) {
             .sidebar {
-                width: 65px;
-                padding: 20px 8px;
+                width: 220px;
             }
 
-            .brand {
-                justify-content: center;
-                padding: 0;
+            .main {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+                padding: 25px;
+            }
+        }
+
+        @media(max-width: 750px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .3s;
             }
 
-            .brand h2,
-            .menu-title,
-            .sidebar-menu a span,
-            .logout-btn span {
-                display: none;
+            .sidebar.open {
+                transform: translateX(0);
             }
 
-            .sidebar-menu a {
-                justify-content: center;
-                padding: 13px 5px;
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 15px;
             }
 
-            .logout-btn {
-                text-align: center;
+            .menu-toggle {
+                display: block;
             }
 
-            .logout-btn i {
-                margin: 0;
+            .topbar {
+                align-items: flex-start;
             }
 
-            .main-content {
-                margin-left: 65px;
-                padding: 20px 14px;
+            .topbar-left {
+                flex-wrap: wrap;
             }
 
-            .topbar h1 {
-                font-size: 19px;
-            }
-
-            .profile-box h4,
-            .profile-box p {
-                display: none;
-            }
-
-            .stats-grid {
+            .stats {
                 grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .profile-details {
-                grid-template-columns: repeat(2, 1fr);
             }
 
             .form-grid {
                 grid-template-columns: 1fr;
             }
 
-            .welcome-banner {
-                padding: 23px 18px;
-            }
-
-            .welcome-banner h2 {
-                font-size: 18px;
-            }
-
             .section {
                 padding: 17px;
             }
-        }
 
-        @media(max-width: 400px) {
-
-            .profile-details {
-                grid-template-columns: 1fr;
+            .welcome {
+                padding: 23px;
             }
 
             .section-header {
                 align-items: flex-start;
                 flex-direction: column;
             }
+
+            .profile-badge {
+                display: none;
+            }
         }
 
-    </style>
+        @media(max-width: 450px) {
+            .topbar h1 {
+                font-size: 19px;
+            }
 
+            .logout-btn {
+                padding: 9px;
+                font-size: 10px;
+            }
+
+            .welcome h2 {
+                font-size: 18px;
+            }
+
+            .stat-card {
+                padding: 17px;
+            }
+
+            .back-btn {
+                padding: 9px 11px;
+                font-size: 10px;
+            }
+
+            .toast {
+                left: 15px;
+                right: 15px;
+                min-width: unset;
+                max-width: unset;
+                top: 15px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
+<div class="layout">
 
-<aside class="sidebar">
+    <!-- SIDEBAR -->
 
-    <div class="brand">
+    <aside class="sidebar" id="sidebar">
 
-        <div class="brand-icon">
-            <i class="bi bi-mortarboard-fill"></i>
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
+            <h2>Place<span>Mate</span></h2>
         </div>
 
-        <h2>Place<span>Mate</span></h2>
+        <p class="menu-label">RECRUITER MENU</p>
 
-    </div>
-
-    <p class="menu-title">MAIN MENU</p>
-
-    <nav class="sidebar-menu">
-
-        <a href="#dashboard" class="active">
-            <i class="bi bi-grid"></i>
-            <span>Dashboard</span>
+        <a href="#overview" class="nav-link active">
+            <i class="bi bi-grid-1x2-fill"></i>
+            Dashboard
         </a>
 
-        <a href="#profile">
-            <i class="bi bi-person"></i>
-            <span>My Profile</span>
+        <a href="#drives" class="nav-link">
+            <i class="bi bi-briefcase-fill"></i>
+            My Placement Drives
         </a>
 
-        <a href="#education">
-            <i class="bi bi-book"></i>
-            <span>Education</span>
+        <a href="#create-drive" class="nav-link">
+            <i class="bi bi-plus-circle-fill"></i>
+            Create Placement Drive
         </a>
 
-        <a href="#drives">
-            <i class="bi bi-briefcase"></i>
-            <span>Placement Drives</span>
+        <a href="#applicants" class="nav-link">
+            <i class="bi bi-people-fill"></i>
+            Applicants
         </a>
 
-        <a href="#applications">
-            <i class="bi bi-file-earmark-text"></i>
-            <span>My Applications</span>
-        </a>
+        <div class="sidebar-bottom">
 
-    </nav>
-
-    <div class="sidebar-bottom">
-
-        <button class="logout-btn" id="logoutBtn">
-            <i class="bi bi-box-arrow-left"></i>
-            <span>Logout</span>
-        </button>
-
-    </div>
-
-</aside>
-
-<!-- MAIN CONTENT -->
-
-<main class="main-content" id="dashboard">
-
-    <!-- TOPBAR -->
-
-    <header class="topbar">
-
-        <div>
-            <h1>Student Dashboard</h1>
-            <p>Manage your placement journey from here.</p>
-        </div>
-
-        <div class="profile-box">
-
-            <div class="profile-icon">
-                <i class="bi bi-person-fill"></i>
+            <div class="recruiter-mini">
+                <div class="avatar" id="sidebarAvatar">R</div>
+                <div>
+                    <h4 id="sidebarName">Recruiter</h4>
+                    <p>Recruiter Account</p>
+                </div>
             </div>
 
-            <div>
-                <h4 id="topStudentName">Loading...</h4>
-                <p>Student</p>
-            </div>
-
-        </div>
-
-    </header>
-
-    <!-- WELCOME -->
-
-    <section class="welcome-banner">
-
-        <h2>Welcome Back, <span id="welcomeName">Student!</span></h2>
-
-        <p>
-            Explore placement opportunities and track your applications.
-        </p>
-
-    </section>
-
-    <!-- STATISTICS -->
-
-    <section class="stats-grid">
-
-        <div class="stat-card">
-
-            <div class="stat-icon icon-green">
-                <i class="bi bi-briefcase"></i>
-            </div>
-
-            <h3 id="totalDrives">0</h3>
-            <p>Available Placement Drives</p>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-icon icon-blue">
-                <i class="bi bi-file-earmark-check"></i>
-            </div>
-
-            <h3 id="totalApplications">0</h3>
-            <p>Total Applications</p>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-icon icon-yellow">
-                <i class="bi bi-star"></i>
-            </div>
-
-            <h3 id="shortlistedApplications">0</h3>
-            <p>Shortlisted Applications</p>
-
-        </div>
-
-    </section>
-
-    <!-- STUDENT PROFILE -->
-
-    <section class="section" id="profile">
-
-        <div class="section-header">
-            <h2>My Profile</h2>
-        </div>
-
-        <div class="profile-details" id="profileDetails">
-
-            <div class="message">
-                Loading student profile...
-            </div>
-
-        </div>
-
-        <div id="profileFormContainer"></div>
-
-    </section>
-
-    <!-- EDUCATION MANAGEMENT -->
-
-    <section class="section" id="education">
-
-        <div class="section-header">
-
-            <h2>Education Details</h2>
-
-            <button
-                    type="button"
-                    class="add-education-btn"
-                    id="showEducationFormBtn"
-                    disabled>
-
-                <i class="bi bi-plus-lg"></i>
-                Add Education
-
+            <button class="nav-link" onclick="logout()">
+                <i class="bi bi-box-arrow-left"></i>
+                Logout
             </button>
 
         </div>
 
-        <div class="education-list" id="educationList">
+    </aside>
 
-            <div class="message">
-                Loading education records...
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div class="topbar-left" style="display:flex;align-items:center;gap:12px;">
+
+                <button class="back-btn" onclick="goBack()" title="Go to previous page">
+                    <i class="bi bi-arrow-left"></i>
+                    Back
+                </button>
+
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+                    <h1>Recruiter Dashboard</h1>
+                    <p>Manage your placement drives and student applications.</p>
+                </div>
+
             </div>
 
-        </div>
+            <div class="top-actions">
+                <div class="profile-badge">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
 
-        <div id="educationFormContainer"></div>
-
-    </section>
-
-    <!-- PLACEMENT DRIVES -->
-
-    <section class="section" id="drives">
-
-        <div class="section-header">
-            <h2>Available Placement Drives</h2>
-        </div>
-
-        <div class="drive-list" id="driveList">
-
-            <div class="message">
-                Loading placement drives...
+                <button class="logout-btn" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+                </button>
             </div>
 
-        </div>
+        </header>
 
-    </section>
+        <!-- OVERVIEW -->
 
-    <!-- APPLICATIONS -->
+        <section id="overview">
 
-    <section class="section" id="applications">
+            <div class="welcome">
+                <h2>Welcome, <span id="welcomeName">Recruiter</span>!</h2>
 
-        <div class="section-header">
-            <h2>My Applications</h2>
-        </div>
+                <p>
+                    Manage your placement opportunities, review student
+                    applications and find the right talent for your company.
+                </p>
 
-        <div class="table-wrapper">
+                <span class="welcome-tag">
+                    <i class="bi bi-shield-check"></i>
+                    RECRUITER PORTAL
+                </span>
+            </div>
 
-            <table>
+            <div class="stats">
 
-                <thead>
+                <div class="stat-card">
+                    <div>
+                        <p>Total Placement Drives</p>
+                        <h2 id="totalDrives">0</h2>
+                    </div>
 
-                <tr>
-                    <th>Company</th>
-                    <th>Job Position</th>
-                    <th>Applied Date</th>
-                    <th>Status</th>
-                </tr>
+                    <div class="stat-icon icon-green">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
+                </div>
 
-                </thead>
+                <div class="stat-card">
+                    <div>
+                        <p>Active Drives</p>
+                        <h2 id="activeDrives">0</h2>
+                    </div>
 
-                <tbody id="applicationList">
+                    <div class="stat-icon icon-blue">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                </div>
 
-                <tr>
-                    <td colspan="4" class="message">
-                        Loading applications...
-                    </td>
-                </tr>
+                <div class="stat-card">
+                    <div>
+                        <p>Total Applications</p>
+                        <h2 id="totalApplicants">0</h2>
+                    </div>
 
-                </tbody>
+                    <div class="stat-icon icon-orange">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
 
-            </table>
+            </div>
 
-        </div>
+        </section>
 
-    </section>
+        <!-- MY DRIVES -->
 
-</main>
+        <section class="section" id="drives">
 
-<!-- JAVASCRIPT -->
+            <div class="section-header">
+                <div>
+                    <h2>My Placement Drives</h2>
+                    <p>Manage placement opportunities created by you.</p>
+                </div>
+
+                <button class="primary-btn"
+                        onclick="showCreateForm()">
+                    <i class="bi bi-plus-lg"></i>
+                    Create New Drive
+                </button>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>COMPANY</th>
+                        <th>JOB TITLE</th>
+                        <th>PACKAGE</th>
+                        <th>MIN CGPA</th>
+                        <th>DEADLINE</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="drivesTable">
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <h3>Loading placement drives...</h3>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- CREATE / EDIT DRIVE -->
+
+        <section class="section" id="create-drive">
+
+            <div class="section-header">
+                <div>
+                    <h2 id="formTitle">Create Placement Drive</h2>
+                    <p id="formSubtitle">
+                        Add a new job opportunity for eligible students.
+                    </p>
+                </div>
+            </div>
+
+            <form id="driveForm">
+
+                <input type="hidden" id="driveId">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="companyName">Company Name *</label>
+                        <input type="text"
+                               id="companyName"
+                               placeholder="e.g. Infosys"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jobTitle">Job Title *</label>
+                        <input type="text"
+                               id="jobTitle"
+                               placeholder="e.g. Java Developer"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="packageLpa">Package (LPA) *</label>
+                        <input type="number"
+                               id="packageLpa"
+                               min="0.01"
+                               step="0.01"
+                               placeholder="e.g. 6.5"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="minimumCgpa">Minimum CGPA *</label>
+                        <input type="number"
+                               id="minimumCgpa"
+                               min="0"
+                               max="10"
+                               step="0.01"
+                               placeholder="e.g. 7.0"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eligibleBranch">Eligible Branch *</label>
+                        <input type="text"
+                               id="eligibleBranch"
+                               placeholder="e.g. CSE"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="graduationYear">Graduation Year *</label>
+                        <input type="number"
+                               id="graduationYear"
+                               min="2020"
+                               max="2100"
+                               placeholder="e.g. 2027"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maximumBacklogs">Maximum Backlogs *</label>
+                        <input type="number"
+                               id="maximumBacklogs"
+                               min="0"
+                               step="1"
+                               value="0"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="applicationDeadline">Application Deadline *</label>
+                        <input type="date"
+                               id="applicationDeadline"
+                               required>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="jobDescription">Job Description</label>
+                        <textarea id="jobDescription"
+                                  placeholder="Enter job responsibilities, required skills and other details..."></textarea>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="primary-btn"
+                            id="submitDriveBtn">
+                        <i class="bi bi-check-circle"></i>
+                        Create Drive
+                    </button>
+
+                    <button type="button"
+                            class="secondary-btn"
+                            id="cancelEditBtn"
+                            onclick="resetDriveForm()"
+                            style="display:none;">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+        <!-- APPLICANTS -->
+
+        <section class="section" id="applicants">
+
+            <div class="section-header">
+                <div>
+                    <h2>Drive Applicants</h2>
+                    <p>Review students who applied to your placement drives.</p>
+                </div>
+
+                <select id="applicantDriveSelect"
+                        onchange="loadApplicants(this.value)"
+                        style="padding:10px;border:1px solid #e1e9e1;border-radius:9px;font-size:11px;max-width:220px;">
+                    <option value="">Select a placement drive</option>
+                </select>
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>STUDENT</th>
+                        <th>EMAIL</th>
+                        <th>APPLICATION ID</th>
+                        <th>APPLIED DATE</th>
+                        <th>STATUS</th>
+                        <th>UPDATE STATUS</th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="applicantsTable">
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-people"></i>
+                                <h3>Select a placement drive</h3>
+                                <p>Applicants will appear here.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<!-- CUSTOM TOAST -->
+
+<div class="toast" id="toast" role="alert" aria-live="assertive">
+    <i class="toast-icon bi bi-check-circle-fill" id="toastIcon"></i>
+    <span class="toast-message" id="toastMessage"></span>
+    <button class="toast-close" onclick="hideToast()" aria-label="Close notification">
+        <i class="bi bi-x-lg"></i>
+    </button>
+</div>
 
 <script>
-
-    // AUTHENTICATION DETAILS
+    // ==========================================
+    // AUTHENTICATION
+    // ==========================================
 
     const token =
         localStorage.getItem("token") ||
@@ -1061,1363 +1178,1064 @@
         localStorage.getItem("userRole") ||
         sessionStorage.getItem("userRole");
 
-    // EMAIL FROM LOGIN
-
     const userEmail =
         localStorage.getItem("userEmail") ||
         sessionStorage.getItem("userEmail") ||
-        "N/A";
+        "Recruiter";
 
+    const normalizedRole = (userRole || "").toUpperCase();
 
-    // PROFILE STATE
+    let accessDenied = false;
 
-    let studentProfileExists = false;
-    let currentStudentId = null;
-
-
-    // CHECK LOGIN
-
-    if (!token || !userId) {
-
-        window.location.replace("index.html");
-
-    } else if (
-        userRole !== "STUDENT" &&
-        userRole !== "ROLE_STUDENT"
-    ) {
-
-        alert("This dashboard is only available for students.");
-
-        window.location.replace("index.html");
-
+    if (!token) {
+        window.location.replace("/index.html");
     }
 
+    if (
+        token &&
+        normalizedRole !== "RECRUITER" &&
+        normalizedRole !== "ROLE_RECRUITER"
+    ) {
+        accessDenied = true;
 
-    // API HELPER
+        document.addEventListener("DOMContentLoaded", () => {
+            showToast(
+                "Access denied. Recruiter account required.",
+                "error"
+            );
+        });
+
+        setTimeout(() => {
+            window.location.replace("/index.html");
+        }, 2200);
+    }
+
+    // ==========================================
+    // GLOBAL VARIABLES
+    // ==========================================
+
+    const API = "/api";
+
+    let drives = [];
+    let currentApplicants = [];
+    let selectedDriveId = null;
+
+    const today = new Date();
+
+    const localToday = new Date(
+        today.getTime() - today.getTimezoneOffset() * 60000
+    ).toISOString().split("T")[0];
+
+    document.getElementById("applicationDeadline").min = localToday;
+
+    // ==========================================
+    // INITIALIZE
+    // ==========================================
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        if (!token || accessDenied) return;
+
+        const displayName = userEmail.split("@")[0] || "Recruiter";
+
+        document.getElementById("welcomeName").textContent = displayName;
+        document.getElementById("sidebarName").textContent = userEmail;
+
+        document.getElementById("sidebarAvatar").textContent =
+            displayName.charAt(0).toUpperCase();
+
+        document.getElementById("driveForm").addEventListener(
+            "submit",
+            saveDrive
+        );
+
+        loadDashboard();
+    });
+
+    // ==========================================
+    // BACK BUTTON
+    // ==========================================
+
+    function goBack() {
+
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "/index.html";
+        }
+    }
+
+    // ==========================================
+    // COMMON API REQUEST
+    // ==========================================
 
     async function apiRequest(url, options = {}) {
 
         const response = await fetch(url, {
-
             ...options,
 
             headers: {
-
+                ...(options.headers || {}),
                 "Authorization": "Bearer " + token,
-
                 ...(options.body ? {
                     "Content-Type": "application/json"
-                } : {}),
-
-                ...(options.headers || {})
-
+                } : {})
             }
-
         });
 
         const responseText = await response.text();
 
-        let data = {};
+        let data = null;
 
-        try {
-
-            data = responseText ? JSON.parse(responseText) : {};
-
-        } catch (error) {
-
-            data = {};
-
+        if (responseText) {
+            try {
+                data = JSON.parse(responseText);
+            } catch {
+                data = responseText;
+            }
         }
 
         if (!response.ok) {
 
-            const errorMessage =
-                data.message ||
-                data.detail ||
-                data.error ||
-                "Request failed with status " + response.status;
+            let message = "Request failed (" + response.status + ")";
 
-            throw new Error(errorMessage);
+            if (typeof data === "string") {
+                message = data || message;
+            } else if (data) {
+                message =
+                    data.message ||
+                    data.error ||
+                    data.detail ||
+                    message;
+            }
 
+            if (response.status === 401) {
+                logout("Session expired. Please login again.");
+            }
+
+            throw new Error(message);
         }
 
         return data;
-
     }
 
+    // ==========================================
+    // CUSTOM TOAST NOTIFICATIONS
+    // ==========================================
 
-    // HTML ESCAPE
+    function showToast(message, type = "success") {
 
-    function escapeHTML(value) {
+        const toast = document.getElementById("toast");
+        const icon = document.getElementById("toastIcon");
+        const messageElement = document.getElementById("toastMessage");
 
-        return String(value ?? "N/A")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        const toastTypes = {
+            success: "bi-check-circle-fill",
+            error: "bi-exclamation-circle-fill",
+            warning: "bi-exclamation-triangle-fill",
+            info: "bi-info-circle-fill"
+        };
 
+        if (type === true) type = "error";
+        if (type === false) type = "success";
+
+        if (!toastTypes[type]) {
+            type = "success";
+        }
+
+        clearTimeout(window.toastTimer);
+
+        toast.className = "toast " + type;
+
+        icon.className =
+            "toast-icon bi " + toastTypes[type];
+
+        messageElement.textContent = message;
+
+        toast.classList.add("show");
+
+        window.toastTimer = setTimeout(() => {
+            hideToast();
+        }, 3500);
     }
 
+    function hideToast() {
 
-    // DATE FORMAT
+        const toast = document.getElementById("toast");
 
-    function formatDate(value) {
+        toast.classList.remove("show");
 
-        if (!value) return "N/A";
-
-        const date = new Date(value);
-
-        if (isNaN(date.getTime())) return value;
-
-        return date.toLocaleDateString("en-IN");
-
+        clearTimeout(window.toastTimer);
     }
 
+    // ==========================================
+    // LOAD DASHBOARD
+    // ==========================================
 
-    // PROFILE API
+    async function loadDashboard() {
+        await loadDrives();
+    }
 
-    async function loadStudentProfile() {
+    // ==========================================
+    // LOAD MY DRIVES
+    // ==========================================
+
+    async function loadDrives() {
+
+        const table = document.getElementById("drivesTable");
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    <div class="empty-state">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <h3>Loading placement drives...</h3>
+                    </div>
+                </td>
+            </tr>
+        `;
 
         try {
 
-            const student = await apiRequest(
-                "/api/students/user/" + encodeURIComponent(userId)
+            const data = await apiRequest(
+                API + "/placement-drives/my-drives"
             );
 
-            studentProfileExists = true;
+            drives = Array.isArray(data) ? data : [];
 
-            currentStudentId = student.id;
+            renderDrives();
+            updateDriveSelect();
 
-            document.getElementById("welcomeName").textContent =
-                (student.name || "Student") + "!";
-
-            document.getElementById("topStudentName").textContent =
-                student.name || "Student";
-
-            const profileFields = [
-
-                ["Student ID", student.id],
-                ["User ID", student.userId],
-                ["Name", student.name],
-                ["Email", userEmail],
-                ["Branch", student.branch],
-                ["Graduation Year", student.graduationYear],
-                ["CGPA", student.cgpa],
-                ["Backlogs", student.backlogs],
-                ["Phone", student.phone]
-
-            ];
-
-            document.getElementById("profileDetails").innerHTML =
-
-                profileFields.map(field => `
-
-                    <div class="detail-item">
-
-                        <p>${escapeHTML(field[0])}</p>
-
-                        <h4>${escapeHTML(field[1])}</h4>
-
-                    </div>
-
-                `).join("");
-
-            document.getElementById("profileFormContainer").innerHTML = "";
-
-            document.getElementById("showEducationFormBtn").disabled = false;
-
-            return true;
+            await updateStats();
 
         } catch (error) {
 
-            console.error("Student Profile Error:", error);
-
-            studentProfileExists = false;
-            currentStudentId = null;
-
-            document.getElementById("welcomeName").textContent =
-                "Student!";
-
-            document.getElementById("topStudentName").textContent =
-                "Student";
-
-            document.getElementById("profileDetails").innerHTML = "";
-
-            document.getElementById("showEducationFormBtn").disabled = true;
-
-            document.getElementById("educationList").innerHTML = `
-
-                <div class="message">
-                    Create your student profile first to manage education details.
-                </div>
-
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <h3>Unable to load drives</h3>
+                            <p>${escapeHtml(error.message)}</p>
+                        </div>
+                    </td>
+                </tr>
             `;
 
-            if (
-                error.message.toLowerCase().includes("student profile not found")
-            ) {
-
-                renderProfileForm();
-
-            } else {
-
-                document.getElementById("profileFormContainer").innerHTML = `
-
-                    <div class="message error-message">
-                        Unable to load student profile: ${escapeHTML(error.message)}
-                    </div>
-
-                `;
-
-            }
-
-            return false;
-
+            showToast(error.message, "error");
         }
-
     }
 
-
-    // CREATE PROFILE FORM
-
-    function renderProfileForm() {
-
-        const formContainer =
-            document.getElementById("profileFormContainer");
-
-        formContainer.innerHTML = `
-
-            <div class="profile-form">
-
-                <h3>Complete Your Student Profile</h3>
-
-                <p>
-                    Please enter your details to get started with PlaceMate.
-                </p>
-
-                <form id="createProfileForm">
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-
-                            <label for="studentName">Full Name</label>
-
-                            <input
-                                type="text"
-                                id="studentName"
-                                placeholder="Enter your full name"
-                                maxlength="100"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="studentBranch">Branch</label>
-
-                            <input
-                                type="text"
-                                id="studentBranch"
-                                placeholder="Example: CSE"
-                                maxlength="100"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="graduationYear">Graduation Year</label>
-
-                            <input
-                                type="number"
-                                id="graduationYear"
-                                placeholder="Example: 2027"
-                                min="2000"
-                                max="2100"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="studentCgpa">CGPA</label>
-
-                            <input
-                                type="number"
-                                id="studentCgpa"
-                                placeholder="Example: 7.29"
-                                min="0"
-                                max="10"
-                                step="0.01"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="studentBacklogs">Backlogs</label>
-
-                            <input
-                                type="number"
-                                id="studentBacklogs"
-                                placeholder="Enter backlogs"
-                                min="0"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="studentPhone">Phone Number</label>
-
-                            <input
-                                type="tel"
-                                id="studentPhone"
-                                placeholder="Enter phone number"
-                                maxlength="15"
-                                required>
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="create-profile-btn"
-                        id="createProfileBtn">
-
-                        Create Student Profile
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        `;
-
-
-        document.getElementById("createProfileForm").addEventListener(
-            "submit",
-            async function(event) {
-
-                event.preventDefault();
-
-                const button =
-                    document.getElementById("createProfileBtn");
-
-                const profileData = {
-
-                    userId: Number(userId),
-
-                    name: document.getElementById("studentName").value.trim(),
-
-                    branch: document.getElementById("studentBranch").value.trim(),
-
-                    graduationYear: Number(
-                        document.getElementById("graduationYear").value
-                    ),
-
-                    cgpa: Number(
-                        document.getElementById("studentCgpa").value
-                    ),
-
-                    backlogs: Number(
-                        document.getElementById("studentBacklogs").value
-                    ),
-
-                    phone: document.getElementById("studentPhone").value.trim()
-
-                };
-
-
-                if (
-                    !profileData.name ||
-                    !profileData.branch ||
-                    !profileData.phone ||
-                    !Number.isInteger(profileData.graduationYear) ||
-                    profileData.graduationYear < 2000 ||
-                    profileData.graduationYear > 2100 ||
-                    !Number.isFinite(profileData.cgpa) ||
-                    profileData.cgpa < 0 ||
-                    profileData.cgpa > 10 ||
-                    !Number.isInteger(profileData.backlogs) ||
-                    profileData.backlogs < 0
-                ) {
-
-                    alert("Please enter valid profile details.");
-
-                    return;
-
-                }
-
-
-                button.disabled = true;
-                button.textContent = "Creating Profile...";
-
-
-                try {
-
-                    await apiRequest(
-                        "/api/students",
-                        {
-                            method: "POST",
-                            body: JSON.stringify(profileData)
-                        }
-                    );
-
-                    alert("Student profile created successfully!");
-
-                    const profileLoaded = await loadStudentProfile();
-
-                    if (profileLoaded) {
-
-                        await loadEducationRecords();
-                        await loadApplications();
-
-                        renderPlacementDrives();
-
-                    }
-
-                } catch (error) {
-
-                    alert("Profile Creation Failed: " + error.message);
-
-                    console.error("Create Profile Error:", error);
-
-                    button.disabled = false;
-                    button.textContent = "Create Student Profile";
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // EDUCATION API
-
-    let educationRecords = [];
-
-
-    async function loadEducationRecords() {
-
-        if (!studentProfileExists || !currentStudentId) {
-
-            document.getElementById("educationList").innerHTML = `
-
-                <div class="message">
-                    Create your student profile first to manage education details.
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-        document.getElementById("educationList").innerHTML = `
-
-            <div class="message">
-                Loading education records...
-            </div>
-
-        `;
-
-
-        try {
-
-            const records = await apiRequest(
-                "/api/education/student/" +
-                encodeURIComponent(currentStudentId)
-            );
-
-            educationRecords = Array.isArray(records) ? records : [];
-
-            renderEducationRecords();
-
-        } catch (error) {
-
-            document.getElementById("educationList").innerHTML = `
-
-                <div class="message error-message">
-                    Unable to load education records: ${escapeHTML(error.message)}
-                </div>
-
-            `;
-
-            console.error("Education Loading Error:", error);
-
-        }
-
-    }
-
-
-    // RENDER EDUCATION RECORDS
-
-    function renderEducationRecords() {
-
-        const educationList =
-            document.getElementById("educationList");
-
-        if (educationRecords.length === 0) {
-
-            educationList.innerHTML = `
-
-                <div class="message">
-                    No education records found. Click Add Education to add your details.
-                </div>
-
-            `;
-
-            return;
-
-        }
-
-
-        educationList.innerHTML = educationRecords.map(record => `
-
-            <div class="education-card">
-
-                <div class="education-card-top">
-
-                    <div class="education-icon">
-                        <i class="bi bi-mortarboard-fill"></i>
-                    </div>
-
-                    <button
-                        type="button"
-                        class="delete-education-btn"
-                        data-education-id="${escapeHTML(record.id)}">
-
-                        <i class="bi bi-trash"></i>
-                        Delete
-
-                    </button>
-
-                </div>
-
-                <h3>${escapeHTML(record.qualification)}</h3>
-
-                <p class="education-institution">
-                    ${escapeHTML(record.institution)}
-                </p>
-
-                <div class="education-info">
-
-                    <span>
-                        Board: ${escapeHTML(record.boardOrUniversity)}
-                    </span>
-
-                    <span>
-                        Passing Year: ${escapeHTML(record.passingYear)}
-                    </span>
-
-                    <span>
-                        Percentage: ${escapeHTML(record.percentage)}%
-                    </span>
-
-                </div>
-
-            </div>
-
-        `).join("");
-
-    }
-
-
-    // SHOW EDUCATION FORM
-
-    document.getElementById("showEducationFormBtn").addEventListener(
-        "click",
-        function() {
-
-            if (!studentProfileExists || !currentStudentId) {
-
-                alert("Please create your student profile first.");
-
-                return;
-
-            }
-
-            renderEducationForm();
-
-        }
-    );
-
-
-    // RENDER EDUCATION FORM
-
-    function renderEducationForm() {
-
-        const container =
-            document.getElementById("educationFormContainer");
-
-        container.innerHTML = `
-
-            <div class="education-form-container">
-
-                <h3>Add Education Details</h3>
-
-                <p>
-                    Enter your academic qualification details below.
-                </p>
-
-                <form id="educationForm">
-
-                    <div class="form-grid">
-
-                        <div class="form-group">
-
-                            <label for="qualification">Qualification</label>
-
-                            <select id="qualification" required>
-
-                                <option value="">Select Qualification</option>
-                                <option value="Class 10">Class 10</option>
-                                <option value="Class 12">Class 12</option>
-                                <option value="Graduation">Graduation</option>
-                                <option value="Post Graduation">Post Graduation</option>
-                                <option value="Other">Other</option>
-
-                            </select>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="institution">Institution Name</label>
-
-                            <input
-                                type="text"
-                                id="institution"
-                                placeholder="Enter school or college name"
-                                maxlength="150"
-                                required>
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="boardOrUniversity">Board / University</label>
-
-                            <input
-                                type="text"
-                                id="boardOrUniversity"
-                                placeholder="Example: MPBSE / DAVV"
-                                maxlength="150">
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="passingYear">Passing Year</label>
-
-                            <input
-                                type="number"
-                                id="passingYear"
-                                placeholder="Example: 2023"
-                                min="1950"
-                                max="2100">
-
-                        </div>
-
-                        <div class="form-group">
-
-                            <label for="percentage">Percentage</label>
-
-                            <input
-                                type="number"
-                                id="percentage"
-                                placeholder="Example: 70.8"
-                                min="0"
-                                max="100"
-                                step="0.01">
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="education-submit-btn"
-                        id="saveEducationBtn">
-
-                        <i class="bi bi-check-circle"></i>
-                        Save Education
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="cancel-education-btn"
-                        id="cancelEducationBtn">
-
-                        Cancel
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        `;
-
-
-        document.getElementById("cancelEducationBtn").addEventListener(
-            "click",
-            function() {
-
-                container.innerHTML = "";
-
-            }
-        );
-
-
-        document.getElementById("educationForm").addEventListener(
-            "submit",
-            async function(event) {
-
-                event.preventDefault();
-
-                const button =
-                    document.getElementById("saveEducationBtn");
-
-                const qualification =
-                    document.getElementById("qualification").value;
-
-                const institution =
-                    document.getElementById("institution").value.trim();
-
-                const boardOrUniversity =
-                    document.getElementById("boardOrUniversity").value.trim();
-
-                const passingYearValue =
-                    document.getElementById("passingYear").value;
-
-                const percentageValue =
-                    document.getElementById("percentage").value;
-
-
-                const passingYear = passingYearValue
-                    ? Number(passingYearValue)
-                    : null;
-
-                const percentage = percentageValue
-                    ? Number(percentageValue)
-                    : null;
-
-
-                if (!qualification || !institution) {
-
-                    alert("Qualification and institution are required.");
-
-                    return;
-
-                }
-
-                if (
-                    passingYear !== null &&
-                    (
-                        !Number.isInteger(passingYear) ||
-                        passingYear < 1950 ||
-                        passingYear > 2100
-                    )
-                ) {
-
-                    alert("Please enter a valid passing year.");
-
-                    return;
-
-                }
-
-                if (
-                    percentage !== null &&
-                    (
-                        !Number.isFinite(percentage) ||
-                        percentage < 0 ||
-                        percentage > 100
-                    )
-                ) {
-
-                    alert("Percentage must be between 0 and 100.");
-
-                    return;
-
-                }
-
-
-                const educationData = {
-
-                    student: {
-                        id: currentStudentId
-                    },
-
-                    qualification: qualification,
-
-                    institution: institution,
-
-                    boardOrUniversity: boardOrUniversity || null,
-
-                    passingYear: passingYear,
-
-                    percentage: percentage
-
-                };
-
-
-                button.disabled = true;
-                button.textContent = "Saving Education...";
-
-
-                try {
-
-                    await apiRequest(
-                        "/api/education",
-                        {
-                            method: "POST",
-                            body: JSON.stringify(educationData)
-                        }
-                    );
-
-                    alert("Education details added successfully!");
-
-                    container.innerHTML = "";
-
-                    await loadEducationRecords();
-
-                } catch (error) {
-
-                    alert("Unable to save education: " + error.message);
-
-                    console.error("Add Education Error:", error);
-
-                    button.disabled = false;
-                    button.textContent = "Save Education";
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // DELETE EDUCATION
-
-    document.getElementById("educationList").addEventListener(
-        "click",
-        async function(event) {
-
-            const button = event.target.closest(".delete-education-btn");
-
-            if (!button) return;
-
-            const educationId = button.dataset.educationId;
-
-            const confirmed = confirm(
-                "Are you sure you want to delete this education record?"
-            );
-
-            if (!confirmed) return;
-
-            button.disabled = true;
-            button.textContent = "Deleting...";
-
-
-            try {
-
-                await apiRequest(
-                    "/api/education/" + encodeURIComponent(educationId),
-                    {
-                        method: "DELETE"
-                    }
-                );
-
-                alert("Education record deleted successfully!");
-
-                await loadEducationRecords();
-
-            } catch (error) {
-
-                alert("Unable to delete education: " + error.message);
-
-                console.error("Delete Education Error:", error);
-
-                button.disabled = false;
-                button.textContent = "Delete";
-
-            }
-
-        }
-    );
-
-
-    // PLACEMENT DRIVES API
-
-    let placementDrives = [];
-
-    let appliedDriveIds = new Set();
-
-
-    async function loadPlacementDrives() {
-
-        try {
-
-            const drives = await apiRequest(
-                "/api/placement-drives"
-            );
-
-            placementDrives = Array.isArray(drives) ? drives : [];
-
-            document.getElementById("totalDrives").textContent =
-                placementDrives.length;
-
-            renderPlacementDrives();
-
-        } catch (error) {
-
-            document.getElementById("driveList").innerHTML = `
-
-                <div class="message error-message">
-                    ${escapeHTML(error.message)}
-                </div>
-
-            `;
-
-            console.error("Placement Drives Error:", error);
-
-        }
-
-    }
-
-
+    // ==========================================
     // RENDER DRIVES
+    // ==========================================
 
-    function renderPlacementDrives() {
+    function renderDrives() {
 
-        const driveList = document.getElementById("driveList");
+        const table = document.getElementById("drivesTable");
 
-        if (placementDrives.length === 0) {
+        if (!drives.length) {
 
-            driveList.innerHTML = `
-
-                <div class="message">
-                    No placement drives available currently.
-                </div>
-
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="bi bi-briefcase"></i>
+                            <h3>No placement drives yet</h3>
+                            <p>Create your first placement drive.</p>
+                        </div>
+                    </td>
+                </tr>
             `;
 
             return;
-
         }
 
-        driveList.innerHTML = placementDrives.map(drive => {
+        table.innerHTML = drives.map(drive => {
 
-            const alreadyApplied =
-                appliedDriveIds.has(String(drive.id));
+            const expired =
+                drive.applicationDeadline &&
+                drive.applicationDeadline < localToday;
 
-            const profileIncomplete = !studentProfileExists;
-
-            const buttonDisabled =
-                alreadyApplied || profileIncomplete;
-
-            let buttonText = "Apply Now";
-
-            if (alreadyApplied) {
-
-                buttonText = "Already Applied";
-
-            } else if (profileIncomplete) {
-
-                buttonText = "Complete Profile First";
-
-            }
+            const status = expired ? "Expired" : "Active";
 
             return `
-
-                <div class="drive-card">
-
-                    <div class="company-icon">
-                        <i class="bi bi-building"></i>
-                    </div>
-
-                    <h3>
-                        ${escapeHTML(drive.jobTitle)}
-                    </h3>
-
-                    <p class="company-name">
-                        ${escapeHTML(drive.companyName)}
-                    </p>
-
-                    <p class="drive-description">
-                        ${escapeHTML(drive.jobDescription || "No job description available.")}
-                    </p>
-
-                    <div class="drive-info">
-
-                        <span>
-                            <i class="bi bi-currency-rupee"></i>
-                            ${escapeHTML(drive.packageLpa ?? "N/A")} LPA
-                        </span>
-
-                        <span>
-                            Min CGPA: ${escapeHTML(drive.minimumCgpa ?? "N/A")}
-                        </span>
-
-                        <span>
-                            Branch: ${escapeHTML(drive.eligibleBranch ?? "N/A")}
-                        </span>
-
-                        <span>
-                            Year: ${escapeHTML(drive.graduationYear ?? "N/A")}
-                        </span>
-
-                        <span>
-                            Deadline: ${escapeHTML(formatDate(drive.applicationDeadline))}
-                        </span>
-
-                    </div>
-
-                    <button
-                        class="apply-btn"
-                        data-drive-id="${escapeHTML(drive.id)}"
-                        ${buttonDisabled ? "disabled" : ""}>
-
-                        ${buttonText}
-
-                    </button>
-
-                </div>
-
-            `;
-
-        }).join("");
-
-    }
-
-
-    // APPLICATION API
-
-    let myApplications = [];
-
-
-    async function loadApplications() {
-
-        if (!studentProfileExists) {
-
-            document.getElementById("totalApplications").textContent = "0";
-
-            document.getElementById("shortlistedApplications").textContent = "0";
-
-            document.getElementById("applicationList").innerHTML = `
-
                 <tr>
-                    <td colspan="4" class="message">
-                        Complete your student profile to view applications.
+
+                    <td class="company-name">
+                        ${escapeHtml(drive.companyName)}
                     </td>
-                </tr>
 
-            `;
+                    <td>${escapeHtml(drive.jobTitle)}</td>
 
-            return;
+                    <td>${escapeHtml(drive.packageLpa ?? "N/A")} LPA</td>
 
-        }
+                    <td>${escapeHtml(drive.minimumCgpa ?? "N/A")}</td>
 
-
-        try {
-
-            const applications = await apiRequest(
-                "/api/placement-applications/my-applications"
-            );
-
-            myApplications = Array.isArray(applications)
-                ? applications
-                : [];
-
-            document.getElementById("totalApplications").textContent =
-                myApplications.length;
-
-            const shortlistedCount = myApplications.filter(
-
-                application =>
-                    String(application.status).toUpperCase() === "SHORTLISTED"
-
-            ).length;
-
-            document.getElementById("shortlistedApplications").textContent =
-                shortlistedCount;
-
-
-            appliedDriveIds = new Set(
-
-                myApplications
-                    .filter(application => application.placementDrive)
-                    .map(application =>
-                        String(application.placementDrive.id)
-                    )
-
-            );
-
-
-            renderApplications();
-
-            renderPlacementDrives();
-
-        } catch (error) {
-
-            document.getElementById("applicationList").innerHTML = `
-
-                <tr>
-                    <td colspan="4" class="message error-message">
-                        ${escapeHTML(error.message)}
-                    </td>
-                </tr>
-
-            `;
-
-            console.error("Applications Error:", error);
-
-        }
-
-    }
-
-
-    // RENDER APPLICATIONS
-
-    function renderApplications() {
-
-        const applicationList =
-            document.getElementById("applicationList");
-
-        if (myApplications.length === 0) {
-
-            applicationList.innerHTML = `
-
-                <tr>
-                    <td colspan="4" class="message">
-                        You have not applied for any placement drive yet.
-                    </td>
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-        applicationList.innerHTML = myApplications.map(application => {
-
-            const drive = application.placementDrive;
-
-            const companyName = drive
-                ? drive.companyName
-                : "N/A";
-
-            const jobTitle = drive
-                ? drive.jobTitle
-                : "N/A";
-
-            const status = String(
-                application.status || "UNKNOWN"
-            ).toUpperCase();
-
-            let statusClass = "status-default";
-
-            if (status === "APPLIED") {
-                statusClass = "status-applied";
-            }
-
-            if (status === "SHORTLISTED") {
-                statusClass = "status-shortlisted";
-            }
-
-            if (status === "REJECTED") {
-                statusClass = "status-rejected";
-            }
-
-            return `
-
-                <tr>
-
-                    <td>${escapeHTML(companyName)}</td>
-
-                    <td>${escapeHTML(jobTitle)}</td>
-
-                    <td>${escapeHTML(formatDate(application.appliedAt))}</td>
+                    <td>${formatDate(drive.applicationDeadline)}</td>
 
                     <td>
-                        <span class="status ${statusClass}">
-                            ${escapeHTML(status)}
+                        <span class="status ${
+                            expired ? "status-expired" : "status-active"
+                        }">
+                            ${status}
                         </span>
                     </td>
 
+                    <td>
+                        <div class="action-group">
+
+                            <button class="action-btn view-btn"
+                                title="View Applicants"
+                                onclick="selectDriveForApplicants(${Number(drive.id)})">
+                                <i class="bi bi-people"></i>
+                            </button>
+
+                            <button class="action-btn edit-btn"
+                                title="Edit Drive"
+                                onclick="editDrive(${Number(drive.id)})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <button class="action-btn delete-btn"
+                                title="Delete Drive"
+                                onclick="deleteDrive(${Number(drive.id)})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </div>
+                    </td>
+
                 </tr>
-
             `;
-
         }).join("");
-
     }
 
+    // ==========================================
+    // DASHBOARD STATISTICS
+    // ==========================================
 
-    // APPLY FOR DRIVE
+    async function updateStats() {
 
-    document.getElementById("driveList").addEventListener(
-        "click",
-        async function(event) {
+        const activeCount = drives.filter(drive => {
 
-            const button = event.target.closest(".apply-btn");
+            return !drive.applicationDeadline ||
+                drive.applicationDeadline >= localToday;
 
-            if (!button || button.disabled) return;
+        }).length;
 
-            if (!studentProfileExists) {
+        document.getElementById("totalDrives").textContent =
+            drives.length;
 
-                alert("Please complete your student profile first.");
+        document.getElementById("activeDrives").textContent =
+            activeCount;
 
-                document.getElementById("profile").scrollIntoView({
-                    behavior: "smooth"
-                });
+        document.getElementById("totalApplicants").textContent = "...";
 
-                return;
+        try {
 
-            }
+            const results = await Promise.all(
+                drives.map(async drive => {
 
-            const driveId = button.dataset.driveId;
+                    const applications = await apiRequest(
+                        API + "/placement-applications/drive/" + drive.id
+                    );
 
-            const confirmed = confirm(
-                "Are you sure you want to apply for this placement drive?"
+                    return Array.isArray(applications)
+                        ? applications.length
+                        : 0;
+                })
             );
 
-            if (!confirmed) return;
-
-            button.disabled = true;
-            button.textContent = "Applying...";
-
-            try {
-
-                await apiRequest(
-                    "/api/placement-applications/apply/" +
-                    encodeURIComponent(driveId),
-                    {
-                        method: "POST"
-                    }
-                );
-
-                alert("Application submitted successfully!");
-
-                await loadApplications();
-
-            } catch (error) {
-
-                alert(error.message);
-
-                console.error("Apply Error:", error);
-
-            } finally {
-
-                renderPlacementDrives();
-
-            }
-
-        }
-    );
-
-
-    // LOGOUT
-
-    document.getElementById("logoutBtn").addEventListener(
-        "click",
-        function() {
-
-            const confirmed = confirm(
-                "Are you sure you want to logout?"
+            const total = results.reduce(
+                (sum, count) => sum + count,
+                0
             );
 
-            if (!confirmed) return;
+            document.getElementById("totalApplicants").textContent =
+                total;
 
-            localStorage.removeItem("token");
-            localStorage.removeItem("userId");
-            localStorage.removeItem("userRole");
-            localStorage.removeItem("userEmail");
+        } catch (error) {
 
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("userId");
-            sessionStorage.removeItem("userRole");
-            sessionStorage.removeItem("userEmail");
+            console.error("Application statistics error:", error);
 
-            window.location.replace("index.html");
-
+            document.getElementById("totalApplicants").textContent =
+                "N/A";
         }
-    );
+    }
 
+    // ==========================================
+    // DRIVE DROPDOWN
+    // ==========================================
 
-    // ACTIVE SIDEBAR LINK
+    function updateDriveSelect() {
 
-    document.querySelectorAll(".sidebar-menu a").forEach(link => {
+        const select = document.getElementById("applicantDriveSelect");
 
-        link.addEventListener("click", function() {
+        const previousValue = select.value;
 
-            document.querySelectorAll(".sidebar-menu a").forEach(item => {
+        select.innerHTML = `
+            <option value="">Select a placement drive</option>
+        `;
 
-                item.classList.remove("active");
+        drives.forEach(drive => {
 
-            });
+            const option = document.createElement("option");
 
-            this.classList.add("active");
+            option.value = drive.id;
 
+            option.textContent =
+                drive.companyName + " - " + drive.jobTitle;
+
+            select.appendChild(option);
         });
 
-    });
+        if (drives.some(drive => String(drive.id) === previousValue)) {
 
-
-    // INITIALIZE DASHBOARD
-
-    async function initializeDashboard() {
-
-        if (
-            !token ||
-            !userId ||
-            (userRole !== "STUDENT" && userRole !== "ROLE_STUDENT")
-        ) {
-
-            return;
-
-        }
-
-        const results = await Promise.all([
-
-            loadStudentProfile(),
-
-            loadPlacementDrives()
-
-        ]);
-
-        const profileLoaded = results[0];
-
-        if (profileLoaded) {
-
-            await Promise.all([
-
-                loadEducationRecords(),
-
-                loadApplications()
-
-            ]);
+            select.value = previousValue;
 
         } else {
 
-            await loadApplications();
-
+            select.value = "";
+            selectedDriveId = null;
+            showApplicantPlaceholder();
         }
-
     }
 
+    // ==========================================
+    // CREATE / UPDATE DRIVE
+    // ==========================================
 
-    initializeDashboard();
+    async function saveDrive(event) {
+
+        event.preventDefault();
+
+        const driveId = document.getElementById("driveId").value;
+
+        const payload = {
+
+            companyName:
+                document.getElementById("companyName").value.trim(),
+
+            jobTitle:
+                document.getElementById("jobTitle").value.trim(),
+
+            jobDescription:
+                document.getElementById("jobDescription").value.trim(),
+
+            packageLpa:
+                Number(document.getElementById("packageLpa").value),
+
+            minimumCgpa:
+                Number(document.getElementById("minimumCgpa").value),
+
+            eligibleBranch:
+                document.getElementById("eligibleBranch").value.trim(),
+
+            graduationYear:
+                Number(document.getElementById("graduationYear").value),
+
+            maximumBacklogs:
+                Number(document.getElementById("maximumBacklogs").value),
+
+            applicationDeadline:
+                document.getElementById("applicationDeadline").value
+        };
+
+        if (
+            !payload.companyName ||
+            !payload.jobTitle ||
+            !payload.eligibleBranch ||
+            !payload.applicationDeadline
+        ) {
+            showToast("Please fill all required fields.", "error");
+            return;
+        }
+
+        if (
+            !Number.isFinite(payload.packageLpa) ||
+            payload.packageLpa <= 0 ||
+            !Number.isFinite(payload.minimumCgpa) ||
+            payload.minimumCgpa < 0 ||
+            payload.minimumCgpa > 10 ||
+            !Number.isInteger(payload.maximumBacklogs) ||
+            payload.maximumBacklogs < 0 ||
+            !Number.isInteger(payload.graduationYear)
+        ) {
+            showToast("Please enter valid placement details.", "error");
+            return;
+        }
+
+        if (
+            payload.applicationDeadline < localToday &&
+            !driveId
+        ) {
+            showToast("Application deadline cannot be in the past.", "error");
+            return;
+        }
+
+        const button = document.getElementById("submitDriveBtn");
+
+        button.disabled = true;
+        button.textContent = "Please wait...";
+
+        try {
+
+            if (driveId) {
+
+                await apiRequest(
+                    API + "/placement-drives/" + driveId,
+                    {
+                        method: "PUT",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                showToast("Placement drive updated successfully!", "success");
+
+            } else {
+
+                await apiRequest(
+                    API + "/placement-drives",
+                    {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                showToast("Placement drive created successfully!", "success");
+            }
+
+            resetDriveForm();
+
+            await loadDrives();
+
+            document.getElementById("drives").scrollIntoView({
+                behavior: "smooth"
+            });
+
+        } catch (error) {
+
+            showToast(error.message, "error");
+
+        } finally {
+
+            button.disabled = false;
+
+            button.innerHTML =
+                document.getElementById("driveId").value
+                    ? '<i class="bi bi-check-circle"></i> Update Drive'
+                    : '<i class="bi bi-check-circle"></i> Create Drive';
+        }
+    }
+
+    // ==========================================
+    // EDIT DRIVE
+    // ==========================================
+
+    function editDrive(id) {
+
+        const drive = drives.find(
+            item => Number(item.id) === Number(id)
+        );
+
+        if (!drive) {
+            showToast("Placement drive not found.", "error");
+            return;
+        }
+
+        document.getElementById("driveId").value = drive.id;
+        document.getElementById("companyName").value = drive.companyName || "";
+        document.getElementById("jobTitle").value = drive.jobTitle || "";
+        document.getElementById("jobDescription").value = drive.jobDescription || "";
+        document.getElementById("packageLpa").value = drive.packageLpa ?? "";
+        document.getElementById("minimumCgpa").value = drive.minimumCgpa ?? "";
+        document.getElementById("eligibleBranch").value = drive.eligibleBranch || "";
+        document.getElementById("graduationYear").value = drive.graduationYear ?? "";
+        document.getElementById("maximumBacklogs").value = drive.maximumBacklogs ?? 0;
+        document.getElementById("applicationDeadline").value =
+            drive.applicationDeadline || "";
+
+        document.getElementById("formTitle").textContent =
+            "Edit Placement Drive";
+
+        document.getElementById("formSubtitle").textContent =
+            "Update your placement opportunity.";
+
+        document.getElementById("submitDriveBtn").innerHTML =
+            '<i class="bi bi-check-circle"></i> Update Drive';
+
+        document.getElementById("cancelEditBtn").style.display =
+            "inline-block";
+
+        document.getElementById("create-drive").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    // ==========================================
+    // RESET FORM
+    // ==========================================
+
+    function resetDriveForm() {
+
+        document.getElementById("driveForm").reset();
+
+        document.getElementById("driveId").value = "";
+
+        document.getElementById("formTitle").textContent =
+            "Create Placement Drive";
+
+        document.getElementById("formSubtitle").textContent =
+            "Add a new job opportunity for eligible students.";
+
+        document.getElementById("submitDriveBtn").innerHTML =
+            '<i class="bi bi-check-circle"></i> Create Drive';
+
+        document.getElementById("cancelEditBtn").style.display =
+            "none";
+
+        document.getElementById("applicationDeadline").min =
+            localToday;
+    }
+
+    function showCreateForm() {
+
+        resetDriveForm();
+
+        document.getElementById("create-drive").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    // ==========================================
+    // DELETE DRIVE
+    // ==========================================
+
+    async function deleteDrive(id) {
+
+        const drive = drives.find(
+            item => Number(item.id) === Number(id)
+        );
+
+        if (!drive) {
+            showToast("Placement drive not found.", "error");
+            return;
+        }
+
+        const confirmed = confirm(
+            "Delete " + drive.companyName +
+            " - " + drive.jobTitle + "?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+
+            await apiRequest(
+                API + "/placement-drives/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            showToast("Placement drive deleted successfully!", "success");
+
+            await loadDrives();
+
+        } catch (error) {
+
+            showToast(error.message, "error");
+        }
+    }
+
+    // ==========================================
+    // APPLICANTS PLACEHOLDER
+    // ==========================================
+
+    function showApplicantPlaceholder() {
+
+        document.getElementById("applicantsTable").innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <i class="bi bi-people"></i>
+                        <h3>Select a placement drive</h3>
+                        <p>Applicants will appear here.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    // ==========================================
+    // SELECT DRIVE
+    // ==========================================
+
+    function selectDriveForApplicants(id) {
+
+        const select = document.getElementById("applicantDriveSelect");
+
+        select.value = String(id);
+
+        loadApplicants(id);
+
+        document.getElementById("applicants").scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+
+    // ==========================================
+    // LOAD APPLICANTS
+    // ==========================================
+
+    async function loadApplicants(driveId) {
+
+        const table = document.getElementById("applicantsTable");
+
+        if (!driveId) {
+
+            selectedDriveId = null;
+            currentApplicants = [];
+
+            showApplicantPlaceholder();
+            return;
+        }
+
+        if (!drives.some(drive => String(drive.id) === String(driveId))) {
+
+            showToast("Invalid placement drive selection.", "error");
+            showApplicantPlaceholder();
+            return;
+        }
+
+        selectedDriveId = driveId;
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    <div class="empty-state">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <h3>Loading applicants...</h3>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        try {
+
+            const data = await apiRequest(
+                API + "/placement-applications/drive/" + driveId
+            );
+
+            if (String(selectedDriveId) !== String(driveId)) return;
+
+            currentApplicants = Array.isArray(data) ? data : [];
+
+            renderApplicants();
+
+        } catch (error) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-exclamation-circle"></i>
+                            <h3>Unable to load applicants</h3>
+                            <p>${escapeHtml(error.message)}</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            showToast(error.message, "error");
+        }
+    }
+
+    // ==========================================
+    // RENDER APPLICANTS
+    // ==========================================
+
+    function renderApplicants() {
+
+        const table = document.getElementById("applicantsTable");
+
+        if (!currentApplicants.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-person-x"></i>
+                            <h3>No applications yet</h3>
+                            <p>No students have applied for this drive.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        table.innerHTML = currentApplicants.map(application => {
+
+            const student = application.student || {};
+
+            const studentName = student.name || "Student";
+
+            // Student.user is intentionally hidden by backend JSON configuration.
+            const email = "Not available";
+
+            const status = (application.status || "APPLIED").toUpperCase();
+
+            const options = [
+                "APPLIED",
+                "SHORTLISTED",
+                "REJECTED",
+                "SELECTED"
+            ];
+
+            const statusOptions = options.map(option => `
+                <option value="${option}"
+                    ${status === option ? "selected" : ""}>
+                    ${option}
+                </option>
+            `).join("");
+
+            return `
+                <tr>
+
+                    <td>
+                        <strong class="company-name">
+                            ${escapeHtml(studentName)}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            ${escapeHtml(student.branch || "N/A")}
+                            · CGPA ${escapeHtml(student.cgpa ?? "N/A")}
+                        </small>
+
+                        <br>
+
+                        <small>
+                            Graduation: ${escapeHtml(student.graduationYear ?? "N/A")}
+                            · Backlogs: ${escapeHtml(student.backlogs ?? "N/A")}
+                        </small>
+
+                        <br>
+
+                        <small>
+                            Phone: ${escapeHtml(student.phone || "N/A")}
+                        </small>
+                    </td>
+
+                    <td>${email}</td>
+
+                    <td>#${escapeHtml(application.id)}</td>
+
+                    <td>${formatDateTime(application.appliedAt)}</td>
+
+                    <td>
+                        <span class="status status-active">
+                            ${escapeHtml(status)}
+                        </span>
+                    </td>
+
+                    <td>
+                        <div style="display:flex;gap:6px;align-items:center;">
+
+                            <select
+                                id="status-${Number(application.id)}"
+                                style="padding:7px;border:1px solid #e1e9e1;border-radius:7px;font-size:9px;">
+
+                                ${statusOptions}
+
+                            </select>
+
+                            <button class="action-btn edit-btn"
+                                title="Save Status"
+                                onclick="updateStatus(${Number(application.id)})">
+
+                                <i class="bi bi-check-lg"></i>
+
+                            </button>
+
+                        </div>
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+    }
+
+    // ==========================================
+    // UPDATE APPLICATION STATUS
+    // ==========================================
+
+    async function updateStatus(applicationId) {
+
+        const select = document.getElementById(
+            "status-" + applicationId
+        );
+
+        if (!select) return;
+
+        const newStatus = select.value;
+
+        const allowedStatuses = [
+            "APPLIED",
+            "SHORTLISTED",
+            "REJECTED",
+            "SELECTED"
+        ];
+
+        if (!allowedStatuses.includes(newStatus)) {
+            showToast("Invalid application status.", "error");
+            return;
+        }
+
+        try {
+
+            await apiRequest(
+                API + "/placement-applications/" +
+                applicationId + "/status",
+                {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                        status: newStatus
+                    })
+                }
+            );
+
+            showToast("Application status updated successfully!", "success");
+
+            if (selectedDriveId) {
+                await loadApplicants(selectedDriveId);
+            }
+
+            await updateStats();
+
+        } catch (error) {
+
+            showToast(error.message, "error");
+        }
+    }
+
+    // ==========================================
+    // DATE FORMAT
+    // ==========================================
+
+    function formatDate(dateValue) {
+
+        if (!dateValue) return "N/A";
+
+        const date = new Date(dateValue + "T00:00:00");
+
+        if (isNaN(date.getTime())) return "N/A";
+
+        return date.toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    function formatDateTime(dateValue) {
+
+        if (!dateValue) return "N/A";
+
+        const date = new Date(dateValue);
+
+        if (isNaN(date.getTime())) return "N/A";
+
+        return date.toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    // ==========================================
+    // HTML ESCAPE
+    // ==========================================
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value).replace(/[&<>"']/g, character => {
+
+            const entities = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            };
+
+            return entities[character];
+        });
+    }
+
+    // ==========================================
+    // SIDEBAR
+    // ==========================================
+
+    function toggleSidebar() {
+
+        document.getElementById("sidebar").classList.toggle("open");
+    }
+
+    document.querySelectorAll(".nav-link[href^='#']").forEach(link => {
+
+        link.addEventListener("click", function () {
+
+            document.querySelectorAll(".nav-link[href^='#']")
+                .forEach(item => item.classList.remove("active"));
+
+            this.classList.add("active");
+
+            document.getElementById("sidebar").classList.remove("open");
+        });
+    });
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    function logout(message) {
+
+        [
+            "token",
+            "userId",
+            "userRole",
+            "userEmail"
+        ].forEach(key => {
+
+            localStorage.removeItem(key);
+            sessionStorage.removeItem(key);
+        });
+
+        if (message) {
+
+            showToast(message, "warning");
+
+            setTimeout(() => {
+                window.location.replace("/index.html");
+            }, 1800);
+
+        } else {
+
+            window.location.replace("/index.html");
+        }
+    }
 
 </script>
 

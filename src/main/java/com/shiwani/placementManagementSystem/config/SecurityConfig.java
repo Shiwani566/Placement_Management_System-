@@ -79,6 +79,7 @@ public class SecurityConfig {
                                 "/",
                                 "/index.html",
                                 "/register.html",
+                                "/reset-password.html",
                                 "/favicon.ico",
                                 "/student-dashboard.html",
                                 "/recruiter-dashboard.html",
@@ -95,7 +96,9 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/api/auth/login",
-                                "/api/auth/register"
+                                "/api/auth/register",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password"
                         ).permitAll()
 
                         // ---------------------------------

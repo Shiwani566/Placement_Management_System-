@@ -929,18 +929,60 @@
     });
 
 
-    // FORGOT PASSWORD - NOT IMPLEMENTED YET
+    // FORGOT PASSWORD - BACKEND API INTEGRATION
 
-    document.getElementById("forgotPassword").addEventListener("click", function (event) {
+document.getElementById("forgotPassword").addEventListener("click", async function (event) {
 
-        event.preventDefault();
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+
+    if (!email) {
+        showToast("Please enter your registered email address first.", "error");
+        document.getElementById("email").focus();
+        return;
+    }
+
+    const removeToast = showToast("Sending password reset link...", "info", 0);
+
+    try {
+
+        const response = await fetch("/api/auth/forgot-password", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({ email: email })
+
+        });
+
+        const data = await response.json();
+
+        removeToast();
+
+        if (!response.ok) {
+            showToast(data.message || "Unable to process request.", "error");
+            return;
+        }
 
         showToast(
-            "Forgot password functionality is not available yet.",
-            "info"
+            data.message || "If your account exists, a reset link will be sent.",
+            "success",
+            5000
         );
 
-    });
+    } catch (error) {
+
+        removeToast();
+
+        showToast("Unable to connect to server.", "error");
+
+    }
+
+});
 
 </script>
 

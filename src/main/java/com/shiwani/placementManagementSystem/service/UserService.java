@@ -3,33 +3,66 @@ package com.shiwani.placementManagementSystem.service;
 import com.shiwani.placementManagementSystem.dto.LoginRequest;
 import com.shiwani.placementManagementSystem.dto.LoginResponse;
 import com.shiwani.placementManagementSystem.dto.RegisterRequest;
+import com.shiwani.placementManagementSystem.entity.PasswordResetToken;
 import com.shiwani.placementManagementSystem.entity.Role;
 import com.shiwani.placementManagementSystem.entity.User;
+import com.shiwani.placementManagementSystem.repository.PasswordResetTokenRepository;
 import com.shiwani.placementManagementSystem.repository.RoleRepository;
 import com.shiwani.placementManagementSystem.repository.UserRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.HexFormat;
 
 @Service
 public class UserService {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final JavaMailSender mailSender;
+
+    private final SecureRandom secureRandom = new SecureRandom();
+
+    @Value("${app.frontend.base-url:http://localhost:8080}")
+    private String frontendBaseUrl;
+
+    @Value("${spring.mail.username:}")
+    private String mailUsername;
 
     public UserService(
             UserRepository userRepository,
             RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            PasswordResetTokenRepository passwordResetTokenRepository,
+            JavaMailSender mailSender) {
 
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.mailSender = mailSender;
     }
 
     // Student Registration
@@ -144,7 +177,6 @@ public class UserService {
             );
         }
 
-        // Prevent disabled users from logging in
         if (!user.isEnabled()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
@@ -161,5 +193,152 @@ public class UserService {
                 user.getRole().getName(),
                 token
         );
+    }
+
+    // Forgot Password
+    @Transactional
+    public void forgotPassword(String email) {
+
+        if (email == null || email.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email is required"
+            );
+        }
+
+        String normalizedEmail = email.trim().toLowerCase();
+
+        User user = userRepository.findByEmail(normalizedEmail)
+                .orElse(null);
+
+        if (user == null || !user.isEnabled()) {
+            return;
+        }
+
+        passwordResetTokenRepository.deleteByUser(user);
+
+        byte[] randomBytes = new byte[32];
+        secureRandom.nextBytes(randomBytes);
+
+        String rawToken = Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(randomBytes);
+
+        String tokenHash = hashToken(rawToken);
+
+        PasswordResetToken resetToken = new PasswordResetToken(
+                tokenHash,
+                user,
+                LocalDateTime.now().plusMinutes(15)
+        );
+
+        passwordResetTokenRepository.save(resetToken);
+
+        String resetLink = frontendBaseUrl
+                + "/reset-password.html?token="
+                + rawToken;
+
+        try {
+
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom(mailUsername);
+            message.setTo(user.getEmail());
+            message.setSubject("PlaceMate - Password Reset");
+
+            message.setText(
+                    "Hello,\n\n"
+                            + "We received a request to reset your PlaceMate password.\n\n"
+                            + "Use the following link to reset your password:\n"
+                            + resetLink
+                            + "\n\nThis link expires in 15 minutes and can be used only once."
+                            + "\n\nIf you did not request this, you can ignore this email."
+            );
+
+            mailSender.send(message);
+
+            log.info("Password reset email sent successfully to {}", user.getEmail());
+
+        } catch (RuntimeException exception) {
+
+            log.error("Password reset email sending failed", exception);
+
+            passwordResetTokenRepository.deleteByUser(user);
+
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Unable to send password reset email. Please try again later."
+            );
+        }
+    }
+
+    // Reset Password
+    @Transactional
+    public void resetPassword(String rawToken, String newPassword) {
+
+        if (rawToken == null || rawToken.isBlank()
+                || newPassword == null || newPassword.isBlank()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Token and new password are required"
+            );
+        }
+
+        if (newPassword.length() < 8) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Password must contain at least 8 characters"
+            );
+        }
+
+        String tokenHash = hashToken(rawToken);
+
+        PasswordResetToken resetToken =
+                passwordResetTokenRepository.findByTokenHash(tokenHash)
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.BAD_REQUEST,
+                                "Invalid or expired reset link"
+                        ));
+
+        if (resetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+
+            passwordResetTokenRepository.delete(resetToken);
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid or expired reset link"
+            );
+        }
+
+        User user = resetToken.getUser();
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken);
+    }
+
+    // SHA-256 Token Hashing
+    private String hashToken(String token) {
+
+        try {
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            byte[] hash = digest.digest(
+                    token.getBytes(StandardCharsets.UTF_8)
+            );
+
+            return HexFormat.of().formatHex(hash);
+
+        } catch (Exception exception) {
+
+            throw new IllegalStateException(
+                    "Unable to process reset token",
+                    exception
+            );
+        }
     }
 }

@@ -42,49 +42,27 @@
             gap: 12px;
             padding: 15px 16px;
             border-radius: 13px;
-            background: rgba(255, 255, 255, 0.96);
+            background: rgba(255, 255, 255, 0.97);
             box-shadow: 0 8px 28px rgba(18, 61, 43, 0.16);
             border-left: 5px solid #6cab42;
             animation: toastSlideIn .3s ease forwards;
             backdrop-filter: blur(12px);
         }
 
-        .toast.success {
-            border-left-color: #65a943;
-        }
-
-        .toast.error {
-            border-left-color: #d94c43;
-        }
-
-        .toast.warning {
-            border-left-color: #e59a32;
-        }
-
-        .toast.info {
-            border-left-color: #4285b5;
-        }
+        .toast.success { border-left-color: #65a943; }
+        .toast.error { border-left-color: #d94c43; }
+        .toast.warning { border-left-color: #e59a32; }
+        .toast.info { border-left-color: #4285b5; }
 
         .toast-icon {
             font-size: 21px;
             flex-shrink: 0;
         }
 
-        .toast.success .toast-icon {
-            color: #4d9635;
-        }
-
-        .toast.error .toast-icon {
-            color: #d94c43;
-        }
-
-        .toast.warning .toast-icon {
-            color: #e59a32;
-        }
-
-        .toast.info .toast-icon {
-            color: #4285b5;
-        }
+        .toast.success .toast-icon { color: #4d9635; }
+        .toast.error .toast-icon { color: #d94c43; }
+        .toast.warning .toast-icon { color: #e59a32; }
+        .toast.info .toast-icon { color: #4285b5; }
 
         .toast-content {
             flex: 1;
@@ -112,31 +90,118 @@
             cursor: pointer;
         }
 
-        .toast-close:hover {
-            color: #183b2b;
-        }
+        .toast-close:hover { color: #183b2b; }
 
         .toast.hide {
             animation: toastSlideOut .3s ease forwards;
         }
 
         @keyframes toastSlideIn {
-            from {
-                opacity: 0;
-                transform: translateX(25px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(25px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         @keyframes toastSlideOut {
-            to {
+            to { opacity: 0; transform: translateX(25px); }
+        }
+
+        /* CUSTOM CONFIRMATION MODAL */
+
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(16, 42, 29, 0.65);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .confirm-modal.show {
+            display: flex;
+        }
+
+        .confirm-content {
+            width: 100%;
+            max-width: 390px;
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+            animation: confirmAppear .25s ease;
+        }
+
+        @keyframes confirmAppear {
+            from {
                 opacity: 0;
-                transform: translateX(25px);
+                transform: translateY(15px) scale(.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
+
+        .confirm-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #fff3df;
+            color: #dc922b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 17px;
+        }
+
+        .confirm-content h3 {
+            font-size: 18px;
+            margin-bottom: 9px;
+        }
+
+        .confirm-content p {
+            color: #718276;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .confirm-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .confirm-cancel,
+        .confirm-proceed {
+            padding: 10px 17px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .confirm-cancel {
+            background: #edf2ed;
+            color: #34513e;
+        }
+
+        .confirm-proceed {
+            background: #4d8c35;
+            color: white;
+        }
+
+        .confirm-proceed.danger {
+            background: #d94c43;
+        }
+
+        .confirm-proceed:hover { opacity: .9; }
+        .confirm-cancel:hover { background: #e1e9e1; }
+
+        /* LAYOUT */
 
         .layout {
             display: flex;
@@ -159,9 +224,7 @@
             margin: 0 12px 40px;
         }
 
-        .logo span {
-            color: white;
-        }
+        .logo span { color: white; }
 
         .nav-item {
             display: flex;
@@ -183,9 +246,7 @@
             font-weight: 600;
         }
 
-        .nav-item i {
-            font-size: 18px;
-        }
+        .nav-item i { font-size: 18px; }
 
         .logout {
             position: absolute;
@@ -227,17 +288,10 @@
             margin-right: 7px;
         }
 
-        .section {
-            display: none;
-        }
+        .section { display: none; }
+        .section.active { display: block; }
 
-        .section.active {
-            display: block;
-        }
-
-        .section-heading {
-            margin-bottom: 22px;
-        }
+        .section-heading { margin-bottom: 22px; }
 
         .section-heading h2 {
             font-size: 21px;
@@ -304,9 +358,7 @@
             margin-bottom: 20px;
         }
 
-        .panel-header h3 {
-            font-size: 17px;
-        }
+        .panel-header h3 { font-size: 17px; }
 
         button {
             border: none;
@@ -323,9 +375,7 @@
             font-weight: 600;
         }
 
-        .primary-btn:hover {
-            background: #356d25;
-        }
+        .primary-btn:hover { background: #356d25; }
 
         .search {
             border: 1px solid #dce8dc;
@@ -336,9 +386,7 @@
             width: 230px;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-        }
+        .table-wrapper { overflow-x: auto; }
 
         table {
             width: 100%;
@@ -359,9 +407,7 @@
             background: #f8fbf7;
         }
 
-        td {
-            color: #344b3c;
-        }
+        td { color: #344b3c; }
 
         .badge {
             padding: 5px 10px;
@@ -390,32 +436,12 @@
             font-size: 11px;
         }
 
-        .danger-btn:hover {
-            background: #ffe0da;
-        }
+        .danger-btn:hover { background: #ffe0da; }
 
         .empty {
             text-align: center;
             padding: 25px;
             color: #89968c;
-        }
-
-        .message {
-            padding: 12px 15px;
-            border-radius: 9px;
-            margin-bottom: 17px;
-            font-size: 12px;
-            display: none;
-        }
-
-        .success {
-            background: #eaf7e6;
-            color: #39742b;
-        }
-
-        .error {
-            background: #fff0ed;
-            color: #c43d31;
         }
 
         .modal {
@@ -437,13 +463,9 @@
             max-width: 420px;
         }
 
-        .modal-content h3 {
-            margin-bottom: 20px;
-        }
+        .modal-content h3 { margin-bottom: 20px; }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 15px; }
 
         .form-group label {
             display: block;
@@ -486,18 +508,14 @@
                 margin: 10px 5px 35px;
             }
 
-            .logo:first-letter {
-                font-size: 25px;
-            }
+            .logo:first-letter { font-size: 25px; }
 
             .nav-item {
                 justify-content: center;
                 padding: 14px 5px;
             }
 
-            .nav-item span {
-                display: none;
-            }
+            .nav-item span { display: none; }
 
             .logout {
                 left: 10px;
@@ -515,8 +533,29 @@
 
 <body>
 
-<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
+
+<!-- CUSTOM CONFIRMATION MODAL -->
+<div class="confirm-modal" id="confirmModal" role="dialog"
+     aria-modal="true" aria-labelledby="confirmTitle">
+
+    <div class="confirm-content">
+        <div class="confirm-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <h3 id="confirmTitle">Confirm Action</h3>
+        <p id="confirmText">Are you sure you want to continue?</p>
+
+        <div class="confirm-actions">
+            <button type="button" class="confirm-cancel"
+                    id="confirmCancel">Cancel</button>
+
+            <button type="button" class="confirm-proceed"
+                    id="confirmProceed">Confirm</button>
+        </div>
+    </div>
+</div>
 
 <div class="layout">
 
@@ -563,8 +602,6 @@
                 <span id="adminEmail">Administrator</span>
             </div>
         </header>
-
-        <div id="globalMessage" class="message"></div>
 
         <!-- OVERVIEW -->
         <section id="overview" class="section active">
@@ -777,8 +814,6 @@
     <div class="modal-content">
         <h3>Create Recruiter Account</h3>
 
-        <div id="recruiterMessage" class="message"></div>
-
         <form id="recruiterForm">
             <div class="form-group">
                 <label>Recruiter Email</label>
@@ -793,7 +828,10 @@
             </div>
 
             <div class="modal-actions">
-                <button type="submit" class="primary-btn">Create Account</button>
+                <button type="submit" class="primary-btn" id="createRecruiterBtn">
+                    Create Account
+                </button>
+
                 <button type="button" class="cancel-btn"
                         onclick="closeRecruiterModal()">Cancel</button>
             </div>
@@ -817,17 +855,20 @@
         sessionStorage.getItem("userEmail") ||
         "Administrator";
 
+    const validAdmin = ["ADMIN", "ROLE_ADMIN"].includes(
+        (role || "").toUpperCase()
+    );
 
-    // INITIAL AUTHENTICATION AND ROLE CHECK
+    // AUTHENTICATION CHECK
 
-    if (!token || !["ADMIN", "ROLE_ADMIN"].includes((role || "").toUpperCase())) {
+    if (!token || !validAdmin) {
         window.location.replace("/index.html");
     }
 
     document.getElementById("adminEmail").textContent = email;
 
 
-    // CUSTOM TOAST NOTIFICATIONS
+    // TOAST NOTIFICATIONS
 
     function showToast(message, type = "success", duration = 3500) {
         const container = document.getElementById("toastContainer");
@@ -869,9 +910,7 @@
         closeButton.innerHTML = "&times;";
         closeButton.setAttribute("aria-label", "Close notification");
 
-        closeButton.addEventListener("click", () => {
-            removeToast(toast);
-        });
+        closeButton.addEventListener("click", () => removeToast(toast));
 
         toast.appendChild(icon);
         toast.appendChild(content);
@@ -879,51 +918,168 @@
 
         container.appendChild(toast);
 
-        const timeout = setTimeout(() => {
-            removeToast(toast);
-        }, duration);
-
+        const timeout = setTimeout(() => removeToast(toast), duration);
         toast.dataset.timeout = timeout;
     }
 
     function removeToast(toast) {
-        if (!toast || toast.classList.contains("hide")) {
-            return;
-        }
+        if (!toast || toast.classList.contains("hide")) return;
 
         clearTimeout(Number(toast.dataset.timeout));
         toast.classList.add("hide");
 
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
+        setTimeout(() => toast.remove(), 300);
+    }
+
+
+    // CUSTOM CONFIRMATION
+
+    let confirmationResolver = null;
+
+    function showConfirmation(message, title = "Confirm Action", danger = false) {
+        return new Promise(resolve => {
+            const modal = document.getElementById("confirmModal");
+            const proceed = document.getElementById("confirmProceed");
+
+            confirmationResolver = resolve;
+
+            document.getElementById("confirmTitle").textContent = title;
+            document.getElementById("confirmText").textContent = message;
+
+            proceed.className = danger
+                ? "confirm-proceed danger"
+                : "confirm-proceed";
+
+            proceed.textContent = danger ? "Yes, Continue" : "Confirm";
+
+            modal.classList.add("show");
+            proceed.focus();
+        });
+    }
+
+    function closeConfirmation(result) {
+        const modal = document.getElementById("confirmModal");
+
+        modal.classList.remove("show");
+
+        if (confirmationResolver) {
+            confirmationResolver(result);
+            confirmationResolver = null;
+        }
+    }
+
+    document.getElementById("confirmCancel").addEventListener("click", () => {
+        closeConfirmation(false);
+    });
+
+    document.getElementById("confirmProceed").addEventListener("click", () => {
+        closeConfirmation(true);
+    });
+
+    document.getElementById("confirmModal").addEventListener("click", event => {
+        if (event.target.id === "confirmModal") {
+            closeConfirmation(false);
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            const modal = document.getElementById("confirmModal");
+
+            if (modal.classList.contains("show")) {
+                closeConfirmation(false);
+            }
+        }
+    });
+
+
+    // FRIENDLY ERROR MESSAGES
+
+    function getFriendlyError(error) {
+        const message = error?.message || "";
+
+        if (
+            message.includes("Failed to fetch") ||
+            message.includes("NetworkError") ||
+            message.includes("ERR_CONNECTION_REFUSED")
+        ) {
+            return "Unable to connect to the server. Please check your connection and try again.";
+        }
+
+        if (message.includes("401")) {
+            return "Your session has expired. Please log in again.";
+        }
+
+        if (message.includes("403")) {
+            return "You are not authorized to perform this action.";
+        }
+
+        if (message.includes("404")) {
+            return "The requested information was not found.";
+        }
+
+        if (message.includes("500")) {
+            return "Something went wrong on the server. Please try again later.";
+        }
+
+        if (
+            /localhost|127\.0\.0\.1|<html|<!DOCTYPE/i.test(message)
+        ) {
+            return "Something went wrong. Please try again.";
+        }
+
+        return message || "Something went wrong. Please try again.";
     }
 
 
     // API REQUEST
 
     async function apiRequest(url, options = {}) {
-        const response = await fetch(API + url, {
-            ...options,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token,
-                ...(options.headers || {})
-            }
-        });
+        let response;
 
-        const text = await response.text();
+        try {
+            response = await fetch(API + url, {
+                ...options,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token,
+                    ...(options.headers || {})
+                }
+            });
+        } catch (error) {
+            throw new Error(
+                "Unable to connect to the server. Please check your connection and try again."
+            );
+        }
+
+        const responseText = await response.text();
         let data = {};
 
         try {
-            data = text ? JSON.parse(text) : {};
+            data = responseText ? JSON.parse(responseText) : {};
         } catch {
-            data = { message: text };
+            data = {};
         }
 
         if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error("Your session has expired. Please log in again.");
+            }
+
+            if (response.status === 403) {
+                throw new Error("You are not authorized to perform this action.");
+            }
+
+            if (response.status === 404) {
+                throw new Error("The requested information was not found.");
+            }
+
+            if (response.status >= 500) {
+                throw new Error("Something went wrong on the server. Please try again later.");
+            }
+
             throw new Error(
-                data.message || data.error || `Request failed: ${response.status}`
+                getFriendlyError(new Error(data.message || data.error || "Request failed."))
             );
         }
 
@@ -934,19 +1090,7 @@
     // SHOW MESSAGE
 
     function showMessage(elementId, message, type) {
-
-        // Global success/error messages appear as toast notifications.
-        if (elementId === "globalMessage") {
-            showToast(message, type);
-            return;
-        }
-
-        // Recruiter modal validation errors remain inside the modal.
-        const element = document.getElementById(elementId);
-
-        element.textContent = message;
-        element.className = "message " + type;
-        element.style.display = "block";
+        showToast(message, type);
     }
 
 
@@ -996,7 +1140,7 @@
             document.getElementById("totalAdmins").textContent = data.totalAdmins ?? 0;
 
         } catch (error) {
-            showMessage("globalMessage", error.message, "error");
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1009,7 +1153,7 @@
         try {
             const students = await apiRequest("/api/admin/students");
 
-            if (!students.length) {
+            if (!Array.isArray(students) || !students.length) {
                 tbody.innerHTML = '<tr><td colspan="8" class="empty">No students found.</td></tr>';
                 return;
             }
@@ -1052,7 +1196,8 @@
             filterTable("studentSearch", "studentsTable");
 
         } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="8" class="empty">${escapeHTML(error.message)}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="8" class="empty">Unable to load students.</td></tr>';
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1060,17 +1205,20 @@
     // DISABLE STUDENT ACCOUNT
 
     async function deleteStudent(id) {
-        if (!confirm("Disable this student account? The student will no longer be able to log in, but their profile and application history will be preserved.")) {
-            return;
-        }
+        const confirmed = await showConfirmation(
+            "Disable this student account? The student will no longer be able to log in, but their profile and application history will be preserved.",
+            "Disable Student Account",
+            true
+        );
+
+        if (!confirmed) return;
 
         try {
             await apiRequest(`/api/students/${id}`, {
                 method: "DELETE"
             });
 
-            showMessage(
-                "globalMessage",
+            showToast(
                 "Student account disabled successfully. Student history has been preserved.",
                 "success"
             );
@@ -1079,7 +1227,7 @@
             await loadStats();
 
         } catch (error) {
-            showMessage("globalMessage", error.message, "error");
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1087,26 +1235,25 @@
     // ENABLE STUDENT ACCOUNT
 
     async function enableStudent(id) {
-        if (!confirm("Are you sure you want to enable this student account?")) {
-            return;
-        }
+        const confirmed = await showConfirmation(
+            "Are you sure you want to enable this student account?",
+            "Enable Student Account"
+        );
+
+        if (!confirmed) return;
 
         try {
             await apiRequest(`/api/admin/students/${id}/enable`, {
                 method: "PUT"
             });
 
-            showMessage(
-                "globalMessage",
-                "Student account enabled successfully.",
-                "success"
-            );
+            showToast("Student account enabled successfully.", "success");
 
             await loadStudents();
             await loadStats();
 
         } catch (error) {
-            showMessage("globalMessage", error.message, "error");
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1119,7 +1266,7 @@
         try {
             const recruiters = await apiRequest("/api/admin/recruiters");
 
-            if (!recruiters.length) {
+            if (!Array.isArray(recruiters) || !recruiters.length) {
                 tbody.innerHTML = '<tr><td colspan="3" class="empty">No recruiters found.</td></tr>';
                 return;
             }
@@ -1137,7 +1284,8 @@
             `).join("");
 
         } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="3" class="empty">${escapeHTML(error.message)}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="3" class="empty">Unable to load recruiters.</td></tr>';
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1146,7 +1294,6 @@
 
     function openRecruiterModal() {
         document.getElementById("recruiterForm").reset();
-        document.getElementById("recruiterMessage").style.display = "none";
         document.getElementById("recruiterModal").style.display = "flex";
     }
 
@@ -1160,10 +1307,20 @@
     document.getElementById("recruiterForm").addEventListener("submit", async function(event) {
         event.preventDefault();
 
+        const button = document.getElementById("createRecruiterBtn");
+
         const recruiter = {
             email: document.getElementById("recruiterEmail").value.trim(),
             password: document.getElementById("recruiterPassword").value
         };
+
+        if (recruiter.password.length < 8) {
+            showToast("Password must contain at least 8 characters.", "warning");
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Creating...";
 
         try {
             await apiRequest("/api/admin/recruiters", {
@@ -1171,18 +1328,19 @@
                 body: JSON.stringify(recruiter)
             });
 
-            showMessage(
-                "globalMessage",
-                "Recruiter account created successfully.",
-                "success"
-            );
-
             closeRecruiterModal();
+
+            showToast("Recruiter account created successfully.", "success");
+
             await loadRecruiters();
             await loadStats();
 
         } catch (error) {
-            showMessage("recruiterMessage", error.message, "error");
+            showToast(getFriendlyError(error), "error");
+
+        } finally {
+            button.disabled = false;
+            button.textContent = "Create Account";
         }
     });
 
@@ -1195,7 +1353,7 @@
         try {
             const drives = await apiRequest("/api/placement-drives/admin/all");
 
-            if (!drives.length) {
+            if (!Array.isArray(drives) || !drives.length) {
                 tbody.innerHTML = '<tr><td colspan="9" class="empty">No placement drives found.</td></tr>';
                 return;
             }
@@ -1238,7 +1396,8 @@
             filterTable("driveSearch", "drivesTable");
 
         } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="9" class="empty">${escapeHTML(error.message)}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="9" class="empty">Unable to load placement drives.</td></tr>';
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1246,26 +1405,26 @@
     // ARCHIVE PLACEMENT DRIVE
 
     async function archiveDrive(id) {
-        if (!confirm("Are you sure you want to archive this placement drive? It will no longer be visible to students.")) {
-            return;
-        }
+        const confirmed = await showConfirmation(
+            "Are you sure you want to archive this placement drive? It will no longer be visible to students.",
+            "Archive Placement Drive",
+            true
+        );
+
+        if (!confirmed) return;
 
         try {
             await apiRequest(`/api/placement-drives/${id}`, {
                 method: "DELETE"
             });
 
-            showMessage(
-                "globalMessage",
-                "Placement drive archived successfully.",
-                "success"
-            );
+            showToast("Placement drive archived successfully.", "success");
 
             await loadDrives();
             await loadStats();
 
         } catch (error) {
-            showMessage("globalMessage", error.message, "error");
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1278,7 +1437,7 @@
         try {
             const applications = await apiRequest("/api/admin/applications");
 
-            if (!applications.length) {
+            if (!Array.isArray(applications) || !applications.length) {
                 tbody.innerHTML = '<tr><td colspan="7" class="empty">No applications found.</td></tr>';
                 return;
             }
@@ -1296,7 +1455,8 @@
             `).join("");
 
         } catch (error) {
-            tbody.innerHTML = `<tr><td colspan="7" class="empty">${escapeHTML(error.message)}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="7" class="empty">Unable to load applications.</td></tr>';
+            showToast(getFriendlyError(error), "error");
         }
     }
 
@@ -1304,7 +1464,8 @@
     // SEARCH / FILTER TABLE
 
     function filterTable(inputId, tableId) {
-        const query = document.getElementById(inputId).value.toLowerCase();
+        const input = document.getElementById(inputId);
+        const query = input.value.toLowerCase();
 
         document.querySelectorAll(`#${tableId} tr`).forEach(row => {
             row.style.display = row.textContent.toLowerCase().includes(query) ? "" : "none";
@@ -1327,10 +1488,14 @@
 
     // LOGOUT
 
-    function logout() {
-        if (!confirm("Are you sure you want to logout?")) {
-            return;
-        }
+    async function logout() {
+        const confirmed = await showConfirmation(
+            "Are you sure you want to logout from your admin account?",
+            "Logout",
+            true
+        );
+
+        if (!confirmed) return;
 
         const authKeys = ["token", "userId", "userRole", "userEmail"];
 
@@ -1339,6 +1504,8 @@
             sessionStorage.removeItem(key);
         });
 
+        showToast("Logged out successfully.", "success");
+
         window.location.replace("/index.html");
     }
 
@@ -1346,7 +1513,6 @@
     // RECHECK AUTHENTICATION WHEN PAGE IS RESTORED
 
     window.addEventListener("pageshow", function() {
-
         const currentToken =
             localStorage.getItem("token") ||
             sessionStorage.getItem("token");
@@ -1366,7 +1532,7 @@
 
     // INITIAL DASHBOARD LOAD
 
-    if (token && ["ADMIN", "ROLE_ADMIN"].includes((role || "").toUpperCase())) {
+    if (token && validAdmin) {
         loadStats();
     }
 
@@ -1374,3 +1540,4 @@
 
 </body>
 </html>
+```

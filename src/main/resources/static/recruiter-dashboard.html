@@ -570,19 +570,50 @@
             position: fixed;
             top: 22px;
             right: 22px;
-            background: #183d32;
-            color: white;
-            padding: 14px 20px;
+            min-width: 280px;
+            max-width: 380px;
+            padding: 15px 18px;
             border-radius: 12px;
+            color: white;
             font-size: 12px;
+            font-weight: 500;
             box-shadow: 0 10px 30px rgba(0,0,0,.15);
-            z-index: 1000;
-            display: none;
-            max-width: 350px;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(120%);
+            transition: all .35s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #247a4b;
         }
 
         .toast.error {
-            background: #a84242;
+            background: #b84242;
+        }
+
+        .toast.warning {
+            background: #b7791f;
+        }
+
+        .toast i {
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .toast-message {
+            line-height: 1.5;
+            overflow-wrap: anywhere;
         }
 
         /* MOBILE */
@@ -669,6 +700,14 @@
 
             .stat-card {
                 padding: 17px;
+            }
+
+            .toast {
+                left: 15px;
+                right: 15px;
+                top: 15px;
+                min-width: auto;
+                max-width: none;
             }
         }
     </style>
@@ -1076,8 +1115,11 @@
         normalizedRole !== "RECRUITER" &&
         normalizedRole !== "ROLE_RECRUITER"
     ) {
-        alert("Access denied. Recruiter account required.");
-        window.location.replace("/index.html");
+        showToast("Access denied. Recruiter account required.", false, "error");
+
+        setTimeout(() => {
+            window.location.replace("/index.html");
+        }, 1800);
     }
 
     // ==========================================
@@ -1178,18 +1220,37 @@
     // TOAST
     // ==========================================
 
-    function showToast(message, isError = false) {
+    function showToast(message, isError = false, type = null) {
 
         const toast = document.getElementById("toast");
 
-        toast.textContent = message;
-        toast.className = isError ? "toast error" : "toast";
-        toast.style.display = "block";
+        let toastType = type;
+
+        if (!toastType) {
+            toastType = isError ? "error" : "success";
+        }
+
+        const icons = {
+            success: "bi-check-circle-fill",
+            error: "bi-exclamation-circle-fill",
+            warning: "bi-exclamation-triangle-fill"
+        };
+
+        const icon = icons[toastType] || icons.success;
+
+        toast.className = "toast " + toastType;
+
+        toast.innerHTML = `
+            <i class="bi ${icon}"></i>
+            <span class="toast-message">${escapeHtml(message)}</span>
+        `;
 
         clearTimeout(window.toastTimer);
 
+        toast.classList.add("show");
+
         window.toastTimer = setTimeout(() => {
-            toast.style.display = "none";
+            toast.classList.remove("show");
         }, 3500);
     }
 
@@ -2049,14 +2110,20 @@
         });
 
         if (message) {
-            alert(message);
-        }
 
-        window.location.replace("/index.html");
+            showToast(message, false, "warning");
+
+            setTimeout(() => {
+                window.location.replace("/index.html");
+            }, 1800);
+
+        } else {
+
+            window.location.replace("/index.html");
+        }
     }
 
 </script>
 
 </body>
 </html>
-
